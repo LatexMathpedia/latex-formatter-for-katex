@@ -1,0 +1,58 @@
+[project]
+name = "tex-to-mdx"
+version = "0.1.0"
+description = "Convertidor de archivos LaTeX a MDX para KaTeX"
+authors = [
+    {name = "Diego Díaz Mendaña"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+keywords = ["latex", "mdx", "katex", "converter", "markdown"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Text Processing :: Markup :: LaTeX",
+    "Topic :: Text Processing :: Markup :: Markdown",
+]
+
+dependencies = [
+    # No hay dependencias externas por ahora
+    # Todo se hace con la librería estándar de Python
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/tuusuario/tex-to-mdx"
+Documentation = "https://github.com/tuusuario/tex-to-mdx/blob/main/README.md"
+Repository = "https://github.com/tuusuario/tex-to-mdx"
+Issues = "https://github.com/tuusuario/tex-to-mdx/issues"
+
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
