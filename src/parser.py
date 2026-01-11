@@ -61,16 +61,18 @@ class TexToMdxParser:
         return mdx_output
     
     def remove_vspace_commands(self, content: str) -> str:
-        """Eliminar comandos \\vspace y \\footnote del contenido LaTeX.
+        """Eliminar comandos \\vspace, \\hspace y \\footnote del contenido LaTeX.
         
         Args:
-            content (str): Contenido con posibles comandos \\vspace y \\footnote.
+            content (str): Contenido con posibles comandos.
         
         Returns:
-            str: Contenido sin comandos \\vspace ni \\footnote.
+            str: Contenido sin estos comandos.
         """
         # Eliminar \vspace{...} y \vspace*{...}
         content = re.sub(r'\\vspace\*?\{[^}]+\}', '', content)
+        # Eliminar \hspace{...} y \hspace*{...}
+        content = re.sub(r'\\hspace\*?\{[^}]+\}', '', content)
         # Eliminar \footnote{...}
         content = re.sub(r'\\footnote\{[^}]+\}', '', content)
         # Eliminar \addcontentsline{...}{...}{...}
@@ -94,6 +96,19 @@ class TexToMdxParser:
         content = re.sub(r'\\label\{[^}]*\}', '', content)
         # Eliminar \eqref{...}
         content = re.sub(r'\\eqref\{[^}]*\}', '', content)
+        # Convertir \hyperref[label]{texto} a solo texto
+        content = re.sub(r'\\hyperref\[[^\]]*\]\{([^}]*)\}', r'\1', content)
+        # Reemplazar \underbracket por \underbrace (KaTeX no soporta underbracket)
+        content = re.sub(r'\\underbracket', r'\\underbrace', content)
+        # Convertir \substack{a\\b} a a, b (KaTeX no soporta substack)
+        def replace_substack(match):
+            # Extraer contenido y reemplazar \\ con comas
+            inner = match.group(1)
+            # Reemplazar \\ con comas y espacios
+            return inner.replace(r'\\', ', ')
+        content = re.sub(r'\\substack\{([^}]+)\}', replace_substack, content)
+        # Eliminar \item que no se hayan convertido
+        content = re.sub(r'\\item\s*', '', content)
         return content
     
     def _create_slug(self, text: str) -> str:

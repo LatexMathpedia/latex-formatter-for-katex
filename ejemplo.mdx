@@ -15,8 +15,8 @@ Apuntes Análisis III - Tema 1 © 2025 by Diego Díaz Mendaña is licensed under
 Durante el curso, se usarán preferiblemente las siguientes notaciones durante las demostraciones y ejercicios:
 
 - En clase se empleará la abreviatura *c.* para referirse a *conjuntos*.
-- Se empleará preferiblemente la $N$ para referirse al natural en $R^N$
-- En análisis en general consideraremos que los naturales empiezan en $1$, aunque en álgebra se consideren desde $0$. Por lo tanto, emplearemos la notación $N \cup \{0\}$ cuando queramos incluir el $0$ en los naturales.
+Se empleará preferiblemente la $N$ para referirse al natural en $R^N$
+En análisis en general consideraremos que los naturales empiezan en $1$, aunque en álgebra se consideren desde $0$. Por lo tanto, emplearemos la notación $N \cup \{0\}$ cuando queramos incluir el $0$ en los naturales.
 
 ## Cardinalidad de un conjunto
 ### Cardinalidad. Idea intuitiva
@@ -30,10 +30,11 @@ $$
 i & \longmapsto & \varphi(i)
 \end{array}
 $$
-- **Conjuntos infinitos:** Aquellos conjuntos para los cuales existe una aplicación inyectiva $\varphi : \mathbb{N} \longrightarrow A$. De esta forma, podemos distinguir entre:
 
-- **Conjuntos infinitos numerables:** Aquellos conjuntos $A$ para los cuales existe una biyección $\varphi : \mathbb{N} \longrightarrow A$.
-- **Conjuntos infinitos no numerables:** Aquellos conjuntos $A$ para los cuales existe una aplicación inyectiva $\varphi : \mathbb{N} \longrightarrow A$ pero no existe ninguna biyección entre ambos conjuntos.
+**Conjuntos infinitos:** Aquellos conjuntos para los cuales existe una aplicación inyectiva $\varphi : \mathbb{N} \longrightarrow A$. De esta forma, podemos distinguir entre:
+
+**Conjuntos infinitos numerables:** Aquellos conjuntos $A$ para los cuales existe una biyección $\varphi : \mathbb{N} \longrightarrow A$.
+**Conjuntos infinitos no numerables:** Aquellos conjuntos $A$ para los cuales existe una aplicación inyectiva $\varphi : \mathbb{N} \longrightarrow A$ pero no existe ninguna biyección entre ambos conjuntos.
 
 ### Conjuntos numerables y no numerables. Ejemplos
 Podemos plantear algunos ejemplos de conjuntos numerables y no numerables comunes:
@@ -53,7 +54,8 @@ n & \longmapsto \varphi(n) = n
 $$
 
 </DemBox>
-2. El grupo de los enteros $\mathbb{Z} = \left\{ - \infty, \dots, - 2, - 1, 0, 1, 2, \dots , \infty\right\}$.
+
+El grupo de los enteros $\mathbb{Z} = \left\{ - \infty, \dots, - 2, - 1, 0, 1, 2, \dots , \infty\right\}$.
 <DemBox title="Demostración">
 
 Podemos emplear la siguiente idea para definir una biyección entre $\mathbb{N}$ y $\mathbb{Z}$:
@@ -79,7 +81,8 @@ $$
 Y así, tenemos una biyección entre ambos conjuntos.
 
 </DemBox>
-3. El conjunto $\mathbb{Q} \coloneq \left\{\dfrac{z}{n} : z \in \mathbb{Z}, n \in \mathbb{N}\right\}$ 
+
+El conjunto $\mathbb{Q} \coloneq \left\{\dfrac{z}{n} : z \in \mathbb{Z}, n \in \mathbb{N}\right\}$ 
 <DemBox title="Demostración">
 
 Como tenemos que:
@@ -157,7 +160,7 @@ $$
 \varphi(2) & = 0.4\textbf{0}0100200\dots \\
 \varphi(3) & = 0.90\textbf{0}100300\dots \\
 \varphi(4) & = 0.100\textbf{1}00400\dots \\
-\vdots \quad & \hspace{10ex} \vdots
+\vdots \quad &  \vdots
 \end{align*}
 $$
 Ahora queremos construir un nuevo número $b \in (0, 1)$. Para ello, nos fijamos en los decimales remarcados de la lista anterior y hacemos lo siguiente:
@@ -175,7 +178,8 @@ $$
 Y por construcción, $b \in (0, 1)$ y $b \neq \varphi(n) \, \forall n \in \mathbb{N}$ ya que difiere en al menos un decimal de cada uno de ellos. Por lo tanto, hemos llegado a una contradicción y concluimos que $(0, 1)$ no es numerable.
 
 </DemBox>
-2. El conjunto de los reales $\mathbb{R}$
+
+El conjunto de los reales $\mathbb{R}$
 <DemBox title="Demostración">
 
 Para esta demostración emplearemos el Teorema de los intervalos encajados de Cantor, que dice que si tenemos una sucesión infinitas de intervalos cerrados y acotados $[a_n, b_n]$ tal que $a_n < b_n$ donde cada intervalo está contenido en el anterior, es decir:
@@ -188,20 +192,20 @@ Entonces, procederemos por reducción al absurdo. Supongamos que $\mathbb{R}$ es
 
 Queremos una sucesión de intervalos encajados que excluyan sistemáticamente a cada número de nuestra lista $\varphi(\mathbb{N}) = \mathbb{R}$:
 
-3. Como $\varphi(1)$ es un punto en la recta real, podemos tomar fácilmente un intervalo que no lo contenga, es decir, $[a_1, b_1]$ tal que:
+[1)] Como $\varphi(1)$ es un punto en la recta real, podemos tomar fácilmente un intervalo que no lo contenga, es decir, $[a_1, b_1]$ tal que:
 $$
 \begin{align*}
 \varphi(1) \not\in [a_1, b_1] \, \text{ con } a_1 < b_1
 \end{align*}
 $$
-4. Para excluir a $\varphi(2)$ tomamos otro intervalo $[a_2, b_2]$ tal que:
+[2)] Para excluir a $\varphi(2)$ tomamos otro intervalo $[a_2, b_2]$ tal que:
 $$
 \begin{align*}
 \varphi(2) \not\in [a_2, b_2] \subseteq [a_1, b_1] \, \text{ con } a_2 < b_2
 \end{align*}
 $$
 que es posible ya que $[a_1, b_1]$ es un intervalo que podemos dividir en dos subintervalos y elegir aquel que no contenga a $\varphi(2)$.
-5. De forma análoga, para $n > 2$ tomamos $[a_n, b_n]$ tal que:
+[3)] De forma análoga, para $n > 2$ tomamos $[a_n, b_n]$ tal que:
 $$
 \begin{align*}
 \varphi(n) \not\in [a_n, b_n] \subseteq [a_{n-1}, b_{n-1}] \, \text{ con } a_n < b_n
@@ -265,7 +269,7 @@ $$
 
 Se plantean dos casos:
 
-2. Si $A = \emptyset$ entonces:
+Si $A = \emptyset$ entonces:
 $$
 \begin{align*}
 \left\{
@@ -276,7 +280,7 @@ A \times B = \emptyset \times B = \emptyset
 \right.
 \end{align*}
 $$
-3. Si $A \neq \emptyset$ entonces:
+Si $A \neq \emptyset$ entonces:
 $$
 \begin{align*}
 \left\{
@@ -290,7 +294,7 @@ $$
 Así tenemos que la unión natural es:
 $$
 \begin{align*}
-A \cup B = \left\{\underbracket{a_1}_{1}, \underbracket{a_2}_{2}, \dots, \underbracket{a_n}_{n}, \underbracket{b_1}_{n+1}, \underbracket{b_2}_{n+2}, \underbracket{b_3}_{n+3}, \dots\right\}
+A \cup B = \left\{\underbrace{a_1}_{1}, \underbrace{a_2}_{2}, \dots, \underbrace{a_n}_{n}, \underbrace{b_1}_{n+1}, \underbrace{b_2}_{n+2}, \underbrace{b_3}_{n+3}, \dots\right\}
 \end{align*}
 $$
 Y podemos definir la biyección:
@@ -326,7 +330,7 @@ $$
 
 </DemBox>
 
-\item Sea $A, B$ infinitos numerables con $A \cup B = \emptyset$ entonces:
+Sea $A, B$ infinitos numerables con $A \cup B = \emptyset$ entonces:
 $$
 \begin{align*}
 \left\{
@@ -349,7 +353,7 @@ $$
 Entonces tenemos que la unión natural es:
 $$
 \begin{align*}
-A \cup B = \left\{\underbracket{a_1}_1, \underbracket{b_1}_2, \underbracket{a_2}_3, \underbracket{b_2}_4, \underbracket{a_3}_5, \underbracket{b_3}_6, \dots\right\}
+A \cup B = \left\{\underbrace{a_1}_1, \underbrace{b_1}_2, \underbrace{a_2}_3, \underbrace{b_2}_4, \underbrace{a_3}_5, \underbrace{b_3}_6, \dots\right\}
 \end{align*}
 $$
 Y podemos definir la biyección:
@@ -425,7 +429,7 @@ k = 2 & \longrightarrow f_1(1) \\
 k = 3 & \longrightarrow f_1(2), f_2(1) \\
 k = 4 & \longrightarrow f_1(3), f_2(2), f_3(1) \\
 k = 5 & \longrightarrow f_1(4), f_2(3), f_3(2), f_4(1) \\
-\vdots \hspace{2ex} & \hspace{15ex} \vdots
+\vdots  &  \vdots
 \end{align*}
 $$
 Este recorrido visita todas las parejas $(i,j) \in \mathbb{N} \times \mathbb{N}$ por lo que si definimos la aplicación:
@@ -440,10 +444,10 @@ Tenemos una aplicación suprayectiva y, por lo tanto, la unión es a lo sumo num
 Si los $A_i$ no fueran disjuntos, podemos repetir la misma idea pero teniendo en cuenta que se podría repetir un mismo elemento. Para obtener una biyección, simplemente:
 
 1. Recorremos las entradas como antes formando la lista: $\varphi(1), \varphi(2), \varphi(3), \dots$
-2. Definimos una nueva sucesión $t$ como:
+Definimos una nueva sucesión $t$ como:
 
 - $n = 0$ entonces $t(0 ) = \varphi(0)$
-- $n \geq 1$ entonces $t(n)$ es el primer elemento $\varphi(k)$ con $k$ mayor que los usados previamente y tal que $\varphi(k) \notin \left\{t(0), \dots, t(n - 1)\right\}$
+$n \geq 1$ entonces $t(n)$ es el primer elemento $\varphi(k)$ con $k$ mayor que los usados previamente y tal que $\varphi(k) \notin \left\{t(0), \dots, t(n - 1)\right\}$
 
 Así, tenemos que cada $t(n)$ es distinto por construcción y todo $x \in \cup_i A_i$ aparece en $\varphi$ en alguna posición, por lo que su primera aparición será tomada en algún $t(n)$.
 
@@ -508,7 +512,7 @@ $$
 \text{Card } A = 0 \quad \text{ y } \quad \text{Card } \mathcal{P}(A) = 1 = 2^0
 \end{align*}
 $$
-- Si $A \neq \emptyset$, supongamos que $\text{Card } A = n \in \mathbb{N}$ tal que:
+Si $A \neq \emptyset$, supongamos que $\text{Card } A = n \in \mathbb{N}$ tal que:
 $$
 \begin{align*}
 \exists \varphi : \mathcal{P}(A) & \longrightarrow C \coloneq \left\{(\varepsilon_1, \varepsilon_2, \dots, \varepsilon_n ) \text{ tq } \varepsilon_i = 0  \text{ o } 1\right\}\\
@@ -532,7 +536,7 @@ Y por tanto, $\text{Card } C = 2^n$ ya que cada dígito puede tomar dos valores 
 
 </EjBox>
 
-### \texorpdfstring{$\text{Card } \mathcal{P}(A) > \text{Card } A$. Proposición{Card P(A) > Card A. Proposición}}
+### $\text{Card } \mathcal{P}(A) > \text{Card } A$. Proposición
 Sea $A$ un conjunto cualquiera, entonces se cumple que:
 $$
 \begin{align*}
@@ -564,7 +568,7 @@ $$
 Como $\varphi$ es supuestamente sobreyectiva, debe existir $z \in A$ tal que $\varphi(z) = B$, donde se presentan dos casos:
 
 - $z \in B = \varphi(z)$ entonces por definición de $B$: $z \not\in \varphi(z) \quad \#$
-- $z \not\in \varphi(z) = B$ entonces por definición de $B$: $z \in B \quad \#$
+$z \not\in \varphi(z) = B$ entonces por definición de $B$: $z \in B \quad \#$
 
 Como hemos llegado inevitablemente a una contradicción, concluimos que $\text{Card } A \neq \text{Card } \mathcal{P}(A)$ y por tanto:
 $$
@@ -580,7 +584,7 @@ $$
 La proposición anterior establece la existencia de una jerarquía bastante grande de cardinales no finitos. Por ello, aprovechamos esto para introducir la siguiente notación:
 $$
 \begin{align*}
-\underbracket{0}_{\text{\tiny $\text{Card } \emptyset$} } < \overbrace{ \underbracket{1}_{\text{\tiny $\text{Card } \mathcal{P}(\emptyset )$}} < \underbracket{2}_{\text{\tiny $\text{Card } \mathcal{P}(\mathcal{P}(\emptyset ))$}} < 3 < 4 < \dots}^{\mathbb{N}} < \underbracket{\aleph_0 < 2^{\aleph_0} < 2^{2^{\aleph_0}}}_{\text{Cardinales transfinitos}} < \dots
+\underbrace{0}_{\text{\tiny $\text{Card } \emptyset$} } < \overbrace{ \underbrace{1}_{\text{\tiny $\text{Card } \mathcal{P}(\emptyset )$}} < \underbrace{2}_{\text{\tiny $\text{Card } \mathcal{P}(\mathcal{P}(\emptyset ))$}} < 3 < 4 < \dots}^{\mathbb{N}} < \underbrace{\aleph_0 < 2^{\aleph_0} < 2^{2^{\aleph_0}}}_{\text{Cardinales transfinitos}} < \dots
 \end{align*}
 $$
 Donde hemos definido $\aleph_0$ como $\text{Card } \mathbb{N}$.
@@ -618,7 +622,7 @@ $$
 \end{align*}
 $$
 Y por tanto, $B_1 = B_2$.
-- **Sobreyectividad:** Sea una sucesión cualquiera en $C$:
+**Sobreyectividad:** Sea una sucesión cualquiera en $C$:
 $$
 \begin{align*}
 \left(\varepsilon_1, \varepsilon_2, \dots\right) \quad \text{ con } \varepsilon_i \in \mathbb{N}
@@ -639,7 +643,7 @@ $$
 
 </EjemBox>
 
-## \texorpdfstring{Descomposición de subconjuntos abiertos de $\mathbb{R}^N$ en cubos diádicos{Descomposición de subconjuntos abiertos de R^N en cubos diádicos}}
+## Descomposición de subconjuntos abiertos de $\mathbb{R}^N$ en cubos diádicos
 
 ### Intervalo diádico. Definición
 Se llama **intervalo diádico de orden $n \in \mathbb{N}$** a cualquier intervalo de la forma:
@@ -765,8 +769,8 @@ $$
 Para todo subconjunto abierto $O \subseteq \mathbb{R}^N$ no vacío, se tiene que existe una colección numerable de cubos diádicos $\{C_i\}_{i \in \mathbb{N}}$ disjuntos dos a dos (posiblemente de órdenes distintos) tales que:
 
 1. $O$ es exactamente la unión de todos esos cubos, es decir: $O = \bigcup_{i \in \mathbb{N}} C_i$
-2. Cada cubo está completamente dentro de $O$, incluso su clausura: $\overline{C_i} \subseteq O \quad \forall i \in \mathbb{N}$
-3. Son disjuntos entre sí: $C_i \cap C_j = \emptyset \quad \text{ si } i \neq j$
+Cada cubo está completamente dentro de $O$, incluso su clausura: $\overline{C_i} \subseteq O \quad \forall i \in \mathbb{N}$
+Son disjuntos entre sí: $C_i \cap C_j = \emptyset \quad \text{ si } i \neq j$
 
 <DemBox title="Demostración">
 
@@ -791,7 +795,7 @@ $$
 \end{align*}
 $$
 Es decir, tomamos todos los cubos de orden 1 cuya clausura está en $O$.
-- Si $n > 1$ entonces:
+Si $n > 1$ entonces:
 $$
 \begin{align*}
 \mathcal{H}_n \coloneq \left\{C \in \mathcal{G}_n : C \not\subseteq \displaystyle \bigcup_{k = 1}^{n - 1} \bigcup_{D \in \mathcal{H}_k} D\right\} = \left\{C \in \mathcal{G}_n : C \cap \left[\displaystyle \bigcup_{k = 1}^{n - 1} \displaystyle \bigcup_{D \in \mathcal{H}_k} D \right] = \emptyset \right\}
@@ -806,8 +810,9 @@ O = \bigcup_{n = 1}^\infty \bigcup_{C \in \mathcal{H}_n} C
 \end{align*}
 $$
 
-- Trivial, todo cubo $C \in \mathcal{H}_n$ satisface que $C \subseteq O$ ya que $C \in \mathcal{G}_n$ y $\overline{C} \subseteq O$.
-- Sea $x_0 = (x_1, x_2, \dots, x_N) \in O \subseteq \mathbb{R}^N$, como $O$ es abierto, existe un cubo abierto centrado en $x_0$ contenido en $O$, esto es $\exists n \in \mathbb{N}$ tal que:
+- [$\supseteq$)] Trivial, todo cubo $C \in \mathcal{H}_n$ satisface que $C \subseteq O$ ya que $C \in \mathcal{G}_n$ y $\overline{C} \subseteq O$.
+
+[$\subseteq$)] Sea $x_0 = (x_1, x_2, \dots, x_N) \in O \subseteq \mathbb{R}^N$, como $O$ es abierto, existe un cubo abierto centrado en $x_0$ contenido en $O$, esto es $\exists n \in \mathbb{N}$ tal que:
 $$
 \begin{align*}
 x_0 \in \prod_{i = 1}^N \left(x_i - \frac{1}{2^n}, x_i + \frac{1}{2^n}\right) \subseteq \prod_{i = 1}^N \left[x_i - \frac{1}{2^n}, x_i + \frac{1}{2^n}\right] \subseteq O
@@ -870,7 +875,7 @@ $$
 Para ver que $\mathcal{H}_n$ son disjuntos, basta notar que se cumple por construcción:
 
 - Dentro de cada $\mathcal{H}_n$ los cubos diádicos del mismo orden son disjuntos.
-- Entre diferentes órdenes, si $C \in \mathcal{H}_n$ y $D \in \mathcal{H}_m$ con $n \neq m$ son disjuntos ya que si $n > m$ entonces:
+Entre diferentes órdenes, si $C \in \mathcal{H}_n$ y $D \in \mathcal{H}_m$ con $n \neq m$ son disjuntos ya que si $n > m$ entonces:
 $$
 \begin{align*}
 C \not\subseteq \displaystyle \bigcup_{k = 1}^{n - 1} \displaystyle \bigcup_{E \in \mathcal{H}_k} E
@@ -910,7 +915,7 @@ Cada número $a_{n,m}$ es el **término general** de la fila $n$ y columna $m$ d
 Dada una sucesión doble $\varphi : \mathbb{N} \times \mathbb{N} \longrightarrow \overline{\mathbb{R}}$, llamamos **serie doble de término general $a_{n,m}$** a la expresión:
 $$
 \begin{align*}
-\displaystyle \sum_{n,m} a_{n, m} = \displaystyle \sum_{\substack{n = 1\\m = 1}} a_{n, m}\\
+\displaystyle \sum_{n,m} a_{n, m} = \displaystyle \sum_{n = 1, m = 1} a_{n, m}\\
 \end{align*}
 $$
 
@@ -924,7 +929,7 @@ $$
 se cumple que:
 $$
 \begin{align*}
-\left|s - \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j}\right| < \varepsilon
+\left|s - \displaystyle \sum_{1 \leq i \leq n, 1 \leq j \leq m} a_{i,j}\right| < \varepsilon
 \end{align*}
 $$
 
@@ -943,7 +948,7 @@ $$
 & 1 & 2 & 3 & 4 & \dots & \mathbb{N}
 \end{array}
 $$
-\hspace{10ex} $\displaystyle \sum_{\substack{1 \leq i \leq 1\\1 \leq j \leq 1}} a_{i,j}$
+$\displaystyle \sum_{1 \leq i \leq 1, 1 \leq j \leq 1} a_{i,j}$
 
 $$
 \begin{array}{c|cccccc}
@@ -956,7 +961,7 @@ $$
 & 1 & 2 & 3 & 4 & \dots & \mathbb{N}
 \end{array}
 $$
-\hspace{10ex} $\displaystyle \sum_{\substack{1 \leq i \leq 2\\1 \leq j \leq 2}} a_{i,j}$
+$\displaystyle \sum_{1 \leq i \leq 2, 1 \leq j \leq 2} a_{i,j}$
 
 $$
 \begin{array}{c|cccccc}
@@ -969,7 +974,7 @@ $$
 & 1 & 2 & 3 & 4 & \dots & \mathbb{N}
 \end{array}
 $$
-\hspace{10ex} $\displaystyle \sum_{\substack{1 \leq i \leq 3\\1 \leq j \leq 3}} a_{i,j}$
+$\displaystyle \sum_{1 \leq i \leq 3, 1 \leq j \leq 3} a_{i,j}$
 
 Y así sucesivamente.
 
@@ -985,7 +990,7 @@ $$
 se cumple que:
 $$
 \begin{align*}
-\displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} > K \quad \left(\text{resp.} < K\right)
+\displaystyle \sum_{1 \leq i \leq n, 1 \leq j \leq m} a_{i,j} > K \quad \left(\text{resp.} < K\right)
 \end{align*}
 $$
 
@@ -1047,7 +1052,7 @@ $$
 \displaystyle \sum_{m = 1}^{\infty}\displaystyle \sum_{n = 1}^{\infty} a_{n,m} = + \infty & \qquad \text{ y } \qquad \displaystyle \sum_{n = 1}^{\infty} \displaystyle \sum_{m = 1}^{\infty} a_{n,m} = + \infty\\
 \end{align*}
 $$
-2. $\forall n,m$ se tiene $a_{n,m} \in [0, \infty)$ entonces $\forall n$ se tiene que $a_{g(n)} \in [0, \infty)$ y, como consecuencia, se dan dos subcasos:
+$\forall n,m$ se tiene $a_{n,m} \in [0, \infty)$ entonces $\forall n$ se tiene que $a_{g(n)} \in [0, \infty)$ y, como consecuencia, se dan dos subcasos:
 $$
 \begin{align*}
 \displaystyle \sum_{n = 1}^{\infty} a_{g(n)} = s \in [0, +\infty) \qquad \text{ o } \qquad \displaystyle \sum_{n = 1}^{\infty} a_{g(n)} = + \infty
@@ -1070,21 +1075,21 @@ $$
 Así, $\forall n,m \geq m_0$ tenemos:
 $$
 \begin{align*}
-\displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} \geq \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} & \xRightarrow[\text{invertir } \geq]{\text{añadir } - } - \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} \leq - \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} \implies \\[2ex]
-& \xRightarrow{\text{añadir } s} s - \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} \leq s - \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} < \varepsilon
+\displaystyle \sum_{1 \leq i \leq n, 1 \leq j \leq m} a_{i,j} \geq \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} & \xRightarrow[\text{invertir } \geq]{\text{añadir } - } - \displaystyle \sum_{1 \leq i \leq n, 1 \leq j \leq m} a_{i,j} \leq - \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} \implies \\[2ex]
+& \xRightarrow{\text{añadir } s} s - \displaystyle \sum_{1 \leq i \leq n, 1 \leq j \leq m} a_{i,j} \leq s - \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} < \varepsilon
 \end{align*}
 $$
 Y además, sabemos que:
 $$
 \begin{align*}
-\displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} \text{ es suma parcial de alguna reordenación de } \displaystyle \sum_{n = 1}^{\infty} a_{g(n)}
+\displaystyle \sum_{1 \leq i \leq n, 1 \leq j \leq m} a_{i,j} \text{ es suma parcial de alguna reordenación de } \displaystyle \sum_{n = 1}^{\infty} a_{g(n)}
 \end{align*}
 $$
 
 Como todas las reordenaciones de una serie simple de términos positivos tienen la misma suma por lo que:
 $$
 \begin{align*}
-0 \leq s - \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} < s - \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} < \varepsilon
+0 \leq s - \displaystyle \sum_{1 \leq i \leq n, 1 \leq j \leq m} a_{i,j} < s - \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} < \varepsilon
 \end{align*}
 $$
 Y por tanto, como $\varepsilon$ era arbitrario, tenemos que:
@@ -1093,7 +1098,7 @@ $$
 \displaystyle \sum_{n,m} a_{n,m} = s\\
 \end{align*}
 $$
-- Si $\sum a_{g(n)} = + \infty$ entonces $\textcolor{blue}{\forall K \in \mathbb{R}} \quad \exists n_0\in \mathbb{N}$ tal que $\forall k \geq  n_0$ se tiene:
+Si $\sum a_{g(n)} = + \infty$ entonces $\textcolor{blue}{\forall K \in \mathbb{R}} \quad \exists n_0\in \mathbb{N}$ tal que $\forall k \geq  n_0$ se tiene:
 $$
 \begin{align*}
 \displaystyle \sum_{n = 1}^{k} a_{g(n)} \textcolor{blue}{\, > K}
@@ -1108,7 +1113,7 @@ $$
 Así, $\forall n,m \geq m_0$ tenemos:
 $$
 \begin{align*}
-\displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} \geq \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} \textcolor{blue}{\, > K}
+\displaystyle \sum_{1 \leq i \leq n, 1 \leq j \leq m} a_{i,j} \geq \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} \textcolor{blue}{\, > K}
 \end{align*}
 $$
 Y por tanto, como $K$ era arbitrario, tenemos que:
@@ -1136,22 +1141,22 @@ Diferenciaremos dos casos:
 
 - Si $\displaystyle \sum_{n, m} a_{n,m} = s \in [0, \infty)$, es decir, si es convergente.
 
-\hyperref[def:serie_doble_convergente]{Por definición} $\forall \varepsilon > 0, \quad \exists n_0 \in \mathbb{N}$ tal que $\forall n,m \geq n_0$ se cumple que:
+Por definición $\forall \varepsilon > 0, \quad \exists n_0 \in \mathbb{N}$ tal que $\forall n,m \geq n_0$ se cumple que:
 $$
 \begin{align*}
-\left|s - \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j}\right| < \varepsilon
+\left|s - \displaystyle \sum_{1 \leq i \leq n, 1 \leq j \leq m} a_{i,j}\right| < \varepsilon
 \end{align*}
 $$
 donde tenemos que:
 $$
 \begin{align*}
-\displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} = \displaystyle \sum_{j = 1}^{m} \displaystyle \sum_{i = 1}^{n} a_{i,j} = \displaystyle \sum_{i = 1}^{n} \displaystyle \sum_{j = 1}^{m} a_{i,j}
+\displaystyle \sum_{1 \leq i \leq n, 1 \leq j \leq m} a_{i,j} = \displaystyle \sum_{j = 1}^{m} \displaystyle \sum_{i = 1}^{n} a_{i,j} = \displaystyle \sum_{i = 1}^{n} \displaystyle \sum_{j = 1}^{m} a_{i,j}
 \end{align*}
 $$
 Así, si desarrollamos la desigualdad anterior, tenemos:
 $$
 \begin{align*}
-\left|s - \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j}\right| & = \left|s - \displaystyle \sum_{j = 1}^{m} \displaystyle \sum_{i = 1}^{n} a_{i,j}\right| = \left|s - \displaystyle \sum_{i = 1}^{n} \displaystyle \sum_{j = 1}^{m} a_{i,j}\right|
+\left|s - \displaystyle \sum_{1 \leq i \leq n, 1 \leq j \leq m} a_{i,j}\right| & = \left|s - \displaystyle \sum_{j = 1}^{m} \displaystyle \sum_{i = 1}^{n} a_{i,j}\right| = \left|s - \displaystyle \sum_{i = 1}^{n} \displaystyle \sum_{j = 1}^{m} a_{i,j}\right|
 \end{align*}
 $$
 Veamos que ocurre con cada una de las expresiones, empezando por:
@@ -1163,9 +1168,9 @@ $$
 $$
 \begin{align*}
 \implies & \varepsilon \geq \lim_n \left|s - \displaystyle \sum_{j = 1}^{m} \displaystyle \sum_{i = 1}^{n} a_{i,j}\right| = \left|s - \lim_n \displaystyle \sum_{j = 1}^{m} \displaystyle \sum_{i = 1}^{n} a_{ij}\right| = \\[1ex] 
-& \hspace{10ex} = \left|s - \displaystyle \sum_{j = 1}^{m}\left(\lim_n \displaystyle \sum_{i = 1}^{n} a_{ij}\right)\right| = \left|s - \displaystyle \sum_{j = 1}^{m} \left(\displaystyle \sum_{i = 1}^{\infty} a_{ij}\right)\right| \xRightarrow[\forall m \geq n_0]{\text{Válido}} \\[4ex]
-\implies & \varepsilon \geq \lim_{m} \left|s - \displaystyle \sum_{j = 1}^{m}\left(\displaystyle \sum_{i = 1}^{\infty} a_{i,j}\right)\right| = \left|s - \lim_m \displaystyle \sum_{j = 1}^{m}\underbracket{\left(\displaystyle \sum_{i = 1}^{\infty}a_{ij}\right)}_{ \geq  0}\right| =\\[1ex]
-& \hspace{10.5ex} = \left|s - \displaystyle \sum_{j = 1}^{\infty} \left(\displaystyle \sum_{i = 1}^{\infty} a_{i,j}\right)\right| \geq 0 \xRightarrow[\forall \varepsilon > 0]{\text{Válido}} s - \displaystyle \sum_{j = 1}^{\infty} \left(\displaystyle \sum_{i = 1}^{\infty} a_{i,j}\right) = 0
+&  = \left|s - \displaystyle \sum_{j = 1}^{m}\left(\lim_n \displaystyle \sum_{i = 1}^{n} a_{ij}\right)\right| = \left|s - \displaystyle \sum_{j = 1}^{m} \left(\displaystyle \sum_{i = 1}^{\infty} a_{ij}\right)\right| \xRightarrow[\forall m \geq n_0]{\text{Válido}} \\[4ex]
+\implies & \varepsilon \geq \lim_{m} \left|s - \displaystyle \sum_{j = 1}^{m}\left(\displaystyle \sum_{i = 1}^{\infty} a_{i,j}\right)\right| = \left|s - \lim_m \displaystyle \sum_{j = 1}^{m}\underbrace{\left(\displaystyle \sum_{i = 1}^{\infty}a_{ij}\right)}_{ \geq  0}\right| =\\[1ex]
+&  = \left|s - \displaystyle \sum_{j = 1}^{\infty} \left(\displaystyle \sum_{i = 1}^{\infty} a_{i,j}\right)\right| \geq 0 \xRightarrow[\forall \varepsilon > 0]{\text{Válido}} s - \displaystyle \sum_{j = 1}^{\infty} \left(\displaystyle \sum_{i = 1}^{\infty} a_{i,j}\right) = 0
 \end{align*}
 $$
 Y ahora de forma análoga, veamos qué ocurre con:
@@ -1187,7 +1192,8 @@ $$
 \displaystyle \sum_{n,m} a_{n,m} = \displaystyle \sum_{m = 1}^{\infty} \left(\displaystyle \sum_{n = 1}^{\infty} a_{n,m}\right) = \displaystyle \sum_{n = 1}^{\infty} \left(\displaystyle \sum_{m = 1}^{\infty} a_{n,m}\right) = s\\
 \end{align*}
 $$
-- Si $\displaystyle \sum_{n, m} a_{n,m} = \infty$, es decir, si es divergente a $+\infty$.
+
+Si $\displaystyle \sum_{n, m} a_{n,m} = \infty$, es decir, si es divergente a $+\infty$.
 
 Si para algún $\left\{
 \begin{array}{ll}
@@ -1207,10 +1213,10 @@ Supongamos que $\left\{
 \end{array}
 \right.$ 
 
-\hyperref[def:serie_doble_divergente]{Por divergencia} $\forall K \in \mathbb{R}, \quad \exists n_0 \in \mathbb{N}$ tal que $\forall n,m \geq n_0$ se cumple que:
+Por divergencia $\forall K \in \mathbb{R}, \quad \exists n_0 \in \mathbb{N}$ tal que $\forall n,m \geq n_0$ se cumple que:
 $$
 \begin{align*}
-\displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} > K
+\displaystyle \sum_{1 \leq i \leq n, 1 \leq j \leq m} a_{i,j} > K
 \end{align*}
 $$
 Y aplicando pasos similares al caso de la convergencia, tenemos:

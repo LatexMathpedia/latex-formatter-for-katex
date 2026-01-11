@@ -45,7 +45,30 @@ class StructureConverter:
         self.href_pattern = re.compile(r'\\href\{([^}]+)\}\{([^}]+)\}')
         
         self.math_converter = MathConverter()
+    
+    def process_texorpdfstring(self, content: str) -> str:
+        """Process \\texorpdfstring commands extracting the first argument.
         
+        \\texorpdfstring{LaTeX version}{Plain text version}
+        We keep the LaTeX version (first argument) and discard the plain text.
+        
+        Args:
+            content (str): Content with potential \\texorpdfstring commands.
+        
+        Returns:
+            str: Content with \\texorpdfstring resolved to first argument.
+        """
+        # Pattern to match \texorpdfstring{arg1}{arg2}
+        # We need to handle nested braces in arg1
+        def replace_texorpdfstring(match):
+            # Extract the first argument (with LaTeX formatting)
+            return match.group(1)
+        
+        # Match \texorpdfstring{...}{...} handling nested braces
+        pattern = r'\\texorpdfstring\{((?:[^{}]|\{[^}]*\})*)\}\{(?:[^{}]|\{[^}]*\})*\}'
+        content = re.sub(pattern, replace_texorpdfstring, content)
+        
+        return content
     
     def convert_sections(self, content: str) -> str:
         """Convert LaTeX sectioning commands to MDX/KaTeX format.
@@ -225,6 +248,9 @@ class StructureConverter:
             str: Content with all structures converted.
         """
         protected_content, protected_blocks = self.math_converter.protect_existing_math(content)
+        
+        # Procesar \texorpdfstring antes de convertir secciones
+        protected_content = self.process_texorpdfstring(protected_content)
         
         # Convertir entornos LaTeX primero (antes de procesar listas para evitar conflictos)
         protected_content = self.convert_environments(protected_content)
