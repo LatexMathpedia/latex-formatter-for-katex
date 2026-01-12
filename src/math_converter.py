@@ -15,8 +15,9 @@ class MathConverter:
     
     def __init__(self):
         """Initialize the MathConverter with regex patterns for delimiters."""
-        self.inline_paren_pattern = re.compile(r'\\[(](.*?)\\[)]', re.DOTALL)
-        self.display_bracket_pattern = re.compile(r'\\\[(.*?)\\\]', re.DOTALL)
+        # Negative lookbehind (?<!\\) ensures \( is not preceded by another backslash (avoiding \\()
+        self.inline_paren_pattern = re.compile(r'(?<!\\)\\[(](.*?)(?<!\\)\\[)]', re.DOTALL)
+        self.display_bracket_pattern = re.compile(r'(?<!\\)\\\[(.*?)(?<!\\)\\\]', re.DOTALL)
         
         # Patterns for various LaTeX math environments
         self.align_pattern = re.compile(

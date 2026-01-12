@@ -24,6 +24,7 @@ class StructureConverter:
         self.textit_pattern = re.compile(r'\\textit\{([^}]+)\}')
         self.emph_pattern = re.compile(r'\\emph\{([^}]+)\}')
         self.underline_pattern = re.compile(r'\\underline\{([^}]+)\}')
+        self.texttt_pattern = re.compile(r'\\texttt\{([^}]+)\}')
         
         self.itemize_pattern = re.compile(r'\\begin\{itemize\}(.*?)\\end\{itemize\}', re.DOTALL)
         self.enumerate_pattern = re.compile(r'\\begin\{enumerate\}(.*?)\\end\{enumerate\}', re.DOTALL)
@@ -72,6 +73,7 @@ class StructureConverter:
     
     def convert_sections(self, content: str) -> str:
         """Convert LaTeX sectioning commands to MDX/KaTeX format.
+        Handles nested braces correctly.
 
         Args:
             content (str): Content to be processed.
@@ -79,13 +81,79 @@ class StructureConverter:
         Returns:
             str: Content with converted sections.
         """
-        content = self.section_pattern.sub(r'## \1', content)
-        content = self.subsection_pattern.sub(r'### \1', content)
-        content = self.subsubsection_pattern.sub(r'#### \1', content)
+        content = self._convert_section_with_braces(content, 'section', '##')
+        content = self._convert_section_with_braces(content, 'subsection', '###')
+        content = self._convert_section_with_braces(content, 'subsubsection', '####')
         return content
+    
+    def _convert_section_with_braces(self, content: str, command: str, markdown_prefix: str) -> str:
+        """Convert a section command handling nested braces correctly.
+        
+        Args:
+            content (str): Content to process.
+            command (str): Section command name (section, subsection, subsubsection).
+            markdown_prefix (str): Markdown heading prefix (##, ###, ####).
+            
+        Returns:
+            str: Content with converted sections.
+        """
+        pattern = f'\\{command}'
+        result = []
+        pos = 0
+        
+        while True:
+            # Find next occurrence of the command
+            idx = content.find(pattern, pos)
+            if idx == -1:
+                result.append(content[pos:])
+                break
+            
+            # Check if it has optional *
+            has_star = False
+            search_pos = idx + len(pattern)
+            if search_pos < len(content) and content[search_pos] == '*':
+                has_star = True
+                search_pos += 1
+            
+            # Check for opening brace
+            if search_pos >= len(content) or content[search_pos] != '{':
+                result.append(content[pos:search_pos])
+                pos = search_pos
+                continue
+            
+            # Add content before this command
+            result.append(content[pos:idx])
+            
+            # Find the matching closing brace
+            brace_start = search_pos
+            depth = 1
+            i = brace_start + 1
+            
+            while i < len(content) and depth > 0:
+                if content[i] == '\\':
+                    i += 2  # Skip escaped character
+                    continue
+                elif content[i] == '{':
+                    depth += 1
+                elif content[i] == '}':
+                    depth -= 1
+                i += 1
+            
+            if depth == 0:
+                # Extract title and convert
+                title = content[brace_start + 1:i - 1]
+                result.append(f'{markdown_prefix} {title}')
+                pos = i
+            else:
+                # No matching brace found, keep original
+                result.append(content[idx:search_pos])
+                pos = search_pos
+        
+        return ''.join(result)
     
     def convert_text_formatting(self, content: str) -> str:
         """Convert LaTeX text formatting commands to MDX/KaTeX format.
+        Handles nested braces correctly.
 
         Args:
             content (str): Content to be processed.
@@ -93,11 +161,65 @@ class StructureConverter:
         Returns:
             str: Content with converted text formatting.
         """
-        content = self.textbf_pattern.sub(r'**\1**', content)
-        content = self.textit_pattern.sub(r'*\1*', content)
-        content = self.emph_pattern.sub(r'*\1*', content)
-        content = self.underline_pattern.sub(r'<u>\1</u>', content)
+        # Process each formatting command with proper brace handling
+        content = self._convert_command_with_braces(content, 'textbf', lambda x: f'**{x}**')
+        content = self._convert_command_with_braces(content, 'textit', lambda x: f'*{x}*')
+        content = self._convert_command_with_braces(content, 'emph', lambda x: f'*{x}*')
+        content = self._convert_command_with_braces(content, 'underline', lambda x: f'<u>{x}</u>')
+        content = self._convert_command_with_braces(content, 'texttt', lambda x: f'`{x}`')
         return content
+    
+    def _convert_command_with_braces(self, content: str, command: str, formatter) -> str:
+        """Convert a LaTeX command handling nested braces correctly.
+        
+        Args:
+            content (str): Content to process.
+            command (str): LaTeX command name (without backslash).
+            formatter: Function to format the extracted content.
+            
+        Returns:
+            str: Content with converted commands.
+        """
+        pattern = f'\\{command}{{'
+        result = []
+        pos = 0
+        
+        while True:
+            # Find next occurrence of the command
+            idx = content.find(pattern, pos)
+            if idx == -1:
+                result.append(content[pos:])
+                break
+            
+            # Add content before this command
+            result.append(content[pos:idx])
+            
+            # Find the matching closing brace
+            brace_start = idx + len(pattern) - 1  # Position of opening {
+            depth = 1
+            i = brace_start + 1
+            
+            while i < len(content) and depth > 0:
+                if content[i] == '\\':
+                    i += 2  # Skip escaped character
+                    continue
+                elif content[i] == '{':
+                    depth += 1
+                elif content[i] == '}':
+                    depth -= 1
+                i += 1
+            
+            if depth == 0:
+                # Extract content and apply formatter
+                inner_content = content[brace_start + 1:i - 1]
+                result.append(formatter(inner_content))
+                pos = i
+            else:
+                # No matching brace found, keep original
+                result.append(pattern)
+                pos = idx + len(pattern)
+        
+        return ''.join(result)
     
     def convert_lists(self, content: str) -> str:
         """Convert LaTeX lists to MDX/KaTeX format.
@@ -277,7 +399,6 @@ class StructureConverter:
     
     def convert(self, content: str) -> str:
         """Convert all LaTeX structures to MDX/KaTeX format.
-        It protects math expressions during the conversion.
 
         Args:
             content (str): Content to be processed.
@@ -285,23 +406,19 @@ class StructureConverter:
         Returns:
             str: Content with all structures converted.
         """
-        protected_content, protected_blocks = self.math_converter.protect_existing_math(content)
-        
         # Procesar \texorpdfstring antes de convertir secciones
-        protected_content = self.process_texorpdfstring(protected_content)
+        content = self.process_texorpdfstring(content)
         
         # Convertir entornos LaTeX primero (antes de procesar listas para evitar conflictos)
-        protected_content = self.convert_environments(protected_content)
+        content = self.convert_environments(content)
         
-        protected_content = self.convert_sections(protected_content)
-        protected_content = self.convert_text_formatting(protected_content)
-        protected_content = self.convert_lists(protected_content)
-        protected_content = self.convert_images_and_urls(protected_content)
+        content = self.convert_sections(content)
+        content = self.convert_text_formatting(content)
+        content = self.convert_lists(content)
+        content = self.convert_images_and_urls(content)
         
         # Eliminar comandos LaTeX sobrantes al final
-        protected_content = self.remove_latex_commands(protected_content)
+        content = self.remove_latex_commands(content)
         
-        converted_content = self.math_converter.restore_protected_math(protected_content, protected_blocks)
-        
-        return converted_content
+        return content
            

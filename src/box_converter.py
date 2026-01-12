@@ -71,12 +71,14 @@ class BoxConverter:
         
         return f"<{mdx_box_type} title=\"{title_escaped}\">\n\n{content}\n\n</{mdx_box_type}>"
     
-    def convert(self, content: str, max_depth: int = 10) -> str:
+    def convert(self, content: str, max_depth: int = 10, content_processor=None) -> str:
         """Convert all tcolorbox environments in the content, including nested boxes.
 
         Args:
             content (str): Content to be processed.
             max_depth (int): Maximum recursion depth to prevent infinite loops.
+            content_processor (callable, optional): Function to process box content before wrapping.
+                Should accept a string and return a processed string.
 
         Returns:
             str: Content with converted tcolorbox environments.
@@ -105,9 +107,35 @@ class BoxConverter:
             # Extract title with nested braces
             title, title_end = self.extract_title_with_nested_braces(content, title_start)
             
-            # Find the end of the box
+            # Find the matching end of the box (handling nested boxes of same type)
             end_pattern = f'\\end{{{box_type}}}'
-            end_pos = content.find(end_pattern, title_end)
+            begin_pattern = f'\\begin{{{box_type}}}'
+            
+            # Count depth to find matching end
+            depth = 1
+            search_pos = title_end
+            end_pos = -1
+            
+            while search_pos < len(content) and depth > 0:
+                # Find next begin or end
+                next_begin = content.find(begin_pattern, search_pos)
+                next_end = content.find(end_pattern, search_pos)
+                
+                if next_end == -1:
+                    # No more ends found
+                    break
+                
+                if next_begin != -1 and next_begin < next_end:
+                    # Found a nested begin before the next end
+                    depth += 1
+                    search_pos = next_begin + len(begin_pattern)
+                else:
+                    # Found an end
+                    depth -= 1
+                    if depth == 0:
+                        end_pos = next_end
+                        break
+                    search_pos = next_end + len(end_pattern)
             
             if end_pos == -1:
                 # No matching end found, just continue
@@ -118,8 +146,12 @@ class BoxConverter:
             # Extract box content
             box_content = content[title_end:end_pos].strip()
             
+            # Process content with provided processor (if any) before recursive box conversion
+            if content_processor:
+                box_content = content_processor(box_content)
+            
             # Recursively convert nested boxes in the content
-            box_content_converted = self.convert(box_content, max_depth - 1)
+            box_content_converted = self.convert(box_content, max_depth - 1, content_processor)
             
             # Get MDX box type
             mdx_box_type = self.box_types.get(box_type, 'Box')
@@ -142,6 +174,6 @@ class BoxConverter:
         if has_changes and max_depth > 0:
             # Check if there are still unconverted boxes
             if self.box_start_pattern.search(final_result):
-                return self.convert(final_result, max_depth - 1)
+                return self.convert(final_result, max_depth - 1, content_processor)
         
         return final_result
