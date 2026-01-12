@@ -16,6 +16,8 @@
 \usepackage{background}
 \usetikzlibrary{arrows.meta}
 \usepackage[bottom]{footmisc}
+\usepackage{extarrows}
+\allowdisplaybreaks
 
 % Definir la marca de agua
 \backgroundsetup{
@@ -81,7 +83,7 @@ breakable = true
 \setstretch{1.2}
 \decimalpoint
 
-\title{\textbf{TEMA 1}: Preliminares}
+\title{\textbf{TEMA 3}: Espacio de Medida de Lebesgue \((\mathbb{R}^N, \mathcal{M}_N, \mu_N)\)}
 \author{Diego Díaz Mendaña}
 %\date{Fecha}
 
@@ -90,12 +92,12 @@ breakable = true
 \maketitle
 \vspace{20ex}
 \section*{Disclaimer}
-Estos apuntes son un resumen basado en el material proporcionado en la asignatura de ``Análisis III''\footnote{Posiblemente la única asignatura de análisis que tenga bien puesto el nombre} de la Universidad de Oviedo. Han sido escritos mediante las definiciones y demostraciones explicadas en clase\footnote{Obviamente, no en las TGs ya que no hay porque ``nos fastidian la digestión''}. Todo el contenido ha sido organizado y formulado con fines educativos y no comerciales.\footnote{Recomendamos seguir estos apuntes ya que, según palabras textuales: ``Los del año pasado son malísimos, es más, no había errores sino horrores.''}\vspace{2ex}
+Estos apuntes son un resumen basado en el material proporcionado en la asignatura de ``Análisis III'' de la Universidad de Oviedo. Han sido escritos mediante las definiciones y demostraciones explicadas en clase. Todo el contenido ha sido organizado y formulado con fines educativos y no comerciales.\vspace{2ex}
 
 
 \vspace{12ex}
 \section*{Licencia de uso}
-Apuntes Análisis III - Tema 1 © 2025 by Diego Díaz Mendaña is licensed under CC BY-NC-SA 4.0. To view a copy of this license, visit \href{https://creativecommons.org/licenses/by-nc-sa/4.0/}{https://creativecommons.org/licenses/by-nc-sa/4.0/}
+Apuntes Análisis III - Tema 3 © 2025 by Diego Díaz Mendaña is licensed under CC BY-NC-SA 4.0. To view a copy of this license, visit \href{https://creativecommons.org/licenses/by-nc-sa/4.0/}{https://creativecommons.org/licenses/by-nc-sa/4.0/}
 
 \newpage
 
@@ -104,1015 +106,885 @@ Apuntes Análisis III - Tema 1 © 2025 by Diego Díaz Mendaña is licensed under
 \hypersetup{linkcolor=blue}
 \newpage
 
-\section*{Notación y Preliminares}
-\addcontentsline{toc}{section}{Notación y Preliminares}
-Durante el curso, se usarán preferiblemente las siguientes notaciones durante las demostraciones y ejercicios\footnote{Porque aquí la mayoría no seréis Einstein sino obreros de las matemáticas. Que aquí no es como con la princesa, que llega allí y la suben en el avión directamente. Vosotros primero tenéis que limpiar el avión y apretar tornillos.}:
-\begin{itemize}
-  \item En clase se empleará la abreviatura \textit{c.} para referirse a \textit{conjuntos}.
-  \item Se empleará preferiblemente la \(N\) para referirse al natural en \(R^N\)
-  \item En análisis en general consideraremos que los naturales empiezan en \(1\), aunque en álgebra se consideren desde \(0\).\footnote{Aunque discutir esto es ``bizantino''} Por lo tanto, emplearemos la notación \(N \cup \{0\}\) cuando queramos incluir el \(0\) en los naturales.
-\end{itemize}
+\section{\texorpdfstring{Cubos y volúmenes en \(\mathbb{R}^N\)}{Cubos y volúmenes en R^N}}
+\subsection{Intervalo degenerado. Definición}
+\noindent Llamamos \textbf{intervalo degenerado} a cualquier intervalo vacío o unitario.\vspace{2ex}
 
-\newpage
-\section{Cardinalidad de un conjunto}
-\subsection{Cardinalidad. Idea intuitiva}
-Podemos entender la \textbf{cardinalidad} de un conjunto \(A\) como la cantidad de elementos de \(A\). Además, dentro de los conjuntos, podemos distinguir entre dos tipos:
-\begin{itemize}
-  \item \textbf{Conjuntos finitos:} Aquellos conjuntos que tienen un número finito de elementos, es decir, \(\exists n \in\mathbb{N} \cup \{0\}\) tal que \(\exists \) biyección entre \(A\) y \(\{1, 2, \dots, n\} \), esto es:
-  \begin{center}
-    \begin{tabular}{rcl}
-    \(\exists \varphi : \{1, 2, \dots, n\} \) & \( \longrightarrow\) & \(A \neq \emptyset \) \\
-    \(i\) & \(\longmapsto\) & \(\varphi(i)\)
-  \end{tabular}
-  \end{center}
-
-  \item \textbf{Conjuntos infinitos:} Aquellos conjuntos para los cuales existe una aplicación inyectiva \(\varphi : \mathbb{N} \longrightarrow A\). De esta forma, podemos distinguir entre:
-  \begin{itemize}
-    \item \textbf{Conjuntos infinitos numerables:} Aquellos conjuntos \(A\) para los cuales existe una biyección \(\varphi : \mathbb{N} \longrightarrow A\).
-    \item \textbf{Conjuntos infinitos no numerables:} Aquellos conjuntos \(A\) para los cuales existe una aplicación inyectiva \(\varphi : \mathbb{N} \longrightarrow A\) pero no existe ninguna biyección entre ambos conjuntos.
-  \end{itemize}
-\end{itemize}
+\begin{ejem_box}{Ejemplo}
+  Algunos intervalos degenerados son:
+  \begin{align*}
+    \{a\} = [a, a] \quad \mbox{ o } \quad \emptyset = (2, 1)
+  \end{align*}
+\end{ejem_box}
 \vspace{3ex}
 
-\subsection{Conjuntos numerables y no numerables. Ejemplos}
-\noindent Podemos plantear algunos ejemplos de conjuntos numerables y no numerables comunes:
+\subsection{\texorpdfstring{Cubo degenerado de \(\mathbb{R}^N\). Definición}{Cubo degenerado de R^N. Definición}}
+\noindent Sea \(N \in \mathbb{N}\), llamamos \textbf{cubo degenerado de \(\mathbb{R}^N\)} a cualquier cubo:
+\begin{align*}
+  C = I_1 \times I_2 \times \dots \times I_N
+\end{align*}
+donde cada \(I_i\) es un intervalo abierto de \(\mathbb{R}\) y alguno de sus intervalos es degenerado. En general, llamamos \textbf{cubo de \(\mathbb{R}^N\)} a cualquier producto cartesiano:
+\begin{align*}
+  I_1 \times \dots \times I_N
+\end{align*}
+donde cada \(I_i\) es un intervalo.\vspace{3ex}
 
-\subsubsection*{Conjuntos numerables}
-\noindent Los siguientes conjuntos son numerables:
-\begin{enumerate}
-  \item El conjunto de los naturales \(\mathbb{N}\).
-  \begin{dem_box}{Demostración}
-    Trivial, basta considerar la aplicación identidad:
-    \begin{align*}
-      \varphi : \mathbb{N} & \longrightarrow \mathbb{N} \\
-      n & \longmapsto \varphi(n) = n
-    \end{align*}
-  \end{dem_box}
-  \vspace{2ex}
+\subsection{Volumen de un cubo. Definición}\label{def:vol_cubo}
+\noindent Dado un cubo \(C\) de \(\mathbb{R}^N\) con \(N \in \mathbb{N}\), llamamos \textbf{volumen de \(C\)} al número:\footnote{Y hasta aquí llego Riemann. Todo parecía muy bonito, era como que había elecciones en las matemáticas. Luego vino el periodo post-electoral y ya bueno...}
+\begin{align*}
+  v_N(C) \coloneq \left\{
+    \begin{array}{ll}
+      0 & \mbox{ si } C \mbox{ es degenerado} \\[2ex]
+      \displaystyle \prod_{i = 1}^N |b_i - a_i| & \begin{array}{l}
+        \mbox{si } C \mbox{ no es degenerado, } C = I_1 \times \dots \times I_N
+        \mbox{ con } I_j \mbox{ invervalo de} \\
+        \mbox{extr. izq. } a_j \mbox{ y drch. } b_j 
+        \mbox{ tq } - \infty \leq a_j < b_j \leq \infty
+      \end{array}
+    \end{array}
+  \right.\\
+\end{align*}
+\begin{ej_box}{Nota}
+  Al final, tenemos que si algún intervalo es degenerado, el ``espesor'' del cubo en alguna dimensión será 0, por lo que su volumen \(n\)-dimensional sería también cero.\vspace{2ex}
 
-  \item El grupo de los enteros \(\mathbb{Z} = \left\{ - \infty, \dots, - 2, - 1, 0, 1, 2, \dots , \infty\right\}\).
-  \begin{dem_box}{Demostración}
-    Podemos emplear la siguiente idea para definir una biyección entre \(\mathbb{N}\) y \(\mathbb{Z}\):
-    \begin{center}
-      \begin{tabular}{c|cccccccc}
-        \(\mathbb{N}\) & 1 & 2 & 3 & 4 & 5 & 6 & 7 & \(\dots\) \\
-        & \(\downarrow\) & \(\downarrow\) & \(\downarrow\) & \(\downarrow\) & \(\downarrow\) & \(\downarrow\) & \(\downarrow\) & \\
-        \(\mathbb{Z}\) & 0 & 1 & -1 & 2 & -2 & 3 & -3 & \(\dots\)
-      \end{tabular}\vspace{2ex}
-    \end{center}
-    De esta forma, podemos definir la aplicación:
-    \begin{align*}
-      \varphi : \mathbb{N} & \longrightarrow \mathbb{Z} \\
-      n & \longmapsto \varphi(n) = \begin{cases}
-        \frac{n}{2}, & n \mbox{ par} \\[1ex]
-        -\frac{n-1}{2}, & n \mbox{ impar}
-      \end{cases}
-    \end{align*}
-    Y así, tenemos una biyección entre ambos conjuntos.
-  \end{dem_box}
-  \vspace{2ex}
-  
-  \item El conjunto \(\mathbb{Q} \coloneq \left\{\dfrac{z}{n} : z \in \mathbb{Z}, n \in \mathbb{N}\right\}\) \vspace{1ex}
-  \begin{dem_box}{Demostración}
-    Como tenemos que:
-    \begin{align}\label{eq:cardinalidadQ}
-      \mbox{Card } \mathbb{Z} = \mbox{Card } \mathbb{N} \implies  \mbox{Card } \mathbb{Q} = \mbox{Card } \left\{\frac{z}{n} : z \in \mathbb{N}, n \in \mathbb{N}\right\}
-      \tag{I}
-    \end{align}
-    Para construir una biyección entre \(\mathbb{N}\) y \(\left\{\frac{z}{n} : z, n \in \mathbb{N}\right\}\) podemos ver que si disponemos los naturales en filas y columnas, obtenemos la siguiente tabla expresando los cocientes:
-    \begin{center}
-        \begin{tabular}{c|ccccccc}
-          & 1 & 2 & 3 & 4 & 5 & 6 & \(\dots\) \\
-          \hline
-          1 & \(\frac{1}{1}\) & \(\frac{1}{2}\) & \(\frac{1}{3}\) & \(\frac{1}{4}\) & \(\frac{1}{5}\) & \(\frac{1}{6}\) & \(\dots\) \\[1ex]
-          2 & \(\frac{2}{1}\) & \(\frac{2}{2}\) & \(\frac{2}{3}\) & \(\frac{2}{4}\) & \(\frac{2}{5}\) & \(\frac{2}{6}\) & \(\dots\) \\[1ex]
-          3 & \(\frac{3}{1}\) & \(\frac{3}{2}\) & \(\frac{3}{3}\) & \(\frac{3}{4}\) & \(\frac{3}{5}\) & \(\frac{3}{6}\) & \(\dots\) \\[1ex]
-          4 & \(\frac{4}{1}\) & \(\frac{4}{2}\) & \(\frac{4}{3}\) & \(\frac{4}{4}\) & \(\frac{4}{5}\) & \(\frac{4}{6}\) & \(\dots\) \\[1ex]
-          5 & \(\frac{5}{1}\) & \(\frac{5}{2}\) & \(\frac{5}{3}\) & \(\frac{5}{4}\) & \(\frac{5}{5}\) & \(\frac{5}{6}\) & \(\dots\) \\[1ex]
-          6 & \(\frac{6}{1}\) & \(\frac{6}{2}\) & \(\frac{6}{3}\) & \(\frac{6}{4}\) & \(\frac{6}{5}\) & \(\frac{6}{6}\) & \(\dots\) \\[1ex]
-          \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\ddots\)
-        \end{tabular}
-      \end{center}
-      Y recorriendo la tabla en diagonal tenemos la siguiente sucesión:
-      \begin{align*}
-        \frac{1}{1}, \, \frac{2}{1}, \, \frac{1}{2}, \, \frac{3}{1}, \, \frac{2}{2}, \, \frac{1}{3}, \, \frac{4}{1}, \, \frac{3}{2}, \, \frac{2}{3}, \, \frac{1}{4}, \, \frac{5}{1}, \, \frac{4}{2}, \, \frac{3}{3}, \, \frac{2}{4}, \, \frac{1}{5}, \, \frac{6}{1}, \, \dots
-      \end{align*}
-      Como podemos notar, en esta sucesión aparecen algunos números repetidos (por ejemplo, \(\frac{2}{2}\) y \(\frac{1}{1}\)). Pero podemos eliminar estos números de la sucesión sin que deje de ser numerable. Finalmente, a cada número de esta sucesión le asignamos un natural, es decir:
-      \begin{center}
-        \begin{tabular}{c|cccccccccc}
-          \(\mathbb{N}\) & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & \(\dots\) \\
-          & \(\downarrow\) & \(\downarrow\) & \(\downarrow\) & \(\downarrow\) & \(\downarrow\) & \(\downarrow\) & \(\downarrow\) & \(\downarrow\) & \(\downarrow\) & \\
-          \(\left\{\frac{z}{n} \colon z, n \in \mathbb{N}\right\}\) & \(\frac{1}{1}\) & \(\frac{2}{1}\) & \(\frac{1}{2}\) & \(\frac{3}{1}\) & \(\frac{1}{3}\) & \(\frac{4}{1}\) & \(\frac{3}{2}\) & \(\frac{2}{3}\) & \(\frac{1}{4}\) & \(\dots\)
-        \end{tabular}
-      \end{center}
-      \vspace{10ex}
-
-      Así, podemos definir una aplicación \(\varphi : \mathbb{N} \longrightarrow \left\{\frac{z}{n} : z, n \in \mathbb{N}\right\}\) suprayectiva y, como sabemos que:
-      \begin{align*}
-        \mbox{Card } \left\{\frac{z}{n} : z, n \in \mathbb{N}\right\} \leq \mbox{Card } \mathbb{N} \quad \mbox{y} \quad \mathbb{N} \subseteq \left\{\frac{z}{n} : z, n \in \mathbb{N}\right\}
-      \end{align*}
-      Tenemos que:
-      \begin{align*}
-        \mbox{Card } \mathbb{N} \leq \mbox{Card } \left\{\frac{z}{n} : z, n \in \mathbb{N}\right\} \leq \mbox{Card } \mathbb{N}
-      \end{align*}
-      Por lo tanto, por \eqref{eq:cardinalidadQ} concluimos que:
-      \begin{align*}
-        \mbox{Card } \left\{\frac{z}{n} : z, n \in \mathbb{N}\right\} = \mbox{Card } \mathbb{N} = \mbox{Card } \mathbb{Q}
-      \end{align*}
-  \end{dem_box}
-\end{enumerate}
-
-\subsubsection*{Conjuntos no numerables}
-\noindent Los siguientes conjuntos no son numerables:
-\begin{enumerate}
-  \item El conjunto \((0, 1)\)
-  \begin{dem_box}{Demostración}
-    Procederemos por reducción al absurdo. Supongamos que \((0, 1)\) sí es numerable y, por tanto, existe una biyección \(\varphi \colon \mathbb{N} \longrightarrow(0, 1)\). De esta manera, podríamos hacer una lista infinita que contendría todos los elementos de \((0, 1)\), es decir, \(\varphi(\mathbb{N}) = (0, 1)\).\vspace{2ex}
-
-    Ahora, podríamos escribir todos los números del intervalo \((0, 1)\) como \(\varphi(n)\) con \(n \in \mathbb{N}\) de la siguiente forma:
-    \begin{align*}
-      \varphi(1) & = 0.\textbf{7}00681003\dots \\
-      \varphi(2) & = 0.4\textbf{0}0100200\dots \\
-      \varphi(3) & = 0.90\textbf{0}100300\dots \\
-      \varphi(4) & = 0.100\textbf{1}00400\dots \\
-      \vdots \quad & \hspace{10ex} \vdots
-    \end{align*}
-    Ahora queremos construir un nuevo número \(b \in (0, 1)\). Para ello, nos fijamos en los decimales remarcados de la lista anterior y hacemos lo siguiente:
-    \begin{align*}
-      b_n = \left(n\text{-ésimo decimal de } \varphi(n) + 1\right) \mod 10
-    \end{align*}
-    De esta forma en nuestra sucesión \(b\) tenemos:
-    \begin{align*}
-      b & = 0.b_1 b_2 b_3 b_4 \dots = 0.8112\dots
-    \end{align*}
-    Y por construcción, \(b \in (0, 1)\) y \(b \neq \varphi(n) \; \forall n \in \mathbb{N}\) ya que difiere en al menos un decimal de cada uno de ellos. Por lo tanto, hemos llegado a una contradicción y concluimos que \((0, 1)\) no es numerable.
-  \end{dem_box}
-  \vspace{2ex}
-
-  \item El conjunto de los reales \(\mathbb{R}\)
-  \begin{dem_box}{Demostración}
-    Para esta demostración emplearemos el Teorema de los intervalos encajados de Cantor, que dice que si tenemos una sucesión infinitas de intervalos cerrados y acotados \([a_n, b_n]\) tal que \(a_n < b_n\) donde cada intervalo está contenido en el anterior, es decir:
-    \begin{align*}
-      [a_1, b_1] \supseteq [a_2, b_2] \supseteq [a_3, b_3] \supseteq \dots \implies \bigcap_{n \in \mathbb{N}} [a_n, b_n] \neq \emptyset
-    \end{align*}
-    Entonces, procederemos por reducción al absurdo. Supongamos que \(\mathbb{R}\) es numerable y, por tanto, existe una biyección \(\varphi \colon \mathbb{N} \longrightarrow \mathbb{R}\). \vspace{2ex}
-
-    Queremos una sucesión de intervalos encajados que excluyan sistemáticamente a cada número de nuestra lista \(\varphi(\mathbb{N}) = \mathbb{R}\):
-    \begin{enumerate}
-      \item[1)] Como \(\varphi(1)\) es un punto en la recta real, podemos tomar fácilmente un intervalo que no lo contenga, es decir, \([a_1, b_1]\) tal que:
-      \begin{align*}
-        \varphi(1) \not\in [a_1, b_1] \; \mbox{ con } a_1 < b_1
-      \end{align*}
-      \item[2)] Para excluir a \(\varphi(2)\) tomamos otro intervalo \([a_2, b_2]\) tal que:
-      \begin{align*}
-        \varphi(2) \not\in [a_2, b_2] \subseteq [a_1, b_1] \; \mbox{ con } a_2 < b_2
-      \end{align*}
-      que es posible ya que \([a_1, b_1]\) es un intervalo que podemos dividir en dos subintervalos y elegir aquel que no contenga a \(\varphi(2)\).
-      \item[3)] De forma análoga, para \(n > 2\) tomamos \([a_n, b_n]\) tal que:
-      \begin{align*}
-        \varphi(n) \not\in [a_n, b_n] \subseteq [a_{n-1}, b_{n-1}] \; \mbox{ con } a_n < b_n
-      \end{align*}
-    \end{enumerate}
-
-    Así, hemos construido una sucesión de intervalos encajados \([a_n, b_n]\) que además excluyen a cada número de la lista, es decir, \(\forall n \in \mathbb{N}\) tenemos \(\varphi(n) \not\in [a_n, b_n]\).\vspace{2ex}
-
-    Ahora, aplicando el Teorema de los intervalos encajados sabemos que existe al menos un número real \(x\) tal que:
-    \begin{align*}
-      x \in \bigcap_{n \in \mathbb{N}} [a_n, b_n]
-    \end{align*}
-    Pero entonces debería existir \(k \in \mathbb{N}\) tal que \(x = \varphi(k)\). Sin embargo, por construcción nos habíamos asegurado de que:
-    \begin{align*}
-      \varphi(k) \not\in [a_k, b_k] \implies x \not\in [a_k, b_k] \implies x \not\in \bigcap_{n \in \mathbb{N}} [a_n, b_n] \quad \#
-    \end{align*}
-  \end{dem_box}
-\end{enumerate}
-\vspace{3ex}
-
-\begin{ej_box}{Observación}
-  Podemos ver las siguientes igualdades:
+  Para cubos no degenerados, esta idea de volumen no deja de ser la generalización de lo que trabajamos en 3 dimensiones, por ejemplo, con un paralelepípedo:
   \begin{align*}
-    \mbox{Card } \mathbb{R} = \mbox{Card } \left( -\frac{\pi}{2} , \frac{\pi}{2} \right)
-  \end{align*}
-  ya que existe una biyección entre ambos conjuntos dada por la función arctan:
-  \begin{align*}
-    \arctan : \mathbb{R} \longrightarrow \left( - \frac{\pi}{2}, \frac{\pi}{2}   \right)
-  \end{align*}
-  Y también tenemos que:
-  \begin{align*}
-    \mbox{Card } \mathbb{C} = \mbox{Card } \mathbb{R}
+    C = [0, 1] \times [0, 2] \times [0, 3] \implies v_N(C) = |1 - 0| \cdot |2 - 0| \cdot |3 - 0| = 6
   \end{align*}
 \end{ej_box}
 \vspace{3ex}
 
-\subsection{Procesos que dan lugar a conjuntos numerables}
-\begin{enumerate}
-  \item Sea \(A\) finito y \(B\) infinito numerable tal que \(A \cap B = \emptyset \)\footnote{realmente esto no es necesario, simplemente ``facilita la vida''} entonces:
-  \begin{align*}
-    \left\{
-      \begin{array}{l}    
-        A \cup B \mbox{ es infinito numerable}\\
-        A \times B \mbox{ es infinito numerable o } \emptyset \mbox{ si } A = \emptyset 
-      \end{array}
-    \right.
-  \end{align*}
-  \begin{dem_box}{Demostración}
-    Se plantean dos casos:
-    \begin{enumerate}
-      \item Si \(A = \emptyset \) entonces:
-      \begin{align*}
-        \left\{
-          \begin{array}{l}
-            A \cup B = B \mbox{ es infinito numerable}\\
-            A \times B = \emptyset \times B = \emptyset
-          \end{array}
-        \right.
-      \end{align*}
-      \item Si \(A \neq \emptyset\) entonces:
-      \begin{align*}
-        \left\{
-          \begin{array}{l}
-            A = \{a_1, a_2, \dots, a_n\} \quad n \in \mathbb{N} \mbox{ y } a_i \neq a_j \mbox{ si } i \neq j\\[1ex]
-            B = \{b_1, b_2, b_3, \dots\} = \{b_n : n \in \mathbb{N}\} \quad b_i \neq b_j \mbox{ si } i \neq j
-          \end{array}
-        \right.
-      \end{align*}
-      Así tenemos que la unión natural es:
-      \begin{align*}
-        A \cup B = \left\{\underbracket{a_1}_{1}, \underbracket{a_2}_{2}, \dots, \underbracket{a_n}_{n}, \underbracket{b_1}_{n+1}, \underbracket{b_2}_{n+2}, \underbracket{b_3}_{n+3}, \dots\right\}
-      \end{align*}
-      Y podemos definir la biyección:
-      \begin{align*}
-        \varphi : \mathbb{N} & \longrightarrow A \cup B \\
-        m & \longmapsto \varphi(m) = \begin{cases}
-          a_m, & 1 \leq m \leq n\\
-          b_{m-n}, & m > n
-        \end{cases}
-      \end{align*}
-      Y por otra parte, si consideramos el producto \( A \times B\) tenemos:
-      \begin{center}
-        \begin{tabular}{c|cccc}
-          & \(b_1\) & \(b_2\) & \(b_3\) & \(\dots\) \\
-          \hline
-          \(a_1\) & \((a_1, b_1)\) & \((a_1, b_2)\) & \((a_1, b_3)\) & \(\dots\) \\[1ex]
-          \(a_2\) & \((a_2, b_1)\) & \((a_2, b_2)\) & \((a_2, b_3)\) & \(\dots\) \\[1ex]
-          \(a_3\) & \((a_3, b_1)\) & \((a_3, b_2)\) & \((a_3, b_3)\) & \(\dots\) \\[1ex]
-          \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\vdots\)\\
-          \(a_n\) & \((a_n, b_1)\) & \((a_n, b_2)\) & \((a_n, b_3)\) & \(\dots\)
-        \end{tabular}
-      \end{center}
-      \vspace{2ex}
+\subsection{Medida exterior. Definición}\label{def:medida_exterior}
+\noindent Sea \(A \subseteq \mathbb{R}^N\) se define su \textbf{medida exterior} como el número:
+\begin{align*}
+  \mu_N^*(A) \coloneq \inf \left\{\displaystyle \sum_{i = 1}^{\infty} v_N(I_i) \colon \{I_i\}_{i \in \mathbb{N}}\mbox{ colección de cubos abiertos tq } A \subseteq \displaystyle \bigcup_{i \in \mathbb{N}}I_i\right\} \in [0, \infty]
+\end{align*}
 
-      Así, recorriendo la tabla columna a columna obtendríamos la sucesión:
-      \begin{align*}
-        A \times B = \left\{(a_1, b_1), (a_2, b_1), \dots , (a_n, b_1), (a_1, b_2), (a_2, b_2), \dots, (a_n, b_2), \dots  \right\}
-      \end{align*}
-    \end{enumerate}
-  \end{dem_box}
-  \vspace{3ex}
-
-  \item Sea \(A, B\) infinitos numerables con \(A \cup B = \emptyset \) entonces:
-  \begin{align*}
-    \left\{
-      \begin{array}{l}
-        A \cup B \mbox{ es infinito numerable}\\
-        A \times B \mbox{ es infinito numerable }
-      \end{array}
-    \right.
-  \end{align*}
-  \begin{dem_box}{Demostración}
-    Supongamos ambos conjuntos \(A\) y \(B\) infinitos numerables, es decir:
-    \begin{align*}
-      A & = \{a_n : n \in \mathbb{N}\} \mbox{ con } a_n \neq a_m \mbox{ si } n \neq m \\[1ex]
-      B & = \{b_n : n \in \mathbb{N}\} \mbox{ con } b_n \neq b_m \mbox{ si } n \neq m
-    \end{align*}
-    Entonces tenemos que la unión natural es:
-    \begin{align*}
-      A \cup B = \left\{\underbracket{a_1}_1, \underbracket{b_1}_2, \underbracket{a_2}_3, \underbracket{b_2}_4, \underbracket{a_3}_5, \underbracket{b_3}_6, \dots\right\}
-    \end{align*}
-    Y podemos definir la biyección:
-    \begin{align*}
-      \varphi : \mathbb{N} & \longrightarrow A \cup B \\
-      m & \longmapsto \varphi(m) = \begin{cases}
-        a_{\frac{m+1}{2}}, & m \mbox{ impar} \\[1ex]
-        b_{\frac{m}{2}}, & m \mbox{ par}
-      \end{cases}
-    \end{align*}
-    \vspace{20ex}
-
-    Y por otra parte, si consideramos el producto \( A \times B\) tenemos:
-    \begin{center}
-      \begin{tabular}{c|cccc}
-        & \(b_1\) & \(b_2\) & \(b_3\) & \(\dots\) \\
-        \hline
-        \(a_1\) & \((a_1, b_1)\) & \((a_1, b_2)\) & \((a_1, b_3)\) & \(\dots\) \\[1ex]
-        \(a_2\) & \((a_2, b_1)\) & \((a_2, b_2)\) & \((a_2, b_3)\) & \(\dots\) \\[1ex]
-        \(a_3\) & \((a_3, b_1)\) & \((a_3, b_2)\) & \((a_3, b_3)\) & \(\dots\) \\[1ex]
-        \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\vdots\)\\
-      \end{tabular}
-    \end{center}
-    Por lo que, recorriendo la tabla en diagonal obtendríamos la sucesión:
-    \begin{align*}
-      A \times B = \left\{
-        (a_1,b_1), (a_1, b_2), (a_2, b_1), (a_1, b_3), \dots 
-      \right\}
-    \end{align*}
-  \end{dem_box}
-\end{enumerate}
-\vspace{3ex}
-
-\begin{ejem_box}{Ejercicio}
-  \textit{Sea \(A_i\) conjunto infinito numerable \(\forall i \in \mathbb{N}\) tal que \(A_i \cap A_j \neq \emptyset \, \, \forall i \neq j\) (no necesario). Probar que \(\cup_{i \in \mathbb{N}} A_i\) es numerable.}\vspace{2ex}
-
-  Sea \(A_i\) un conjunto infinito numerable cualquiera, será de la forma:
-  \begin{align*}
-    A_i = \{a_{i_n} : n \in \mathbb{N}\} \mbox{ con } a_{i_n} \neq a_{i_m} \mbox{ si } n \neq m
-  \end{align*}
-  Y definimos la aplicación \(f_i\) como:
-  \begin{align*}
-    f_i : \mathbb{N} & \longrightarrow A_i \\
-    n & \longmapsto f_i(n) = a_{i_n}
-  \end{align*}
-  Colocando los elementos \(f_i(j)\) en una matriz donde la fila \(i\) contiene la enumeración de \(A_i\) tenemos:
-  \begin{center}
-    \begin{tabular}{c|ccccc}
-      & \(j = 1\) & \(j = 2\) & \(j = 3\) & \(j = 4\) & \(\dots\) \\
-      \hline
-      \(i = 1\) & \(f_1(1)\) & \(f_1(2)\) & \(f_1(3)\) & \(f_1(4)\) & \(\dots\) \\[1ex]
-      \(i = 2\) & \(f_2(1)\) & \(f_2(2)\) & \(f_2(3)\) & \(f_2(4)\) & \(\dots\) \\[1ex]
-      \(i = 3\) & \(f_3(1)\) & \(f_3(2)\) & \(f_3(3)\) & \(f_3(4)\) & \(\dots\) \\[1ex]
-      \(i = 4\) & \(f_4(1)\) & \(f_4(2)\) & \(f_4(3)\) & \(f_4(4)\) & \(\dots\) \\[1ex]
-      \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\ddots\)      
-    \end{tabular}
-  \end{center}
-  Ahora, recorriendo las entradas por diagonales según la suma \(i + j = k\) tenemos:
-  \begin{align*}
-    k = 2 & \longrightarrow f_1(1) \\
-    k = 3 & \longrightarrow f_1(2), f_2(1) \\
-    k = 4 & \longrightarrow f_1(3), f_2(2), f_3(1) \\
-    k = 5 & \longrightarrow f_1(4), f_2(3), f_3(2), f_4(1) \\
-    \vdots \hspace{2ex} & \hspace{15ex} \vdots
-  \end{align*}
-  Este recorrido visita todas las parejas \((i,j) \in \mathbb{N} \times \mathbb{N}\) por lo que si definimos la aplicación:
-  \begin{align*}
-    \varphi : \mathbb{N} & \longrightarrow \bigcup_{i \in \mathbb{N}} A_i \\
-    m & \longmapsto \varphi(m) = f_i(j) \mbox{ donde } m = \frac{(i+j-2)(i+j-1)}{2} + i
-  \end{align*}
-  Tenemos una aplicación suprayectiva y, por lo tanto, la unión es a lo sumo numerable.\vspace{3ex}
-  
-  Si los \(A_i\) no fueran disjuntos, podemos repetir la misma idea pero teniendo en cuenta que se podría repetir un mismo elemento. Para obtener una biyección, simplemente:
-  \begin{enumerate}
-    \item Recorremos las entradas como antes formando la lista: \(\varphi(1), \varphi(2), \varphi(3), \dots\)
-    \item Definimos una nueva sucesión \(t\) como:
-    \begin{itemize}
-      \item \(n = 0\) entonces \(t(0 ) = \varphi(0)\)
-      \item \(n \geq 1\) entonces \(t(n)\) es el primer elemento \(\varphi(k)\) con \(k\) mayor que los usados previamente y tal que \(\varphi(k) \notin \left\{t(0), \dots, t(n - 1)\right\}\)
-    \end{itemize}
-  \end{enumerate}
-  Así, tenemos que cada \(t(n)\) es distinto por construcción y todo \(x \in \cup_i A_i\) aparece en \(\varphi\) en alguna posición, por lo que su primera aparición será tomada en algún \(t(n)\).
-\end{ejem_box}
-\vspace{3ex}
-
-\subsection{Partes de un conjunto. Definición}
-Sea \(A\) un conjunto, se llama \textbf{partes de \(A\)} al conjunto cuyos elementos son todos los subconjuntos de \(A\). Se denota por \(\mathcal{P}(A)\).\vspace{2ex}
-
-\begin{ej_box}{Nota}
-  En particular, tenemos que \(\emptyset \in \mathcal{P}(A)\) y \(A \in \mathcal{P}(A)\).
+\begin{ej_box}{Advertencia}
+  \(\mu_N^*\) no es una medida de verdad\footnote{Lo que habría suspirado Jordan porque lo fuera} ya que carece de \(\sigma\)-aditividad.
 \end{ej_box}
 \vspace{2ex}
 
+\begin{ej_box}{Nota}
+  La idea intuitiva es cubrir \(A\) con una colección numerable de cubos abiertos, calcular su suma de volúmenes y tomar la menor de todas las sumas posibles considerando todos los posibles recubrimientos de \(A\) con cubos abiertos.
+\end{ej_box}
+\vspace{3ex}
+
+\subsubsection{\texorpdfstring{Técnicas fundamentales de \(\mu_N^*\)}{Técnicas fundamentales de muN*}}\label{sec:tecnicas_muN*}
+\noindent Las dos propiedades básicas que caracterizan la medida exterior son:
+\begin{itemize}
+  \item \textbf{Cota superior por recubrimientos}: Partiendo de la definición:
+  \begin{align*}
+    \mu_N^*(A) \leq \displaystyle \sum_{i = 1}^{\infty} v_N(I_i) \qquad \forall \{I_i\}_{i \in \mathbb{N}} \mbox{ colección de cubos abiertos tq } A \subseteq \displaystyle \bigcup_{i = 1}^{\infty} I_i\\
+  \end{align*}
+
+  \item \textbf{Propiedad de aproximación (\(\varepsilon\)-cercanía):} para todo \(\varepsilon > 0\) existe \(\{I_i\}_{i \in \mathbb{N}}\) recubrimiento con cubos abiertos de \(A\) tal que:
+  \begin{align*}
+    \mu_N^*(A) + \varepsilon > \sum_{i = 1}^{\infty} v_N(I_i)
+  \end{align*}
+  Esto es, podemos aproximar la medida exterior tanto como queramos desde arriba.\vspace{2ex}
+
+  \begin{ej_box}{Obsevación}
+    \noindent Si \(\mu_N^*(A) < \infty\) esto se interpreta gráficamente como:\vspace{2ex}
+
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[thick] (-5, 0) -- (5, 0);
+      \draw (-1, 0.2) -- (-1, -0.2);
+      \draw (1, 0.2) -- (1, -0.2);
+      \draw (2, 0.1) -- (2, -0.1);
+      \draw (3, 0.2) -- (3, -0.2);
+      
+      \node[scale=0.8] at (5.3,0) {\(\infty\)};
+      \node[scale=0.8] at (-1,-0.4) {0};
+      \node[scale=0.8] at (1, 0.4) {\(\mu_N^*(A)\)};
+      \node[scale=0.8] at (3, 0.4) {\(\mu_N^*(A) + \varepsilon\)};
+      \node[scale=0.8] at (2, -0.6) {\(\displaystyle \sum_{i = 1}^{\infty} v_N(I_i)\)};
+    \end{tikzpicture}
+  \end{center}
+  \end{ej_box}
+\end{itemize}
+\vspace{3ex}
+
 \begin{ejem_box}{Ejemplo}
-  Sea \(A = \{1, 2\}\) entonces:
+  \textit{Se cumple que \(\mu_N^*(\emptyset ) = 0\) ya que:}\vspace{2ex}
+
+  Podemos recubrir \(\emptyset \) con el propio conjunto vacío:
   \begin{align*}
-    \mathcal{P}(A) = \left\{\emptyset, \{1\}, \{2\}, \{1, 2\}\right\}
+    \emptyset \subseteq \emptyset \cup \emptyset \cup \dots
   \end{align*}
-  Donde tenemos que:
+  Como el volumen de \(\emptyset \) es 0 por \hyperref[def:vol_cubo]{definición de volumen de cubo degenerado} entonces:
   \begin{align*}
-    \mbox{Card } A = 2 \quad \mbox{y} \quad \mbox{Card } \mathcal{P}(A) = 4
+    0 \leq \mu_N^*(\emptyset ) \leq 0 + 0 + \dots = 0
   \end{align*}
+  Y por el criterio del Sandwich se cumple que \(\mu_N^*(\emptyset ) = 0\)
 \end{ejem_box}
 \vspace{3ex}
+
 \begin{ejem_box}{Ejemplo}
-  Si consideramos el conjunto vacío \(\emptyset \) entonces:
+  \textit{Sea \(C\) es cubo degenerado acotado entonces \(\mu_N^*(C) = 0\) ya que:}\vspace{2ex}
+
+  Se dan dos posibles casos:
+  \begin{itemize}
+    \item Si \(C = \emptyset \) entonces \(\mu_N^*(C) = 0\) (ver ejemplo anterior)
+    \item Si \(C \neq \emptyset \), supongamos \(C = I_1 \times I_2 \times \dots \times I_N\) donde cada \(I_j\) es un intervalo acotado y al menos unos de ellos es unitario. Supongamos \(I_1 = \{a\}\) (la demostración es análoga si es otro). Para cualquier \( \varepsilon > 0\) si \(I_k\) es un intervalo de extremos \(a_k\) y \(b_k\) entonces:
+    \begin{align*}
+      C \subseteq C_\varepsilon \coloneq (a - \varepsilon, a + \varepsilon) \times (a_2 - \varepsilon, b_2 + \varepsilon) \times \dots \times (a_N - \varepsilon, b_N + \varepsilon)
+    \end{align*}
+    Y como esto es válido \(\forall \varepsilon > 0\) tenemos que:
+    \begin{align*}
+      \mu_N^*(C) & \leq v_N(C_{\varepsilon}) = 2 \varepsilon \cdot (b_2 - a_2 + 2\varepsilon) \cdot \dots \cdot (b_N - a_N + 2\varepsilon) 
+    \end{align*}
+    Por lo que si hacemos \(\varepsilon \to 0\) entonces:
+    \begin{align*}
+      0 \leq \mu_N^*(C) \leq 0 \cdot \underbracket{(b_2 - a_2)}_{\in \mathbb{R}} \cdot \dots \cdot \underbracket{(b_N - a_N)}_{\in \mathbb{R}} = 0
+    \end{align*}
+    Que se cumple ya que \(C\) es acotado y, por lo tanto, \(b_j - a_j < \infty\) para todo \(j\).\vspace{2ex}
+
+    Ahora, aplicando el criterio del sandwich, tenemos que:
+    \begin{align*}
+      \mu_N^*(C) = 0
+    \end{align*}
+  \end{itemize}
+\end{ejem_box}
+\vspace{3ex}
+
+\begin{ejem_box}{Ejemplo}
+  \textit{Sea \(A \subseteq \mathbb{R}^N\) numerable entonces \(\mu_N^*(A) = 0\) ya que:}\vspace{2ex}
+
+  Fijamos \(\varepsilon > 0\) cualquiera con:\footnote{Aunque vosotros ya no hacéis todo eso de la mili, aquí es como en las filas indias, el que está primero es el que se suele llevar la mejor tajada.}
   \begin{align*}
-    \mathcal{P}(\emptyset ) = \{\emptyset\}
+    \varepsilon = \frac{\varepsilon}{2} + \frac{\varepsilon}{4} + \frac{\varepsilon}{8} + \dots = \sum_{i = 1}^{\infty} \frac{\varepsilon}{2^i}
   \end{align*}
-  Por lo que:
+  Como \(A \) numerable entonces \(A = \{a_n : n \in \mathbb{N}\}\) y por cada \(a_n\) tomamos un cubo abierto \(I_n\) tal que:
   \begin{align*}
-    \mbox{Card } \emptyset = 0 \quad \mbox{y} \quad \mbox{Card } \mathcal{P}(\emptyset) = 1
+    a_n \in I_n \quad \mbox{ y } \quad v_N(I_n) = \frac{\varepsilon}{2^n}
+  \end{align*}
+  Entonces:
+  \begin{align*}
+    A \subseteq \displaystyle \bigcup_{n \in \mathbb{N}} I_n \implies 0 \leq \mu_N^*(A) \leq \displaystyle \sum_{n = 1}^{\infty} v_N(I_n) = \displaystyle \sum_{i = 1}^{\infty} \frac{\varepsilon}{2^i} = \varepsilon 
+  \end{align*}
+  Y como \(\varepsilon > 0\) es arbitrario, podemos hacer que \(\varepsilon \to 0\), por el criterio del sándwich:
+  \begin{align*}
+    \mu_N^*(A) = 0
   \end{align*}
 \end{ejem_box}
 \vspace{3ex}
 
-\begin{ej_box}{Observación}
-  En general, si \(A\) es finito entonces se cumple que:
+\subsection{\texorpdfstring{Propiedades de \(\mu_N^*\). Proposición}{Propiedades de muN*. Proposición}}\label{prop:propiedades_muN*}
+\noindent Sea \(N \in \mathbb{N}\) entonces \(\mu_N^*\) cumple las siguientes propiedades:
+\begin{enumerate}
+  \item \textbf{Monotonía}: Sea \(A \subseteq B \subseteq \mathbb{R}^N\) entonces se cumple:
   \begin{align*}
-    \mbox{Card } \mathcal{P}(A) = 2^{\text{Card } A} \in \mathbb{N}
+    \mu_N^*(A) \leq \mu_N^*(B)
   \end{align*}
-  En efecto, podemos ver que:
-  \begin{itemize}
-    \item Si \(A = \emptyset \) entonces:
+  \item \textbf{Subaditividad numerable}\footnote{Esto era la felicidad de los matemáticos. Estaba Jordan muy contento porque creía que si exigíamos que fueran disjuntos entonces se daba la igualdad hasta que llegó ... con su conjunto y le dijo que no se cumplía. Aquí llego la depresión y todas esas cosas, ya sabéis como son los matemáticos, se ahogan en un vaso}: Sea \(\{A_i\}_{i \in \mathbb{N}} \subseteq \mathcal{P}(\mathbb{R}^N)\) entonces se cumple:
+  \begin{align*}
+    \mu_N^*\left(\displaystyle \bigcup_{i \in \mathbb{N}} A_i\right) \leq \displaystyle \sum_{i = 1}^{\infty} \mu_N^*(A_i)
+  \end{align*}
+  \item \(\forall C\) cubo compacto de \(\mathbb{R}^N\) se cumple:\footnote{Y por esto, la integral de Riemann se va por la ventana}
+  \begin{align*}
+    \mu_N^*(C) = v_N(C) = v_N(C^\circ) = \mu_N^*(C^\circ)
+  \end{align*}
+\end{enumerate}
+\begin{dem_box}{Demostración}
+  \begin{enumerate} \leftskip -10pt
+    \item Sea \(A \subseteq B \subseteq \mathbb{R}^N\), definimos los conjuntos:
     \begin{align*}
-      \mbox{Card } A = 0 \quad \mbox{ y } \quad \mbox{Card } \mathcal{P}(A) = 1 = 2^0
+      S_A & = \left\{\displaystyle \sum_{i = 1}^{\infty} v_N(I_i) \colon \{I_i\}_{i \in \mathbb{N}} \mbox{ cubos abiertos, } A \subseteq \displaystyle \bigcup_{i \in \mathbb{N}} I_i\right\}\\[2ex]
+      S_B & = \left\{\displaystyle \sum_{i = 1}^{\infty} v_N(I_i) \colon \{I_i\}_{i \in \mathbb{N}} \mbox{ cubos abiertos, } B \subseteq \displaystyle \bigcup_{i \in \mathbb{N}} I_i\right\}
     \end{align*}
-    \item Si \(A \neq \emptyset \), supongamos que \(\mbox{Card } A = n \in \mathbb{N}\) tal que:
+    \begin{itemize} \leftskip -12pt
+      \item \textit{Ver que \(S_B \subseteq S_A\).} Sea \(s \in S_B\), existe \(\{I_i\}_{i \in \mathbb{N}}\) recubrimiento de \(B\) con cubos abiertos tal que:
+      \begin{align*}
+        s = \displaystyle \sum_{i = 1}^{\infty} v_N(I_i) \quad \mbox{ y } \quad B \subseteq \displaystyle \bigcup_{i = 1}^{\infty} I_i
+      \end{align*}
+      Como \(A \subseteq B\) entonces:
+      \begin{align*}
+        A \subseteq B \subseteq \displaystyle \bigcup_{i = 1}^{\infty} I_i \implies \{I_i\}_{i \in \mathbb{N}} \mbox{ recubrimiento de } A
+      \end{align*}
+      Por lo tanto \(s \in S_A\) y así \(S_B \subseteq S_A\).\vspace{2ex}
+
+      \item \textit{Ver que \(\mu_N^*(A) \leq \mu_N^*(B)\).} Por \hyperref[def:medida_exterior]{definición de medida exterior} y relación de ínfimos de conjuntos:
+      \begin{align*}
+        \mu_N^*(A) = \inf S_A \leq \inf S_B = \mu_N^*(B)\\
+      \end{align*}
+    \end{itemize}
+
+    \item Se consideran dos posibles casos:
+    \begin{itemize} \leftskip -12pt
+      \item Si \(\sum_{n = 1}^{\infty} \mu_N^*(A_n) = \infty\) entonces la desigualdad se cumple trivialmente.
+      \item Si \(\sum_{n = 1}^{\infty} \mu_N^*(A_n) < \infty\) entonces fijamos \(\varepsilon > 0\). Para cada \(i \in \mathbb{N}\), aplicando la \hyperref[sec:tecnicas_muN*]{técnica de \(\varepsilon\)-cercanía}, existe recubrimiento \(\{I_{i,j}\}_{j \in \mathbb{N}}\) con cubos abiertos de \(A_i\) tal que:
+      \begin{align*}
+        \displaystyle \sum_{j = 1}^{\infty} v_N(I_{i,j}) < \mu_N^*(A_i) + \frac{\varepsilon}{2^i} \quad \mbox{ y } \quad A_i \subseteq \displaystyle \bigcup_{j = 1}^{\infty} I_{i,j}
+      \end{align*}
+      Como la colección \(\{I_{i,j} : i, j \in \mathbb{N}\}\) es numerable y cubre \(\bigcup_{i \in \mathbb{N}} A_i\) ya que:
+      \begin{align*}
+        \displaystyle \bigcup_{i = 1}^{\infty} A_i \subseteq \displaystyle \bigcup_{i = 1}^{\infty} \displaystyle \bigcup_{j = 1}^{\infty} I_{i,j}
+      \end{align*}
+      Entonces, por \hyperref[def:medida_exterior]{definición de medida exterior}:
+      \begin{align*}
+        \mu_N^*\left(\displaystyle \bigcup_{i = 1}^{\infty} A_i\right) \leq \displaystyle \sum_{\substack{i \in \mathbb{N}\\j \in \mathbb{N}}} v_N(I_{i,j}) = \displaystyle \sum_{i = 1}^{\infty} \displaystyle \sum_{j = 1}^{\infty} v_N(I_{i,j})
+      \end{align*}
+      Y reordenando la suma doble (ya que los términos son no negativos):
+      \begin{align*}
+        \displaystyle \sum_{i = 1}^{\infty} \displaystyle \sum_{j = 1}^{\infty} v_N(I_{i,j}) & = \displaystyle \sum_{i = 1}^{\infty}\left(\displaystyle \sum_{j = 1}^{\infty}v_N(I_{i,j})\right) < \displaystyle \sum_{i = 1}^{\infty} \left(\mu_N^*(A_i) + \frac{\varepsilon}{2^i}\right) =\\[2ex]
+        & = \displaystyle \sum_{i = 1}^{\infty} \mu_N^*(A_i) + \displaystyle \sum_{i = 1}^{\infty} \frac{\varepsilon}{2^i} = \left(\displaystyle \sum_{i = 1}^{\infty} \mu_N^*(A_i)\right) + \varepsilon
+      \end{align*}
+      Así, como \(\varepsilon > 0\) es arbitrario, si hacemos que \(\varepsilon \to 0\) entonces:
+      \begin{align*}
+        0 \leq \mu_N^*\left(\displaystyle \bigcup_{i = 1}^{\infty} A_i\right) \leq \left(\displaystyle \sum_{i = 1}^{\infty} \mu_N^*(A_i)\right) \underbracket{+ \varepsilon}_{\to 0} \implies \mu_N^*\left(\displaystyle \bigcup_{i = 1}^{\infty} A_i\right) \leq \displaystyle \sum_{i = 1}^{\infty} \mu_N^*(A_i)
+      \end{align*}
+    \end{itemize}   
+    
+    \item \textit{Para simplificar, la demostración será en \(\mathbb{R}^1\) para el cubo \(C = [a, b] \subseteq \mathbb{R}\) con \( - \infty < a < b < \infty\). La demostración se divide en cuatro desigualdades:}\vspace{2ex}
+    \begin{itemize} \leftskip -12pt
+      \item \textit{Igualdad de volúmenes: \(v_1(C^{\circ}) = v_1(C)\).} Por definición de volumen:
+      \begin{align*}
+        v_1(C^\circ) = v_1((a, b)) = b - a = v_1([a, b]) = v_1(C)
+      \end{align*}
+      \item \textit{Igualdad de medidas exteriores: \(\mu_1^*(C^\circ) = \mu_1^*(C)\).} Como \((a, b) \subseteq [a, b]\):
+      \begin{align*}
+        \mu_1^*(\overbracket{(a, b)}^{C^\circ}) \overset{\text{\tiny monotonía}}{\leq} \mu_1^*(\overbracket{[a, b]}^{C}) & = \mu_1^*\left((a, b) \cup \{a\} \cup \{b\}\right) \overset{\text{\tiny subaditiv.}}{\leq}\\[2ex]
+        & \leq \mu_1^*((a, b)) + \underbracket{\mu_1^*(\{a\})}_{= 0} + \underbracket{\mu_1^*(\{b\})}_{= 0} = \mu_1^*(\underbracket{(a, b)}_{C^\circ})
+      \end{align*}
+      Por tanto, aplicando el criterio del sandwich se tiene el resultado.
+      \item \textit{Cota superior \(\mu_1^*(C) \leq v_1\).} Sea \(\varepsilon > 0\) cualquiera, entonces:
+      \begin{align*}
+        I_\varepsilon = (a - \varepsilon, b + \varepsilon) \supseteq [a, b] = C
+      \end{align*}
+      Por tanto, por \hyperref[def:medida_exterior]{definición de medida exterior}:
+      \begin{align*}
+        \mu_1^*(C) \leq v_1(I_\varepsilon) = b - a + 2\varepsilon \quad \forall \varepsilon > 0
+      \end{align*}
+      Haciendo \(\varepsilon \to 0\) se tiene:
+      \begin{align*}
+        \mu_1^*(C) \leq v_1(C) = b - a
+      \end{align*}
+      \item \textit{Cota inferior \(v_1(C) \leq \mu_1^*(C)\).} Sea \(\varepsilon > 0\) cualquiera, por \hyperref[def:medida_exterior]{definición de medida exterior} sabemos que \(\exists \{I_i\}_{i \in \mathbb{N}}\) colección numerable de cubos abiertos tal que:
+      \begin{align*}
+        C \subseteq \displaystyle \bigcup_{i = 1}^{\infty} I_i \quad \mbox{ y } \quad \mu_1^*(C) + \varepsilon > \displaystyle \sum_{i = 1}^{\infty} v_1(I_i)
+      \end{align*}
+      Como \(C\) compacto, existe subrecubrimiento finito, i.e., \(\exists n \in \mathbb{N}\) tal que:
+      \begin{align*}
+        C \subseteq \displaystyle \bigcup_{i = 1}^{n} I_i
+      \end{align*}
+      Cada \(I_k\) es un intervalo abierto de la forma:
+      \begin{align*}
+        I_k = (a_k, b_k) \quad \mbox{ con } - \infty \leq a_k < b_k \leq \infty
+      \end{align*}
+      Podemos suponer que ningún \(I_k\) está contenido dentro de otro, ya que en ese caso lo podríamos eliminar del recubrimiento sin perder la propiedad de recubrimiento. Además, podemos ordenarlos de forma que sus extremos izquierdos estén ordenados crecientemente:
+      \begin{align*}
+        a_1 < a_2 < \dots < a_n
+      \end{align*}
+      Así, podemos notar que para que el recubrimiento cubra todo el intervalo \([a, b]\) se deben cumplir las siguientes condiciones:\vspace{2ex}
+      \begin{itemize} \leftskip -12pt
+        \item El primer intervalo \(I_1\) debe empezar antes de que empiece el intervalo \([a, b]\), es decir:
+        \begin{align*}
+          a_1 < a < b_1
+        \end{align*}
+        \item Para que el recubrimiento cubra todo el intervalo \([a, b]\), el siguiente intervalo \(I_2\) debe empezar antes de que termine \(I_1\), es decir:
+        \begin{align*}
+          a_2 < b_1
+        \end{align*}
+        Y en general tendremos que \(a_{k + 1} < b_k\).
+        \item Finalmente, para cubrir el extremo derecho \(b\) se debe cumplir:
+        \begin{align*}
+          b_n > b
+        \end{align*}
+      \end{itemize}
+      Por lo tanto, si calculamos la suma de los volúmenes de los intervalos \(I_k\):
+      \begin{align*}
+        \displaystyle \sum_{k = 1}^{n} v_1(I_k) &  = \displaystyle \sum_{k = 1}^{n} (b_k - a_k) = (b_1 - a_1) + (b_2 - a_2) + \dots + (b_n - a_n) =\\[2ex]
+        & = b_n - (a_n - b_{n - 1}) - \dots - (a_2 - b_1) - a_1 \\[2ex]
+        & = b_n - a_1 - \displaystyle \sum_{k = 1}^{n - 1} \underbracket{(a_{k + 1} - b_k)}_{ <  0} \geq b_n - a_1 \geq b - a
+      \end{align*}
+      ya que hemos visto que:
+      \begin{itemize} \leftskip -12pt
+        \item \(a_{k + 1} < b_k \implies a_{k + 1} - b_k < 0\) para todo \(1 \leq k \leq n - 1\)
+        \item \(b_n > b\) y \(a_1 < a\) entonces \(b_n - a_1 > b - a\)
+      \end{itemize}
+      Así, continuando con la desigualdad inicial:
+      \begin{align*}
+        b - a < \displaystyle \sum_{k = 1}^{n} v_1(I_k) \leq \displaystyle \sum_{i = 1}^{\infty} v_1(I_i) < \mu_1^*(C) + \varepsilon
+      \end{align*}
+      Haciendo \(\varepsilon \to 0\) se tiene:
+      \begin{align*}
+        v_1(C) = b - a \leq \mu_1^*(C)
+      \end{align*}
+    \end{itemize}
+  \end{enumerate}
+\end{dem_box}
+\newpage
+
+\section{\texorpdfstring{Espacio de medida de Lebesgue \((\mathbb{R}^N, \mathcal{M}_n, \mu_N)\)}{Espacio de medida de Lebesgue (R^N, M_n, mu_N)}}
+\subsection{Conjunto medible de Lebesgue. Definición}
+\noindent Sea \(E \subseteq \mathbb{R}^N\) decimos que es \textbf{medible de Lebesgue} si \(\forall C\) cubo abierto acotado se cumple:
+\begin{align*}
+  v_N(C) = \mu_N^*(C \cap E) + \mu_N^*(C \cap E^C)
+\end{align*}
+O equivalentemente, como \(v_N(C) = \mu_N^*(C)\) y \(\mu_N^*\) es subaditiva:
+\begin{align*}
+  v_N(C) & = \mu_N^*(C) \leq \mu_N^*(C \cap E) + \mu_N^*(C \cap E^C)
+\end{align*}
+
+\begin{ej_box}{Nota}
+  Al conjunto de todos los subconjuntos medibles de Lebesgue en \(\mathbb{R}^N\) lo denotamos por \(\mathcal{M}_N\).
+\end{ej_box}
+\vspace{3ex}
+
+\subsection{\texorpdfstring{Propiedades de \(\mathcal{M}_N\). Proposición}{Propiedades de MN. Proposición}}\label{prop:propiedades_MN}
+\noindent Sea \(E \subseteq \mathbb{R}^N\) entonces:
+\begin{enumerate}
+  \item Si \(\mu_N^*(E) = 0\) entonces \(E \in \mathcal{M}_N\), en particular, \(\emptyset \in \mathcal{M}_N\)
+  \item Si \(E \in \mathcal{M}_N\) entonces \(E^C \in \mathcal{M}_N\)
+  \item Todo semiespacio abierto de \(\mathbb{R}^N\) está en \(\mathcal{M}_N\), i.e., \(S = I_1 \times \dots \times I_N \subseteq \mathbb{R}^N\) tal que:
+  \begin{align*}
+     \exists j \in \{1, \dots, N\} \mbox{ con } \left\{
+      \begin{array}{ll}
+        I_k = ( - \infty, \infty) & \mbox{ si } k \neq j\\[1ex]
+        I_j = ( - \infty, b) \mbox{ ó } I_j = (a, \infty) & \mbox{ con } - \infty < a < b < \infty
+      \end{array}
+     \right.
+  \end{align*}
+\end{enumerate}
+\begin{dem_box}{Demostración}
+  \begin{enumerate} \leftskip -10pt
+    \item Sea \(E \subseteq \mathbb{R}^N\) con \(\mu_N^*(E) = 0\) y \(C\) cubo abierto acotado cualquiera. Tenemos:
     \begin{align*}
-      \exists \varphi : \mathcal{P}(A) & \longrightarrow C \coloneq \left\{(\varepsilon_1, \varepsilon_2, \dots, \varepsilon_n ) \mbox{ tq } \varepsilon_i = 0  \mbox{ o } 1\right\}\\
-      B & \longmapsto (\varepsilon_1, \varepsilon_2, \dots, \varepsilon_n) \quad \mbox{ con } \varepsilon_i = \left\{
+      v_N(C) \leq \underbracket{\mu_N^*(C \cap E)}_{\overset{\text{\tiny monot.}}{=} 0} + \mu_N^*\left(C \cap E^C\right) \leq \mu_N^*\left(C \cap E^C\right) \overset{\text{\tiny monot.}}{\leq} \mu_N^*(C) = v_N(C)
+    \end{align*}
+    Por lo tanto, por el criterio del sándwich:
+    \begin{align*}
+      v_N(C) = \mu_N^*(C \cap E) + \mu_N^*(C \cap E^C) \implies E \in \mathcal{M}_N 
+    \end{align*}
+    \item Sea \(E \in \mathcal{M}_N\) y \(C\) cubo abierto acotado cualquiera entonces:
+    \begin{align*}
+      v_N(C) = \mu_N^*(C \cap E) + \mu_N^*(C \cap E^C) = \mu_N^*(C \cap E^C) + \mu_N^*(C \cap (E^C)^C)
+    \end{align*}
+    Por lo tanto \(E^C \in \mathcal{M}_N\).
+
+    \item Sin pérdida de generalidad, basta probarlo para:
+    \begin{align*}
+      H = (a, \infty) \times \mathbb{R} \times \overset{N - 1}{\dots } \times \mathbb{R} \quad \mbox{ con } - \infty < a < \infty
+    \end{align*}
+    Los casos \(\left\{
+      \begin{array}{l}
+        ( - \infty, a) \times \mathbb{R} \times\dots \times \mathbb{R}\\[2ex]
+        H = J_1 \times\dots \times J_N \mbox{ con } \left\{
+          \begin{array}{l}
+            J_j = ( - \infty, a) \mbox{ ó } (a, \infty)\\
+            J_i = \mathbb{R} \mbox{ si } i \neq j
+          \end{array}
+        \right.
+      \end{array}
+    \right.\) son análogos.\vspace{2ex}
+
+    Sea \(C = \overbracket{(a_1, b_1)}^{J_1} \times \dots \times \overbracket{(a_N, b_N)}^{J_N}\) un cubo abierto acotado cualquiera. Así:
+    \begin{align*}
+      C \cap H & = \left\{
         \begin{array}{ll}
-          1 \mbox{ si } a_i \in B \\[1ex]
-          0 \mbox{ si } a_i \not\in B
+          C & \mbox{ si } a \leq a_1 \\[1ex]
+          (a, b_1) \times J_2 \times \dots \times J_N & \mbox{ si } a_1 < a < b_1 \\[1ex]
+          \emptyset & \mbox{ si } b_1 \leq a
+        \end{array}
+      \right. \\[3ex]
+      C \cap H^C & = \left\{
+        \begin{array}{ll}
+          \emptyset & \mbox{ si } a \leq a_1 \\[1ex]
+          (a_1, a] \times J_2 \times \dots \times J_N & \mbox{ si } a_1 < a < b_1 \\[1ex]
+          C & \mbox{ si } b_1 \leq a
         \end{array}
       \right.
     \end{align*}
-    La idea aquí es que estamos ``codificando'' cada subconjunto \(B\) de \(\mathcal{P}(A)\) mediante una sucesión de ceros y unos, donde el \(i\)-ésimo dígito nos indica si el elemento \(a_i\) pertenece o no a \(B\).\footnote{Similar a la idea de ``one-hot encoding'' en machine learning.}\vspace{2ex}
-
-    Así, tenemos que si \(A = \{a_1, a_2, \dots, a_n\}\) entonces:
-    \begin{align*}
-      C = \{(0,0,\dots,0), (1,0,\dots,0), (0,1,\dots,0), \dots, (1,1,\dots,1)\}
-    \end{align*}
-    Y por tanto, \(\mbox{Card } C = 2^n\) ya que cada dígito puede tomar dos valores y hay \(n\) dígitos.\vspace{2ex}
-  \end{itemize}
-\end{ej_box}
-\vspace{3ex}
-
-\subsection{\texorpdfstring{\(\mbox{Card } \mathcal{P}(A) > \mbox{Card } A\). Proposición}{Card P(A) > Card A. Proposición}}
-\noindent Sea \(A\) un conjunto cualquiera, entonces se cumple que:
-\begin{align*}
-  \mbox{Card } \mathcal{P}(A) > \mbox{Card } A
-\end{align*}
-\begin{dem_box}{Demostración}
-  Sea un conjunto \(B\) cualquiera, entonces claramente tenemos que:
-  \begin{align*}
-    \mbox{Card } B \leq \mbox{Card } \mathcal{P}(B)
-  \end{align*}
-  Supongamos que existe un conjunto \(A\) tal que:
-  \begin{align*}
-    \mbox{Card } \mathcal{P}(A) = \mbox{Card } A
-  \end{align*}
-  Entonces, existiría una biyección \(\varphi: A \longrightarrow \mathcal{P}(A)\), es decir, que cada elemento de \(A\) se corresponde exactamente con un subconjunto de \(\mathcal{P}(A)\). \vspace{2ex}
-
-  Consideremos el conjunto de todos los elementos que no pertenecen al subconjunto con el que están asociados mediante \(\varphi\):
-  \begin{align*}
-    B \coloneq \left\{x \in A : x \not\in \varphi(x)\right\}
-  \end{align*}
-  Como \(\varphi\) es supuestamente sobreyectiva, debe existir \(z \in A\) tal que \(\varphi(z) = B\), donde se presentan dos casos:
-  \begin{itemize}
-    \item \(z \in B = \varphi(z)\) entonces por definición de \(B\): \(z \not\in \varphi(z) \quad \# \)
-    \item \(z \not\in \varphi(z) = B\) entonces por definición de \(B\): \(z \in B \quad \#\) 
-  \end{itemize}
-  Como hemos llegado inevitablemente a una contradicción, concluimos que \(\mbox{Card } A \neq \mbox{Card } \mathcal{P}(A)\) y por tanto:
-  \begin{align*}
-    \mbox{Card } A < \mbox{Card } \mathcal{P}(A)
-  \end{align*}
-\end{dem_box}
-\vspace{3ex}
-
-\begin{ej_box}{Nota}
-  La proposición anterior establece la existencia de una jerarquía bastante grande de cardinales no finitos. Por ello, aprovechamos esto para introducir la siguiente notación:
-  \begin{align*}
-    \underbracket{0}_{\text{\tiny \(\mbox{Card } \emptyset\)} } < \overbrace{ \underbracket{1}_{\text{\tiny \(\mbox{Card } \mathcal{P}(\emptyset )\)}} < \underbracket{2}_{\text{\tiny \(\mbox{Card } \mathcal{P}(\mathcal{P}(\emptyset ))\)}} < 3 < 4 < \dots}^{\mathbb{N}} < \underbracket{\aleph_0 < 2^{\aleph_0} < 2^{2^{\aleph_0}}}_{\text{Cardinales transfinitos}} < \dots
-  \end{align*}
-  Donde hemos definido \(\aleph_0\) como \(\mbox{Card } \mathbb{N}\).
-\end{ej_box}
-\vspace{3ex}
-
-\begin{ejem_box}{Ejercicio}
-  \textit{Demostrar que \(\mbox{Card } \mathbb{R} = \mbox{Card } \mathcal{P}(\mathbb{N})\)}\vspace{2ex}
-
-  Consideremos la aplicación \(\varphi\) dada por:
-  \begin{align*}
-    \varphi : \mathcal{P}(\mathbb{N}) & \longrightarrow C = \left\{\left(\varepsilon_1, \varepsilon_2, \dots , \varepsilon_n, \dots \right) \colon \varepsilon_i \in \mathbb{N}\right\}\\
-    B & \longmapsto \left(\varepsilon_1, \varepsilon_2, \dots, \varepsilon_n, \dots \right) \mbox{ con } \varepsilon_i = \left\{
-      \begin{array}{ll}
-        a_i & \mbox{ si } a_i \in B \\[1ex]
-        0 & \mbox{ si } a_i \not\in B
-      \end{array}
-    \right.
-  \end{align*}
-  Así, cada subconjunto \(B\) de \(\mathcal{P}(\mathbb{N})\) se corresponde con una sucesión infinita de números naturales, donde el \(i\)-ésimo término es \(a_i\) si \(a_i\) pertenece a \(B\) y \(0\) en caso contrario y bastaría ver que \(\phi\) es biyectiva.
-
-  \begin{itemize}
-    \item \textbf{Inyectividad:} Supongamos que existen \(B_1, B_2 \in \mathcal{P}(\mathbb{N})\) tales que \(\varphi(B_1) = \varphi(B_2)\). Entonces, sus sucesiones asociadas son iguales:
-    \begin{align*}
-      \left(\varepsilon_1^{(1)}, \varepsilon_2^{(1)}, \dots\right) = \left(\varepsilon_1^{(2)}, \varepsilon_2^{(2)}, \dots\right)
-    \end{align*}
-    Por lo que cada término de ambas sucesiones coincide, es decir, \(\forall i \in \mathbb{N}\):
-    \begin{align*}
-      \varepsilon_i^{(1)} = \varepsilon_i^{(2)}
-    \end{align*}
-    Y por tanto, \(B_1 = B_2\).
-    \item \textbf{Sobreyectividad:} Sea una sucesión cualquiera en \(C\):
-    \begin{align*}
-      \left(\varepsilon_1, \varepsilon_2, \dots\right) \quad \mbox{ con } \varepsilon_i \in \mathbb{N}
-    \end{align*}
-    Entonces, podemos definir el subconjunto \(B\) como:
-    \begin{align*}
-      B = \left\{a_i : \varepsilon_i = a_i \neq 0\right\} \subseteq \mathbb{N}
-    \end{align*}
-    Por lo que tenemos que:
-    \begin{align*}
-      \varphi(B) = \left(\varepsilon_1, \varepsilon_2, \dots\right)
-    \end{align*}
-  \end{itemize}
-\end{ejem_box}
-\newpage
-
-\section{\texorpdfstring{Descomposición de subconjuntos abiertos de \(\mathbb{R}^N\) en cubos diádicos}{Descomposición de subconjuntos abiertos de R^N en cubos diádicos}}
-
-\subsection{Intervalo diádico. Definición}
-\noindent Se llama \textbf{intervalo diádico de orden \(n \in \mathbb{N}\)} a cualquier intervalo de la forma:
-\begin{align*}
-  \left[\frac{j - 1}{2^n}, \frac{j}{2^n}\right) \quad \mbox{ con } j \in \mathbb{Z}
-\end{align*}
-
-\begin{ejem_box}{Ejemplo}
-  En otras palabras, estamos dividiendo la recta real en trozos de tamaño \(\frac{1}{2^n}\) y cada trozo empieza en un múltiplo de \(\frac{1}{2^n}\) y termina justo antes del siguiente múltiplo de \(\frac{1}{2^n}\). \vspace{2ex}
-
-  Por ejemplo, para \(n = 1\) los intervalos de longitud \(\frac{1}{2}\) son:
-  \begin{align*}
-    \left[\frac{j - 1}{2}, \frac{j}{2}\right) = \left\{\dots, \left[-1, -\frac{1}{2}\right), \left[-\frac{1}{2}, 0\right), \left[0, \frac{1}{2}\right), \left[\frac{1}{2}, 1\right), \left[1, \frac{3}{2}\right), \dots\right\}
-  \end{align*}
-  Y para \(n = 2\) los intervalos de longitud \(\frac{1}{4}\) son:
-  \begin{align*}
-    \left[\frac{j - 1}{4}, \frac{j}{4}\right) = \left\{\dots, \left[-\frac{1}{2}, -\frac{1}{4}\right), \left[-\frac{1}{4}, 0\right), \left[0, \frac{1}{4}\right), \left[\frac{1}{4}, \frac{1}{2}\right), \dots\right\}
-  \end{align*}
-\end{ejem_box}
-\vspace{3ex}
-
-\begin{ej_box}{Observación}
-  Podemos notar que:
-  \begin{align*}
-    \displaystyle \bigcup_{j\in\mathbb{Z}} \left[\frac{j - 1}{2^n}, \frac{j}{2^n}\right) = \mathbb{R}
-  \end{align*}
-  Y también podemos ver que se tiene que si \(i \neq j\) entonces:
-  \begin{align*}
-    \left[\frac{i - 1}{2^n}, \frac{i}{2^n}\right) \cap \left[\frac{j - 1}{2^n}, \frac{j}{2^n}\right) = \emptyset
-  \end{align*}
-  Además, la colección de todos los intervalos diádicos de orden \(n\) es numerable.
-\end{ej_box}
-\vspace{3ex}
-\begin{ej_box}{Observación}
-  Si \(I\) es un intervalo diádico de orden \(n\) y \(J\) es un intervalo diádico de orden \(m\) con \(m \leq n\) entonces:
-  \begin{align*}
-    I \subseteq J \quad \mbox{ o bien } \quad I \cap J = \emptyset
-  \end{align*}
-\end{ej_box}
-\vspace{3ex}
-
-\subsection{Cubo diádico. Definición}
-\noindent Se llama \textbf{cubo diádico de \(\mathbb{R}^N\) de orden \(n \in \mathbb{N}\)} a cualquier conjunto de la forma:
-\begin{align*}
-  I_1 \times I_2 \times \dots \times I_n \subseteq \mathbb{R}^N
-\end{align*}
-donde \(I_k\) es un intervalo diádico de orden \(n\) para \(k = 1, 2, \dots, n\).\vspace{3ex}
-
-\begin{ejem_box}{Ejemplo}
-  Por ejemplo, en \(\mathbb{R}^2\) un cubo diádico de orden \(n\) es un cuadrado cuyos lados miden \(\frac{1}{2^n}\) y están alineados con los ejes coordenados. \vspace{2ex}
-
-  En particular, un cubo diádico de \(\mathbb{R}^2\) de orden \(1\) podría ser:
-  \begin{align*}
-    \left[-\frac{1}{2}, 0\right) \times \left[0, \frac{1}{2}\right)
-  \end{align*}
-  Es decir, el cuadrado de lado \(\frac{1}{2}\) que tiene un vértice en el origen y se extiende hacia el segundo cuadrante.\vspace{2ex}
-
-  \begin{center}
-    \begin{tikzpicture}[scale=4]
-      \draw[-{Latex}] (-0.7,0) -- (0.7,0) node[right] {\(x\)};
-      \draw[-{Latex}] (0,-0.2) -- (0,0.7) node[above] {\(y\)};
-      \draw[thick] (-0.5,0) -- (-0.5,0.5) -- (0,0.5) -- (0,0) -- cycle;
-      \fill[gray!30] (-0.5,0) -- (-0.5,0.5) -- (0,0.5) -- (0,0) -- cycle;
-      \node at (-0.5, -0.1) {\(\frac{-1}{2}\)};
-      \node at (0.05, 0.5) {\(\frac{1}{2}\)};
-      \node at (0.05, -0.05) {\(0\)};
-    \end{tikzpicture}
-  \end{center}
-
-  En \(\mathbb{R}^3\), un cubo diádico de orden \(n\) podría ser un cubo cuyos lados miden \(\frac{1}{2^n}\) y están alineados con los ejes coordenados. \vspace{2ex}
-
-  Por ejemplo, un cubo diádico de \(\mathbb{R}^3\) de orden \(1\) podría ser:
-  \begin{align*}
-    \left[ - \frac{1}{2}, 0 \right) \times \left[0, \frac{1}{2}\right) \times \left[0, \frac{1}{2}\right)
-  \end{align*}
-  Es decir, el cubo de lado \(\frac{1}{2}\) que tiene un vértice en el origen y se extiende hacia el octante negativo en \(x\) y positivo en \(y\) y \(z\).\vspace{2ex}
-
-  \begin{center}
-    \begin{tikzpicture}[scale=4]
-      \draw[-{Latex}] (-0.8,0,0) -- (0.7,0,0) node[right] {\(x\)};
-      \draw[-{Latex}] (0,-0.2,0) -- (0,0.7,0) node[above] {\(y\)};
-      \draw[-{Latex}] (0,0,-0.2) -- (0,0,0.8) node[above] {\(z\)};
-      \fill[gray!30] (-0.5,0,0) -- (-0.5,0.5,0) -- (0,0.5,0) -- (0,0,0) -- cycle;
-      \fill[gray!30] (-0.5,0,0) -- (-0.5,0,0.5) -- (0,0,0.5) -- (0,0,0) -- cycle;
-      \fill[gray!30] (-0.5,0.5,0) -- (-0.5,0.5,0.5) -- (0,0.5,0.5) -- (0,0.5,0) -- cycle;
-      \fill[gray!30] (-0.5,0,0.5) -- (-0.5,0.5,0.5) -- (0,0.5,0.5) -- (0,0,0.5) -- cycle;
-      
-      \draw(-0.5,0,0) -- (-0.7, 0, 0);
-      
-      \draw[thick] (-0.5,0,0) -- (-0.5,0.5,0) -- (0,0.5,0) -- (0,0,0) -- cycle;
-      \draw[thick] (-0.5,0,0) -- (-0.5,0,0.5) -- (0,0,0.5) -- (0,0,0) -- cycle;
-      \draw[thick] (-0.5,0.5,0) -- (-0.5,0.5,0.5) -- (0,0.5,0.5) -- (0,0.5,0) -- cycle;
-      \draw[thick] (-0.5,0,0.5) -- (-0.5,0.5,0.5) -- (0,0.5,0.5) -- (0,0,0.5) -- cycle;
-
-      \node at (0.1, 0, 0.6) {\(\frac{1}{2}\)};
-      \node at (0.07, 0.5, 0) {\(\frac{1}{2}\)};
-      \node at (-0.47, -0.08, 0) {\(\frac{-1}{2}\)};
-    \end{tikzpicture}
-  \end{center}
-\end{ejem_box}
-
-\begin{ej_box}{Observación}
-  Podemos notar que:
-  \begin{align*}
-    \displaystyle \bigcup_{C \in \mathcal{F}_n} C = \mathbb{R}^N
-  \end{align*}
-  donde \(\mathcal{F}_n\) es la colección de todos los cubos diádicos de \(\mathbb{R}^N\) de orden \(n\).\vspace{3ex}
-
-  Así, tenemos que si \(C_1, C_2 \in \mathcal{F}_n\) y \(C_1 \neq C_2\) entonces:
-  \begin{align*}
-    C_1 \cap C_2 = \emptyset
-  \end{align*}
-  Además, la colección de todos los cubos diádicos de orden \(n\), esto es, \(\mathcal{F}_n\), es numerable.\vspace{2ex}
-
-  Por último, si \(C \in \mathcal{F}_n\), \(D \in \mathcal{F}_m\) con \(m \leq n\) entonces:
-  \begin{align*}
-    C \subseteq D \quad \mbox{ o } \quad C \cap D = \emptyset 
-  \end{align*}
-\end{ej_box}
-\vspace{3ex}
-
-\subsection{Teorema de descomposición}
-Para todo subconjunto abierto \(O \subseteq \mathbb{R}^N\) no vacío, se tiene que existe una colección numerable de cubos diádicos \(\{C_i\}_{i \in \mathbb{N}}\) disjuntos dos a dos (posiblemente de órdenes distintos) tales que:
-\begin{enumerate}
-  \item \(O\) es exactamente la unión de todos esos cubos, es decir: \(O = \bigcup_{i \in \mathbb{N}} C_i\)
-  \item Cada cubo está completamente dentro de \(O\), incluso su clausura: \(\overline{C_i} \subseteq O \quad \forall i \in \mathbb{N}\)
-  \item Son disjuntos entre sí: \(C_i \cap C_j = \emptyset \quad \mbox{ si } i \neq j\)
-\end{enumerate}
-\vspace{2ex}
-
-\begin{dem_box}{Demostración}
-  Recordemos que para cada \(n \in \mathbb{N}\) se tiene que:
-  \begin{align*}
-    \mathcal{F}_n = \left\{C : C \mbox{ cubo diádico de orden } n\right\}
-  \end{align*}
-  Entonces definimos la subfamilia de cubos diádicos de orden \(n\) cuya clausura está contenida en \(O\), esto es:
-  \begin{align*}
-    \mathcal{G}_n \coloneq \left\{C \in \mathcal{F}_n : \overline{C} \subseteq O\right\}
-  \end{align*}
-  Y construimos recursivamente las familias \(\mathcal{H}_n\) de cubos disjuntos:
-  \begin{itemize}
-    \item Si \(n = 1\) entonces:
-    \begin{align*}
-      \mathcal{H}_1 \coloneq \mathcal{G}_1
-    \end{align*}
-    Es decir, tomamos todos los cubos de orden 1 cuya clausura está en \(O\).
-    \item Si \(n > 1\) entonces:
-    \begin{align*}
-      \mathcal{H}_n \coloneq \left\{C \in \mathcal{G}_n : C \not\subseteq \displaystyle \bigcup_{k = 1}^{n - 1} \bigcup_{D \in \mathcal{H}_k} D\right\} = \left\{C \in \mathcal{G}_n : C \cap \left[\displaystyle \bigcup_{k = 1}^{n - 1} \displaystyle \bigcup_{D \in \mathcal{H}_k} D \right] = \emptyset \right\}
-    \end{align*}
-    Es decir, tomamos solo los cubos de orden \(n\) que \textbf{no} están ya cubiertos por los cubos de órdenes menores.
-  \end{itemize}
-  Así, probaremos por doble contenido que:
-  \begin{align*}
-    O = \bigcup_{n = 1}^\infty \bigcup_{C \in \mathcal{H}_n} C
-  \end{align*}
-  \begin{itemize}
-    \item[\(\supseteq\))] Trivial, todo cubo \(C \in \mathcal{H}_n\) satisface que \(C \subseteq O\) ya que \(C \in \mathcal{G}_n\) y \(\overline{C} \subseteq O\).\vspace{2ex}
-    
-    \item[\(\subseteq\))] Sea \(x_0 = (x_1, x_2, \dots, x_N) \in O \subseteq \mathbb{R}^N\), como \(O\) es abierto, existe un cubo abierto centrado en \(x_0\) contenido en \(O\), esto es \(\exists n \in \mathbb{N}\) tal que:
-    \begin{align*}
-      x_0 \in \prod_{i = 1}^N \left(x_i - \frac{1}{2^n}, x_i + \frac{1}{2^n}\right) \subseteq \prod_{i = 1}^N \left[x_i - \frac{1}{2^n}, x_i + \frac{1}{2^n}\right] \subseteq O
-    \end{align*}
-    Entonces, para cada coordenada \(1 \leq i \leq N\) tenemos que \(\exists! j_i \in \mathbb{Z}\) tal que:
-    \begin{align*}
-      x_i \in \left[\frac{j_i - 1}{2^n}, \frac{j_i}{2^n} \right)
-    \end{align*}
-    Así, tenemos que para cada \(1 \leq i \leq N\):
-    \begin{align*}
-      \left.
-        \begin{array}{rl}
-          \frac{j_i - 1}{2^n} \leq x_i & \implies \frac{j_i}{2^n} \leq x_i + \frac{1}{2^n}\\[2ex]
-          x_i < \frac{j_i}{2^n} & \implies x_i - \frac{1}{2^n} < \frac{j_i - 1}{2^n} 
-        \end{array}
-      \right\} \implies \left[\frac{j_i - 1}{2^n}, \frac{j_i}{2^n} \right) \subseteq \left(x_i - \frac{1}{2^n}, x_i + \frac{1}{2^n}\right)
-    \end{align*}
-    Luego:
-    \begin{align*}
-      C \coloneq \prod_{i = 1}^N \left[\frac{j_i - 1}{2^n}, \frac{j_i}{2^n} \right) \subseteq \prod_{i = 1}^N \left(x_i - \frac{1}{2^n}, x_i + \frac{1}{2^n}\right) \subseteq O
-    \end{align*}
-    Y por lo tanto se cumple que:
-    \begin{align*}
-      x_0 \in C \subseteq \overline{C} \subseteq O
-    \end{align*}
-    Esto prueba que:
-    \begin{align*}
-      \mathcal{A}_{x_0} = \left\{n \in \mathbb{N} : \exists C \in \mathcal{G}_n \mbox{ con }x_0 \in C\right\} \neq \emptyset 
-    \end{align*}
-    Y aplicando el principio de buena ordenación de \(\mathbb{N}\):
-    \begin{align*}
-      \exists \min \mathcal{A}_{x_0} \coloneq m
-    \end{align*}
-    Veamos que el correspondiente \(C \in \mathcal{G}_m\) con \(x_0 \in C \subseteq O\) cumple que \(C \in \mathcal{H}_m\). En efecto, si \(C \notin \mathcal{H}_m\) entonces:
-    \begin{align*}
-      C \in \mathcal{G}_n \mbox{ con } n < m = \min \mathcal{A}_{x_0} \quad \#
-    \end{align*}
-    Por tanto, hemos probado que \(C \in \mathcal{H}_m\) lo que implica que:
-    \begin{align*}
-      x_0 \in C \subseteq \bigcup_{n = 1}^\infty \bigcup_{D \in \mathcal{H}_n} D \implies O \subseteq \bigcup_{n = 1}^\infty \bigcup_{C \in \mathcal{H}_n} C
-    \end{align*}
-  \end{itemize}
-
-  Para ver que \( \mathcal{H}_n\) son disjuntos, basta notar que se cumple por construcción:
-  \begin{itemize}
-    \item Dentro de cada \(\mathcal{H}_n\) los cubos diádicos del mismo orden son disjuntos.
-    \item Entre diferentes órdenes, si \(C \in \mathcal{H}_n\) y \(D \in \mathcal{H}_m\) con \(n \neq m\) son disjuntos ya que si \(n > m\) entonces:
-    \begin{align*}
-      C \not\subseteq \displaystyle \bigcup_{k = 1}^{n - 1} \displaystyle \bigcup_{E \in \mathcal{H}_k} E
-    \end{align*}
-    es decir, que en particular, no está contenido en \(D\) y por tanto, \(C \cap D = \emptyset\).
-  \end{itemize} 
-
-  Finalmente, cada \(\mathcal{H}_n\) es numerable ya que es una subcolección de \(\mathcal{F}_n\) que es numerable, y la unión numerable de conjuntos numerables es numerable.
-\end{dem_box}
-
-\newpage
-\section{Series Dobles}
-El objetivo de esta sección es estudiar qué significa ``sumar todos los elementos'' de una trabla infinita de números reales dispuestos como \(a_n,m\) donde \(n, m \in \mathbb{N}\):
-\begin{center}
-  \begin{tabular}{c|cccccc}
-    \(\mathbb{N}\) & &&&&&\\
-    & \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\vdots\) & & \\
-    & \(a_{31}\) & \(a_{32}\) & \(a_{33}\) & \(a_{34}\) & \(\dots\) & \\
-    & \(a_{21}\) & \(a_{22}\) & \(a_{23}\) & \(a_{24}\) & \(\dots\) & \\
-    & \(a_{11}\) & \(a_{12}\) & \(a_{13}\) & \(a_{14}\) & \(\dots\) & \\ \hline
-    & 1 & 2 & 3 & 4 & \(\dots\) & \(\mathbb{N}\)
-  \end{tabular}
-\end{center}
-\vspace{3ex}
-
-\subsection{Sucesión doble. Definición}
-\noindent Llamamos \textbf{sucesión doble} a una función de la forma:
-\begin{align*}
-  \varphi : \mathbb{N} \times \mathbb{N} & \longrightarrow \overline{\mathbb{R}} = \mathbb{R} \cup \{\pm \infty\}\\
-  (n, m) & \longmapsto \varphi(n, m) = a_{n,m}
-\end{align*}
-Cada número \(a_{n,m}\) es el \textbf{término general} de la fila \(n\) y columna \(m\) de la sucesión doble.\footnote{Aquí los físicos dicen que si sumas los naturales te da \( - \frac{1}{12}\) o algo así. Digo yo que lo del \( - \frac{1}{12}\) será por los \(12\) apóstoles, porque si no yo no lo veo.}\vspace{3ex}
-
-\subsection{Serie doble. Definición}
-Dada una sucesión doble \(\varphi : \mathbb{N} \times \mathbb{N} \longrightarrow \overline{\mathbb{R}}\), llamamos \textbf{serie doble de término general \(a_{n,m}\)} a la expresión:
-\begin{align*}
-  \displaystyle \sum_{n,m} a_{n, m} = \displaystyle \sum_{\substack{n = 1\\m = 1}} a_{n, m}\\
-\end{align*}
-
-\subsubsection{Serie doble convergente. Definición}\label{def:serie_doble_convergente}
-\noindent Sea \(\displaystyle \sum_{n,m} a_{n, m}\) serie doble, diremos que es \textbf{convergente} si \(\exists s \in \mathbb{R}\) tal que:
-\begin{align*}
-  \forall \varepsilon > 0, \quad \exists n_0 \in \mathbb{N} \quad \mbox{tal que} \quad  \forall n, m \geq n_0,
-\end{align*}
-se cumple que:
-\begin{align*}
-  \left|s - \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j}\right| < \varepsilon
-\end{align*}
-
-\begin{ejem_box}{Ejemplo}
-  Podemos ver esta convergencia como que los bloques rectangulares crecientes de la tabla se aproximan a un valor límite \(s\):
-  \begin{center}
-    \begin{tabular}{c|cccccc}
-      \(\mathbb{N}\) & &&&&&\\
-      & \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\vdots\) & & \\
-      & \(a_{41}\) & \(a_{42}\) & \(a_{43}\) & \(a_{44}\) & \(\dots\) & \\
-      & \(a_{31}\) & \(a_{32}\) & \(a_{33}\) & \(a_{34}\) & \(\dots\) & \\
-      & \(a_{21}\) & \(a_{22}\) & \(a_{23}\) & \(a_{24}\) & \(\dots\) & \\
-      & \textcolor{red}{\(a_{11}\)} & \(a_{12}\) & \(a_{13}\) & \(a_{14}\) & \(\dots\) & \\ \hline
-      & 1 & 2 & 3 & 4 & \(\dots\) & \(\mathbb{N}\)
-    \end{tabular} \hspace{10ex} \(\displaystyle \sum_{\substack{1 \leq i \leq 1\\1 \leq j \leq 1}} a_{i,j}\)\vspace{3ex}
-
-    \begin{tabular}{c|cccccc}
-    \(\mathbb{N}\) & &&&&&\\
-      & \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\vdots\) & & \\
-      & \(a_{41}\) & \(a_{42}\) & \(a_{43}\) & \(a_{44}\) & \(\dots\) & \\
-      & \(a_{31}\) & \(a_{32}\) & \(a_{33}\) & \(a_{34}\) & \(\dots\) & \\
-      & \textcolor{red}{\(a_{21}\)} & \textcolor{red}{\(a_{22}\)} & \(a_{23}\) & \(a_{24}\) & \(\dots\) & \\
-      & \textcolor{red}{\(a_{11}\)} & \textcolor{red}{\(a_{12}\)} & \(a_{13}\) & \(a_{14}\) & \(\dots\) & \\ \hline
-      & 1 & 2 & 3 & 4 & \(\dots\) & \(\mathbb{N}\)
-    \end{tabular} \hspace{10ex} \(\displaystyle \sum_{\substack{1 \leq i \leq 2\\1 \leq j \leq 2}} a_{i,j}\)\vspace{3ex}
-
-    \begin{tabular}{c|cccccc}
-      \(\mathbb{N}\) & &&&&&\\
-      & \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\vdots\) & & \\
-      & \(a_{41}\) & \(a_{42}\) & \(a_{43}\) & \(a_{44}\) & \(\dots\) & \\
-      & \textcolor{red}{\(a_{31}\)} & \textcolor{red}{\(a_{32}\)} & \textcolor{red}{\(a_{33}\)} & \(a_{34}\) & \(\dots\) & \\
-      & \textcolor{red}{\(a_{21}\)} & \textcolor{red}{\(a_{22}\)} & \textcolor{red}{\(a_{23}\)} & \(a_{24}\) & \(\dots\) & \\
-      & \textcolor{red}{\(a_{11}\)} & \textcolor{red}{\(a_{12}\)} & \textcolor{red}{\(a_{13}\)} & \(a_{14}\) & \(\dots\) & \\ \hline
-      & 1 & 2 & 3 & 4 & \(\dots\) & \(\mathbb{N}\)
-    \end{tabular} \hspace{10ex} \(\displaystyle \sum_{\substack{1 \leq i \leq 3\\1 \leq j \leq 3}} a_{i,j}\)\vspace{3ex}
-  \end{center}
-  Y así sucesivamente.
-\end{ejem_box}
-\vspace{3ex}
-
-\subsubsection{Serie doble divergente. Definición}\label{def:serie_doble_divergente}
-\noindent Sea \(\displaystyle \sum_{n,m} a_{n, m}\) serie doble, diremos que \textbf{es divergente} a \( + \infty\) (resp. \( - \infty\)) si:
-\begin{align*}
-  \forall K \in \mathbb{R}, \quad \exists n_0 \in \mathbb{N} \quad \mbox{tal que} \quad  \forall n, m \geq n_0,
-\end{align*}
-se cumple que:
-\begin{align*}
-  \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} > K \quad \left(\text{resp.} < K\right)
-\end{align*}
-
-\begin{ej_box}{Nota}
-  Tanto si la serie doble es convergente como si es divergente, se llama valor de la suma de dicha serie doble al número \(s\) (si es convergente) o al número \(+\infty\) o \(-\infty\) (si es divergente) y se denota por:
-  \begin{align*}
-    s = \displaystyle \sum_{n, m} a_{n, m} \in \mathbb{R} \qquad \mbox{ y } \qquad \pm\infty = \displaystyle \sum_{n,m} a_{n,m} \in \overline{\mathbb{R}}
-  \end{align*}
-\end{ej_box}
-\vspace{3ex}
-
-\begin{ej_box}{Nota}
-  Por la ambigüedad del lenguaje, dos series diferentes pueden tener el mismo valor de la suma pero no ser las mismas series. \vspace{2ex}
-  
-  Por ejemplo, consideremos las siguientes dos series:
-  \begin{align*}
-    \displaystyle \sum_{n = 1}^{\infty} a_n = 1 + 0 + 0 + 0 + \dots \qquad \mbox{y} \qquad
-    \displaystyle \sum_{n = 1}^{\infty} b_n = \frac{1}{2} + \frac{1}{4} + \frac{1}{8} + \dots 
-  \end{align*}
-  Y se comete el error de escribir \(\displaystyle \sum_n a_n = \displaystyle \sum_n b_n\) porque ambas series convergen a \(1\)\footnote{Y esto lamentablemente ya no lo va a cambiar ni el papa}.\vspace{2ex}
-  
-  En realidad, ambas valen 1 como número pero no como series, es decir:
-  \begin{align*}
-    \displaystyle \sum_{n = 1}^{\infty} a_n \neq \displaystyle \sum_{n = 1}^{\infty} b_n
-  \end{align*}
-  aunque sí se cumple que:
-  \begin{align*}
-    \displaystyle \sum_{n = 1}^{\infty} a_n = \displaystyle \sum_{n = 1}^{\infty} b_n = 1\\
-  \end{align*}
-\end{ej_box}
-\vspace{3ex}
-
-\subsection{Teorema}
-\noindent Sea \(\varphi : \mathbb{N} \times \mathbb{N} \longrightarrow [0, +\infty]\) entonces para cualquier biyección \(g : \mathbb{N} \longrightarrow \mathbb{N} \times \mathbb{N}\) tenemos:
-\begin{align*}
-  \displaystyle \sum_{n, m} a_{n,m} = \displaystyle \sum_{n = 1}^{\infty} a_{g(n)} = \displaystyle \sum_{m = 1}^{\infty} \displaystyle \sum_{n = 1}^{\infty} a_{n,m} = \displaystyle \sum_{n = 1}^{\infty} \displaystyle \sum_{m = 1}^{\infty} a_{n,m} \in [0, + \infty]\\
-\end{align*}
-\vspace{3ex}
-
-\begin{dem_box}{Demostración}
-  Veamos la demostración por los dos casos posibles:
-  \begin{enumerate}
-    \item Algún coeficiente \(a_{n,m}\) es igual a \( + \infty\). Entonces, trivialmente:
-    \begin{align*}
-      \displaystyle \sum_{n,m} a_{n,m} = + \infty & \qquad \mbox{ y } \qquad \displaystyle \sum_{n = 1}^\infty a_{g(n)} = + \infty\\[2ex]
-      \displaystyle \sum_{m = 1}^{\infty}\displaystyle \sum_{n = 1}^{\infty} a_{n,m} = + \infty & \qquad \mbox{ y } \qquad \displaystyle \sum_{n = 1}^{\infty} \displaystyle \sum_{m = 1}^{\infty} a_{n,m} = + \infty\\
-    \end{align*}
-    \item \(\forall n,m\) se tiene \(a_{n,m} \in [0, \infty)\) entonces \(\forall n\) se tiene que \(a_{g(n)} \in [0, \infty)\) y, como consecuencia, se dan dos subcasos:
-    \begin{align*}
-      \displaystyle \sum_{n = 1}^{\infty} a_{g(n)} = s \in [0, +\infty) \qquad \mbox{ o } \qquad \displaystyle \sum_{n = 1}^{\infty} a_{g(n)} = + \infty
-    \end{align*}
-    Veamos ambos casos por separado:
+    Analicemos los 3 casos según el valor de \(a\):
     \begin{itemize}
-      \item Si \(\sum a_{g(n)} = s\) entonces \(\forall \varepsilon > 0, \quad \exists n_0\in \mathbb{N}\) tal que \(\forall k \geq  n_0\) se tiene:
+      \item Si \(a \leq a_1\) entonces \(C \cap H = C\) y \(C \cap H^C = \emptyset\) por lo que:
       \begin{align*}
-        0 \leq s - \displaystyle \sum_{n = 1}^{k} a_{g(n)} < \varepsilon
+        \mu_N^*(C \cap H) + \mu_N^*(C \cap H^C) = v_N(C) + v_N(\emptyset ) = \mu_N^*(C) \implies H \in \mathcal{M}_N
       \end{align*}
-      Como \(g\) biyectiva, \(\exists m_0 \in \mathbb{N}\) donde los primeros \(n_0\) términos de \(a_{g(n)}\) corresponden a los índices en el conjunto \(\left\{1, \dots, m_0\right\} \times \left\{1, \dots, m_0\right\}\), i.e.:
+      \item Si \(a_1 < a < b_1\) entonces se tiene:
       \begin{align*}
-        g\left(\left\{1, 2, \dots, n_0\right\}\right) \subseteq \left\{1, 2, \dots, m_0\right\} \times \left\{1, 2, \dots, m_0\right\}
+        C \cap H & = (a, b_1) \times J_2 \times \dots \times J_N \\[2ex]
+        C \cap H^C & = (a_1, a] \times J_2 \times \dots \times J_N
       \end{align*}
-      Así, \(\forall n,m \geq m_0\) tenemos:
+      Y aunque \((a_1, a]\) no es un intervalo abierto, como \(\{a\}\) tiene medida cero, entonces \((a_1, a] = (a_1, a) \cup \{a\}\) tiene la misma medida que \((a_1, a)\) así:
       \begin{align*}
-        \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} \geq \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} & \xRightarrow[\text{invertir } \geq]{\text{añadir } - } - \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} \leq - \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} \implies \\[2ex]
-        & \xRightarrow{\text{añadir } s} s - \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} \leq s - \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} < \varepsilon
+        \mu_N^*(C \cap H) & = v_N(C \cap H) = |a - b_1| \cdot v_N(J_2) \cdot \dots \cdot v_N(J_N)\\[2ex]
+        \mu_N^*(C \cap H^C) & = v_N(C \cap H^C) = |a_1 - a| \cdot v_N(J_2) \cdot \dots \cdot v_N(J_N)
       \end{align*}
-      Y además, sabemos que:
+      Por lo que sumando:
       \begin{align*}
-        \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} \mbox{ es suma parcial de alguna reordenación de } \displaystyle \sum_{n = 1}^{\infty} a_{g(n)}
+        \mu_N^*(C \cap H) + \mu_N^*(C \cap H^C) & = \overbrace{(|a - b_1| + |a_1 - a|)}^{(b_1 - a_1)} \cdot v_N(J_2) \cdot \dots \cdot v_N(J_N) = \\[2ex]
+        & = v_N(J_1) \cdot v_N(J_2) \cdot \dots \cdot v_N(J_N) =\\[2ex]
+        & = v_N(C) = \mu_N^*(C) \implies H \in \mathcal{M}_N
       \end{align*}
-      \vspace{10ex}
-
-      Como todas las reordenaciones de una serie simple de términos positivos tienen la misma suma\footnote{Esto lo dais en Introducción al Análisis o algo así, bueno, en Análisis -1.} por lo que:
+      \item Si \(b_1 \leq a\) entonces \(C \cap H = \emptyset\) y \(C \cap H^C = C\) por lo que:
       \begin{align*}
-        0 \leq s - \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} < s - \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} < \varepsilon
-      \end{align*}
-      Y por tanto, como \(\varepsilon\) era arbitrario, tenemos que:
-      \begin{align*}
-        \displaystyle \sum_{n,m} a_{n,m} = s\\
-      \end{align*}
-      \item Si \(\sum a_{g(n)} = + \infty\) entonces \(\textcolor{blue}{\forall K \in \mathbb{R}} \quad \exists n_0\in \mathbb{N}\) tal que \(\forall k \geq  n_0\) se tiene:
-      \begin{align*}
-        \displaystyle \sum_{n = 1}^{k} a_{g(n)} \textcolor{blue}{\; > K}
-      \end{align*}
-      Como \(g\) es biyectiva, \(\exists m_0 \in \mathbb{N}\) tal que:
-      \begin{align*}
-        g\left(\left\{1, 2, 3, \dots, n_0\right\}\right) \subseteq \left\{1, 2, 3, \dots, m_0\right\} \times \left\{1, 2, 3, \dots, m_0\right\}
-      \end{align*}
-      Así, \(\forall n,m \geq m_0\) tenemos:
-      \begin{align*}
-        \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} \geq \displaystyle \sum_{i = 1}^{n_0} a_{g(i)} \textcolor{blue}{\; > K}
-      \end{align*}
-      Y por tanto, como \(K\) era arbitrario, tenemos que:
-      \begin{align*}
-        \displaystyle \sum_{n,m} a_{n,m} = + \infty
-      \end{align*}
-    \end{itemize}
-    Así, tenemos que \(\displaystyle \sum_{n,m} a_{n,m}\) es convergente o divergente a \(+\infty\) y además:
-    \begin{align*}
-      \displaystyle \sum_{n,m} a_{n,m} = \displaystyle \sum_{n = 1}^{\infty} a_{g(n)}
-    \end{align*}
-
-    Ahora nos falta ver que:
-    \begin{align*}
-      \displaystyle \sum_{n, m} a_{n, m} = \displaystyle \sum_{m = 1}^{\infty} \displaystyle \sum_{n = 1}^{\infty} a_{n, m} = \displaystyle \sum_{n = 1}^{\infty} \displaystyle \sum_{m = 1}^{\infty} a_{n, m}
-    \end{align*}
-    \vspace{20ex}
-
-    Diferenciaremos dos casos:
-    \begin{itemize}
-      \item Si \(\displaystyle \sum_{n, m} a_{n,m} = s \in [0, \infty)\), es decir, si es convergente.\vspace{2ex}
-      
-      \hyperref[def:serie_doble_convergente]{Por definición} \(\forall \varepsilon > 0, \quad \exists n_0 \in \mathbb{N} \) tal que \(\forall n,m \geq n_0\) se cumple que:
-      \begin{align*}
-        \left|s - \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j}\right| < \varepsilon
-      \end{align*}
-      donde tenemos que:
-      \begin{align*}
-        \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} = \displaystyle \sum_{j = 1}^{m} \displaystyle \sum_{i = 1}^{n} a_{i,j} = \displaystyle \sum_{i = 1}^{n} \displaystyle \sum_{j = 1}^{m} a_{i,j}
-      \end{align*}
-      Así, si desarrollamos la desigualdad anterior, tenemos:
-      \begin{align*}
-        \left|s - \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j}\right| & = \left|s - \displaystyle \sum_{j = 1}^{m} \displaystyle \sum_{i = 1}^{n} a_{i,j}\right| = \left|s - \displaystyle \sum_{i = 1}^{n} \displaystyle \sum_{j = 1}^{m} a_{i,j}\right|
-      \end{align*}
-      Veamos que ocurre con cada una de las expresiones, empezando por:
-      \begin{align*}
-        \left|s - \displaystyle \sum_{j = 1}^{m} \displaystyle \sum_{i = 1}^{n} a_{i,j}\right| < \varepsilon \implies 
-      \end{align*}
-      \begin{align*}
-        \implies & \varepsilon \geq \lim_n \left|s - \displaystyle \sum_{j = 1}^{m} \displaystyle \sum_{i = 1}^{n} a_{i,j}\right| = \left|s - \lim_n \displaystyle \sum_{j = 1}^{m} \displaystyle \sum_{i = 1}^{n} a_{ij}\right| = \\[1ex] 
-        & \hspace{10ex} = \left|s - \displaystyle \sum_{j = 1}^{m}\left(\lim_n \displaystyle \sum_{i = 1}^{n} a_{ij}\right)\right| = \left|s - \displaystyle \sum_{j = 1}^{m} \left(\displaystyle \sum_{i = 1}^{\infty} a_{ij}\right)\right| \xRightarrow[\forall m \geq n_0]{\text{Válido}} \\[4ex]
-        \implies & \varepsilon \geq \lim_{m} \left|s - \displaystyle \sum_{j = 1}^{m}\left(\displaystyle \sum_{i = 1}^{\infty} a_{i,j}\right)\right| = \left|s - \lim_m \displaystyle \sum_{j = 1}^{m}\underbracket{\left(\displaystyle \sum_{i = 1}^{\infty}a_{ij}\right)}_{ \geq  0}\right| =\\[1ex]
-        & \hspace{10.5ex} = \left|s - \displaystyle \sum_{j = 1}^{\infty} \left(\displaystyle \sum_{i = 1}^{\infty} a_{i,j}\right)\right| \geq 0 \xRightarrow[\forall \varepsilon > 0]{\text{Válido}} s - \displaystyle \sum_{j = 1}^{\infty} \left(\displaystyle \sum_{i = 1}^{\infty} a_{i,j}\right) = 0
-      \end{align*}
-      Y ahora de forma análoga, veamos qué ocurre con:
-      \begin{align*}
-        \left|s - \displaystyle \sum_{i = 1}^{n} \displaystyle \sum_{j = 1}^{m} a_{i,j}\right| < \varepsilon \implies
-      \end{align*}
-      \begin{align*}
-        \implies & \varepsilon \geq \lim_m \left|s - \displaystyle \sum_{i = 1}^{n} \displaystyle \sum_{j = 1}^{m} a_{i,j}\right| = \dots  = \left|s - \displaystyle \sum_{i = 1}^{n} \left(\displaystyle \sum_{j = 1}^{\infty} a_{i,j}\right)\right| \xRightarrow[\forall n \geq n_0]{\text{Válido}} \\[4ex]
-        \implies & \varepsilon \geq \lim_{n} \left|s - \displaystyle \sum_{i = 1}^{n}\left(\displaystyle \sum_{j = 1}^{\infty} a_{i,j}\right)\right| = \dots = \left|s - \displaystyle \sum_{i = 1}^{\infty} \left(\displaystyle \sum_{j = 1}^{\infty} a_{i,j}\right)\right| \geq 0 \xRightarrow[\forall \varepsilon > 0]{\text{Válido}} \\[2ex]
-      \implies & s - \displaystyle \sum_{i = 1}^{\infty} \left(\displaystyle \sum_{j = 1}^{\infty} a_{i,j}\right) = 0
-      \end{align*}
-      Por tanto, si \(\displaystyle \sum_{n,m} a_{n,m} = s \in [0, +\infty)\) entonces:
-      \begin{align*}
-        \displaystyle \sum_{n,m} a_{n,m} = \displaystyle \sum_{m = 1}^{\infty} \left(\displaystyle \sum_{n = 1}^{\infty} a_{n,m}\right) = \displaystyle \sum_{n = 1}^{\infty} \left(\displaystyle \sum_{m = 1}^{\infty} a_{n,m}\right) = s\\
-      \end{align*}
-      
-      \item Si \(\displaystyle \sum_{n, m} a_{n,m} = \infty\), es decir, si es divergente a \(+\infty\).\vspace{2ex}
-      
-      Si para algún \(\left\{
-        \begin{array}{ll}
-          n \in \mathbb{N} & \sum_{m = 1}^{\infty} a_{n,m} = + \infty\\[1ex]
-          m \in \mathbb{N} & \sum_{n = 1}^{\infty} a_{n,m} = + \infty
-        \end{array}
-      \right.\) entonces trivialmente:
-      \begin{align*}
-        \displaystyle \sum_{n = 1}^{\infty} \displaystyle \sum_{m = 1}^{\infty} a_{n,m} = + \infty & \qquad \mbox{ o } \qquad \displaystyle \sum_{m = 1}^{\infty} \displaystyle \sum_{n = 1}^{\infty} a_{n,m} = + \infty \quad \mbox{respectivamente}
-      \end{align*}
-      Supongamos que \(\left\{
-        \begin{array}{l}
-          \sum_{m = 1}^{\infty} a_{n, m} < \infty \quad \forall n\\[1ex]
-          \sum_{n = 1}^{\infty} a_{n, m} < \infty \quad \forall m
-        \end{array}
-      \right.\) \vspace{2ex}
-      
-      \hyperref[def:serie_doble_divergente]{Por divergencia} \(\forall K \in \mathbb{R}, \quad \exists n_0 \in \mathbb{N}\) tal que \(\forall n,m \geq n_0\) se cumple que:
-      \begin{align*}
-        \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} a_{i,j} > K
-      \end{align*}
-      Y aplicando pasos similares al caso de la convergencia, tenemos:
-      \begin{align*}
-        \displaystyle \sum_{j = 1}^{m} \displaystyle \sum_{i = 1}^{n} a_{i,j} > K \implies 
-      \end{align*}
-      \begin{align*}
-        \implies & K \leq \lim_n \displaystyle \sum_{j = 1}^{m} \displaystyle \sum_{i = 1}^{n} a_{i,j} = \displaystyle \sum_{j = 1}^{m} \lim_n \displaystyle \sum_{i = 1}^{n}a_{i,j} = \displaystyle \sum_{j = 1}^{m} \left(\displaystyle \sum_{i = 1}^{\infty} a_{i,j}\right) \xRightarrow[\forall m \geq n_0]{\text{Válido}} \\[4ex]
-        \implies & K \leq \lim_m \displaystyle \sum_{j = 1}^{m} \left(\displaystyle \sum_{i = 1}^{\infty} a_{i, j}\right) = \dots = \displaystyle \sum_{j = 1}^{\infty} \left(\displaystyle \sum_{i = 1}^{\infty} a_{i,j}\right) \geq 0 \xRightarrow[\forall K \in \mathbb{R}]{\text{Válido}} \\[2ex]
-        \implies & \displaystyle \sum_{j = 1}^{\infty} \left(\displaystyle \sum_{i = 1}^{\infty} a_{i,j}\right) = + \infty
-      \end{align*}
-      Y de forma análoga, tenemos:
-      \begin{align*}
-        \displaystyle \sum_{i = 1}^{n} \displaystyle \sum_{j = 1}^{m} a_{i,j} > K \implies
-      \end{align*}
-      \begin{align*}
-        \implies & K \leq \lim_m \displaystyle \sum_{i = 1}^{n} \displaystyle \sum_{j = 1}^{m} a_{i,j} = \dots = \displaystyle \sum_{i = 1}^{n} \left(\displaystyle \sum_{j = 1}^{\infty} a_{i,j}\right) \xRightarrow[\forall n \geq n_0]{\text{Válido}} \\[4ex]
-        \implies & K \leq \lim_n \displaystyle \sum_{i = 1}^{n} \left(\displaystyle \sum_{j = 1}^{\infty} a_{i,j}\right) = \dots = \displaystyle \sum_{i = 1}^{\infty} \left(\displaystyle \sum_{j = 1}^{\infty} a_{i,j}\right) \geq 0 \xRightarrow[\forall K \in \mathbb{R}]{\text{Válido}} \\[2ex]
-        \implies & \displaystyle \sum_{i = 1}^{\infty} \left(\displaystyle \sum_{j = 1}^{\infty} a_{i,j}\right) = + \infty
-      \end{align*}
-      Por tanto, si \(\displaystyle \sum_{n,m} a_{n,m} = + \infty\) entonces:
-      \begin{align*}
-        \displaystyle \sum_{n,m} a_{n,m} = \displaystyle \sum_{m = 1}^{\infty} \left(\displaystyle \sum_{n = 1}^{\infty} a_{n,m}\right) = \displaystyle \sum_{n = 1}^{\infty} \left(\displaystyle \sum_{m = 1}^{\infty} a_{n,m}\right) = + \infty\\
+        \mu_N^*(C \cap H) + \mu_N^*(C \cap H^C) = \mu_N^*(\emptyset) + \mu_N^*(C) = \mu_N^*(C) \implies H \in \mathcal{M}_N
       \end{align*}
     \end{itemize}
   \end{enumerate}
-  Y con esto, queda demostrado que:
+\end{dem_box}
+\vspace{3ex}
+
+
+\subsection{Caracterización de medibilidad de Lebesgue. Proposición}\label{prop:caract_medibilidad_Lebesgue}
+\noindent Dado \(E \subseteq \mathbb{R}^N\) los siguientes enunciados son equivalentes:
+\begin{enumerate}
+  \item \(E \in \mathcal{M}_N\)
+  \item \(\forall A \subseteq \mathbb{R}^N\) se cumple:
   \begin{align*}
-    \displaystyle \sum_{n, m} a_{n,m} = \displaystyle \sum_{n = 1}^{\infty} a_{g(n)} = \displaystyle \sum_{m = 1}^{\infty} \displaystyle \sum_{n = 1}^{\infty} a_{n,m} = \displaystyle \sum_{n = 1}^{\infty} \displaystyle \sum_{m = 1}^{\infty} a_{n,m} \in [0, + \infty]\\
+    \mu_N^*(A) = \mu_N^*(A \cap E) + \mu_N^*(A \cap E^C)
   \end{align*}
+  o equivalentemente:
+  \begin{align*}
+    \mu_N^*(A) \geq \mu_N^*(A \cap E) + \mu_N^*(A \cap E^C)
+  \end{align*}
+\end{enumerate}
+
+\begin{dem_box}{Demostración}
+  \begin{enumerate}
+    \item[\(2 \Rightarrow 1)\)] Trivial, tomamos \(A = C\) cubo abierto acotado cualquiera y por la propiedad de la medida exterior \(\mu_N^*(C) = v_N(C)\) entonces se cumple:
+    \begin{align*}
+      v_N(C) = \mu_N^*(C) = \mu_N^*(C \cap E) + \mu_N^*(C \cap E^C)
+    \end{align*}
+    Por lo tanto \(E \in \mathcal{M}_N\).
+    \item[\(1 \Rightarrow 2)\)] Tomamos \(A \subseteq \mathbb{R}^N\) cualquiera y tenemos dos casos:
+    \begin{itemize}
+      \item Si \(\mu_N^*(A) = \infty\), por subaditividad de \(\mu_N^*\):
+      \begin{align*}
+        \infty = \mu_N^*(A) \leq \mu_N^*(A \cap E) + \mu_N^*(A \cap E^C) \leq \infty
+      \end{align*}
+      Y por el criterio del sándwich se cumple la igualdad.\vspace{2ex}
+
+      \item Si \(\mu_N^*(A) < \infty\) entonces \(\forall \varepsilon > 0\) existe recubrimiento numerable \(\{I_i\}_{i \in \mathbb{N}}\) de cubos abiertos tales que:
+      \begin{align*}
+        A \subseteq \displaystyle \bigcup_{i = 1}^{\infty} I_i \quad \mbox{ y } \quad \mu_N^*(A) + \varepsilon > \displaystyle \sum_{i = 1}^{\infty} v_N(I_i)
+      \end{align*}
+      Notar \(\mu_N^*(A) + \varepsilon < \infty\) entonces los cubos \(I_i\) son acotados. Como \(E \in \mathcal{M}_N\):
+      \begin{align*}
+        \mu_n^*(A) + \varepsilon & \geq \displaystyle \sum_{i = 1}^{\infty} v_N(I_i) \overset{E \in \mathcal{M}_N}{ = }\displaystyle \sum_{i = 1}^{\infty} \left[\mu_N^*(I_i \cap E) + \mu_N^*(I_i \cap E^C)\right] = \\[2ex]
+        & = \displaystyle \sum_{i = 1}^{\infty} \mu_N^*(I_i \cap E) + \displaystyle \sum_{i = 1}^{\infty} \mu_N^*(I_i \cap E^C) \overset{\text{\tiny subaditividad}}{\geq} \\[2ex]
+        & \geq \mu_N^*\left(E \bigcap \left[\displaystyle \bigcup_{i = 1}^{\infty} I_i\right] \right) + \mu_N^*\left(E^C \bigcap \left[\displaystyle \bigcup_{i = 1}^{\infty} I_i\right]\right) \overset{\text{\tiny monotonia}}{\geq} \\[2ex]
+        & \geq \mu_N^*(A \cap E) + \mu_N^*(A \cap E^C)
+      \end{align*}
+      Tomamos \(\varepsilon > 0\) y hacemos \(\varepsilon \to 0\) para concluir que:
+      \begin{align*}
+        \mu_N^*(A) + \underbracket{\varepsilon}_{\to 0} \geq  \mu_N^*(E \cap A) + \mu_N^*(E^C \cap A)
+      \end{align*}
+    \end{itemize}
+  \end{enumerate}
+\end{dem_box}
+\vspace{3ex}
+
+\subsection{Proposición}
+\noindent Sea \(E, F \in \mathcal{M}_N\) entonces:
+\begin{enumerate}
+  \item \(E \cup F \in \mathcal{M}_N\)
+  \item \(E \cap F \in \mathcal{M}_N\)
+  \item \(E \setminus F \in \mathcal{M}_N\) \vspace{2ex}
+\end{enumerate}
+\begin{dem_box}{Demostración}
+  \begin{enumerate}
+    \item Sea \(A \subseteq \mathbb{R}^N\) cualquiera. Entonces:
+    \begin{align*}
+      \mu_N^*(A) & \overset{E \in \mathbb{M}_N}{=} \mu_N^*(A \cap E) + \mu_N^*(A \cap E^C) \overset{F \in \mathcal{M}_N}{=} \\[2ex]
+      & = \mu_N^*(A \cap E) + \mu_N^*(A \cap E^C \cap F) + \mu_N^*(A \cap E^C \cap F^C) = \\[2ex]
+      & = \mu_N^*(A \cap E) + \mu_N^*(A \cap [F \setminus E]) + \mu_N^*(A \cap [E \cup F]^C) \overset{\text{\tiny subadit.}}{\geq}\\[2ex]
+      & \geq \mu_N^*(A \cap [\underbracket{E \cup(F \setminus E)}_{E \cup F}]) + \mu_N^*(A \cap [E \cup F]^C) = \\[2ex]
+      & = \mu_N^*(A \cap [E \cup F]) + \mu_N^*(A \cap [E \cup F]^C) \implies E \cup F \in \mathcal{M}_N\\
+    \end{align*}
+    \item Como \((E \cap F)^C = E^C \cup F^C\) y como \(E^C, F^C \in \mathcal{M}_N\) entonces:
+    \begin{align*}
+      E \cap F = (E \cap F)^{C^C} \in \mathcal{M}_N\\
+    \end{align*}
+    \item Como \(E \setminus F = E \cap F^C\) y como \(F^C \in \mathcal{M}_N\) entonces \(E \setminus F \in \mathcal{M}_N\)
+  \end{enumerate}
+\end{dem_box}
+\vspace{3ex}
+
+\subsection{Corolario}
+\noindent Sean \(\{E_i\}_{i \in \mathbb{N}} \subseteq \mathcal{M}_N\) con \(N \in \mathbb{N}\) entonces para \(n \in \mathbb{N}\):
+\begin{align*}
+  \displaystyle \bigcup_{i = 1}^{n} E_i \in \mathcal{M}_N \quad \mbox{ y } \quad \displaystyle \bigcap_{i = 1}^{n} E_i \in \mathcal{M}_N
+\end{align*}
+\begin{dem_box}{Demostración}
+  Por inducción en \(n\) usando la proposición anterior.
+\end{dem_box}
+\vspace{3ex}
+
+\subsection{Proposición}\label{prop:3.3_5}
+\noindent Sea \(\{E_i\}_{i \in \mathbb{N}} \subseteq \mathcal{M}_N\) donde \(E_i \cap E_j = \emptyset \) si \(i \neq j\) y sea \(A \in \mathbb{R}^N\) con \(n \in \mathbb{N}\) entonces:
+\begin{align*}
+  \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n}E_i\right]\right) = \displaystyle \sum_{i = 1}^{n} \mu_N^*(A \cap E_i)
+\end{align*}
+\begin{dem_box}{Demostración}
+  Por inducción en \(n\):
+  \begin{itemize} \leftskip -10pt 
+    \item Si \(n = 1\) se cumple trivialmente ya que:
+    \begin{align*}
+      \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{1} E_i\right]\right) = \mu_N^*(A \cap E_1) = \displaystyle \sum_{i = 1}^{1} \mu_N^*(A \cap E_i)
+    \end{align*}
+    \item Por hipótesis de inducción, supongamos que se cumple para \(n\):
+    \begin{align*}
+      \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n} E_i\right]\right) = \displaystyle \sum_{i = 1}^{n} \mu_N^*(A \cap E_i)
+    \end{align*}
+    Probemos que se cumple para \(n + 1\), es decir:
+    \begin{align*}
+      \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right]\right) = \displaystyle \sum_{i = 1}^{n + 1} \mu_N^*(A \cap E_i)
+    \end{align*}
+    Como \(E_{n + 1} \in \mathcal{M}_N\) por \hyperref[prop:caract_medibilidad_Lebesgue]{carracterización de medibilidad de Lebesgue} aplicada al conjunto \(A \cap \left[\bigcup_{i = 1}^{n + 1} E_i\right]\) tenemos:
+    \begin{align*}\label{eq:prop_3_5}\tag{I}
+      \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right]\right) = & \mu_N^*\left(\left[A \cap \left[\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right]\right] \cap E_{n + 1}\right) + \\[1ex]
+      & \hspace{15ex} + \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right]\cap E_{n + 1}^C\right)
+    \end{align*}
+    Como tenemos que \(E_i \cap E_j = \emptyset \) si \(i \neq j\) entonces el primer término es:
+    \begin{align*}
+      \left[A \cap \left[\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right]\right] \cap E_{n + 1} = A \cap \left[\left(\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right) \cap E_{n + 1}\right] = A \cap E_{n + 1}
+    \end{align*}
+    y el segundo término es:
+    \begin{align*}
+      \left[A \cap \left[\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right]\right] \cap E_{n + 1}^C = A \cap \left[\left(\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right) \cap E_{n + 1}^C\right] = A \cap \left[\displaystyle \bigcup_{i = 1}^{n} E_i\right]
+    \end{align*}
+    Luego si sustituimos en \eqref{eq:prop_3_5}:
+    \begin{align*}
+      \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right]\right)& = \mu_N^*(A \cap E_{n + 1}) + \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n} E_i\right]\right) \overset{\text{\tiny H.I.}}{=} \\[2ex]
+      & = \mu_N^*(A \cap E_{n + 1}) + \displaystyle \sum_{i = 1}^{n} \mu_N^*(A \cap E_i) = \\[2ex]
+      & = \displaystyle \sum_{i = 1}^{n + 1} \mu_N^*(A \cap E_i)
+    \end{align*}
+  \end{itemize}
+\end{dem_box}
+\vspace{3ex}
+
+\subsection{Teorema de Medida de Lebesgue}
+\noindent Para \(\mu_N \coloneq {\mu_N^*}_{|_{\mathcal{M}_N}}\) se tiene que \((\mathbb{R}^N, \mathcal{M}_N, \mu_N)\) es un espacio de medida completo tal que:
+\begin{align*}
+  \tau_{\mathbb{R}^N} \subseteq \mathcal{M}_N \quad \mbox{ y } \quad \mu_N(C) = v_N(C) \quad \forall C \mbox{ cubo acotado}
+\end{align*}
+\begin{dem_box}{Demostración}
+  \begin{enumerate}\leftskip -15pt
+    \item \textit{Ver que \(\mathcal{M}_N\) es una \(\sigma\)-álgebra}
+    \begin{itemize} \leftskip -15pt
+      \item \textit{\(\emptyset \in \mathcal{M}_N\)}: Por \hyperref[prop:propiedades_MN]{las propiedades de \(\mathcal{M}_N\)} sabemos que \(\emptyset \in \mathcal{M}_N\).\vspace{2ex}
+      \item \textit{Si \(E \in \mathcal{M}_N\) entonces \(E^C \in \mathcal{M}_N\)}: Por \hyperref[prop:propiedades_MN]{las propiedades de \(\mathcal{M}_N\)} sabemos que si \(E \in \mathcal{M}_N\) entonces \(E^C \in \mathcal{M}_N\). \vspace{2ex}
+      \item \textit{\(\mathcal{M}_N\) es cerrada bajo uniones numerables:} Sea \(\{E_i\}_{i \in \mathbb{N}} \subseteq \mathcal{M}_N\) aplicando desjuntificación, obtenemos: 
+      \begin{align*}
+      F_1 & \coloneq E_1 \in \mathcal{M}_N\\
+      F_2 & \coloneq E_2 \setminus E_1 \in \mathcal{M}_N\\
+      \vdots \hspace{0.7ex} & \hspace{10ex}\vdots \\
+      F_{n + 1} & \coloneq E_{n + 1} \setminus \displaystyle \bigcup_{i = 1}^{n} E_i \in \mathcal{M}_N
+    \end{align*}
+    Así, tenemos que \(\forall n \in \mathbb{N}\) se cumple:
+    \begin{align*}
+      \displaystyle \bigcup_{i = 1}^{n} F_i = \displaystyle \bigcup_{i = 1}^{n} E_i \quad \mbox{y} \quad \displaystyle \bigcup_{i = 1}^{\infty} F_i = \displaystyle \bigcup_{i = 1}^{\infty} E_i \quad \mbox{ y } \quad F_i \cap F_j = \emptyset \mbox{ si } i \neq j
+    \end{align*}
+    Veamos que es medible. Sea \(A \subseteq \mathbb{R}^N\) cualquiera, entonces para cada \(n \in \mathbb{N}\) como \(\bigcup_{i = 1}^{n} E_i \in \mathcal{M}_N\) entonces\footnote{(Aquí tuvo un pequeño lapsus y puso E donde era F y un joven alumno le corrigió). Muchas gracias, gracias a tí no me pilla el toro. Tengo unas pegatinas de matemáticas en casa y tu ya tienes una, solo que no las tengo aquí.}:
+    \begin{align*}
+      \mu_N^*(A) = \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n} E_i\right]\right) + \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n}E_i\right]^C\right)
+    \end{align*}
+    Donde tenemos que:
+    \begin{itemize}
+      \item \(\bigcup_{i = 1}^n E_i = \bigcup_{i = 1}^n F_i\)
+      \item \(\left(\bigcup_{i = 1}^n E_i\right)^C \supseteq \left(\bigcup_{i = 1}^\infty E_i\right)^C\)
+    \end{itemize}
+    Aplicando monotonía de \(\mu_N^*\) en el segundo término:
+    \begin{align*}
+      \mu_N^*(A) & \geq \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n} F_i\right]\right) + \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{\infty} E_i\right]^C\right) \xlongequal[\text{\tiny \hyperref[prop:3.3_5]{anterior}}]{\text{\tiny \hyperref[prop:3.3_5]{prop}}} \\[2ex]
+      & = \displaystyle \sum_{i = 1}^{n} \mu_N^*(A \cap F_i) + \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{\infty} E_i\right]^C\right)
+    \end{align*}
+    Y si hacemos tender \(n \to \infty\) obtenemos:
+    \begin{align*}
+      \mu_N^*(A) & \geq \displaystyle \sum_{i = 1}^{\infty} \mu_N^*(A \cap F_i) + \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{\infty} E_i\right]^C\right) \overset{\text{\tiny subaditv}}{\geq}\\[2ex]
+      & \geq \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{\infty} F_i\right]\right) + \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{\infty} E_i\right]^C\right) = \\[2ex]
+      & = \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{\infty} E_i\right]\right) + \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{\infty} E_i\right]^C\right)
+    \end{align*}
+    Como la desigualdad contraria se cumple por subaditividad de \(\mu_N^*\), es decir:
+    \begin{align*}
+      \mu_N^*(A) \leq \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{\infty} E_i\right]\right) + \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{\infty} E_i\right]^C\right)
+    \end{align*}
+    Por el criterio del sándwich se cumple la igualdad y por lo tanto:
+    \begin{align*}
+      \mu_N^*(A) = \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{\infty} E_i\right]\right) + \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{\infty} E_i\right]^C\right) \implies \displaystyle \bigcup_{i = 1}^{\infty} E_i \in \mathcal{M}_N\\
+    \end{align*}
+    \end{itemize}
+    \item \textit{Ver que \(\tau_{\mathbb{R}^N} \subseteq \mathcal{M}_N\)}: Para cada \(j = 1, \dots, N\) definimos los semiespacios:
+    \begin{align*}
+      H_j^{ + } & \coloneq (a_j, \infty) \times \mathbb{R}^{N - 1} \\[2ex]
+      H_j^{ - } & \coloneq (-\infty, a_j) \times \mathbb{R}^{N - 1}
+    \end{align*}
+
+    Vimos en \hyperref[prop:propiedades_MN]{las propiedades de \(\mathcal{M}_N\)} que \(H_j^{ + }, H_j^{ - } \in \mathcal{M}_N\).\vspace{2ex}
+
+    Como todo cubo abierto \(C = (a_1, b_1) \times (a_2, b_2) \times \dots \times (a_N, b_N)\) puede expresarse como intersección finita de semiespacios \(H_j^{ + }\) y \(H_j^{ - }\):
+    \begin{align*}
+      C = \displaystyle \bigcap_{i = 1}^{N} \left(H_i^{ + } \cap H_i^{ - }\right)
+    \end{align*}
+    entonces \(C \in \mathcal{M}_N\) por la propiedad de cerradura bajo intersección finita de \(\mathcal{M}_N\).\vspace{2ex}
+
+    Ahora, definimos la base numerable de \(\tau_{\mathbb{R}^N}\).:
+    \begin{align*}
+      \mathcal{A} \coloneq \left\{(p_1, q_1) \times (p_2, q_2) \times \dots \times (p_N, q_N) : p_i, q_i \in \mathbb{Q}, p_i < q_i\right\}
+    \end{align*}
+    Al ser base de \(\tau_{\mathbb{R}^N}\), todo abierto \(O \in \tau_{\mathbb{R}^N}\) puede expresarse como unión numerable de elementos de \(\mathcal{A}\). Como \(\mathcal{A} \subseteq \mathcal{M}_N\) y \(\mathcal{M}_N\) es cerrada bajo uniones numerables, entonces \(O \in \mathcal{M}_N\).\vspace{2ex}
+
+    \item \textit{Ver que \(\mu_N\) es medida:} Veamos que cumple las dos propiedades de la definición de medida:
+    \begin{itemize} \leftskip -15pt
+      \item \textit{\(\mu_N(\emptyset ) = 0\)}: Ya hemos probado\footnote{Como habéis notado, yo no soy de aquí y digo barbaridades como hemos demostrado en vez de demostramos y cosas así porque, aunque demostramos tiene tiempo pasado, también indica presente. Antes decía mucho demostramos en lugar de hemos demostrado y, un alumno me hizo un análisis sintáctico y, por no insistir, empecé a decir hemos demostrado y nos quitamos de problemas.} esto, por definición \(\mu_N\) y por la propiedad de la medida exterior \(\mu_N^*\) tenemos:
+      \begin{align*}
+        \mu_N(\emptyset ) = \mu_N^*(\emptyset ) = 0
+      \end{align*}
+      \item \textit{\(\sigma\)-aditividad:} Sea \(\{E_i\}_{i \in \mathbb{N}} \subseteq \mathcal{M}_N\) disjuntos entonces para cada \(n \in \mathbb{N}\):
+      \begin{align*}
+        \displaystyle \sum_{i = 1}^{n} \mu_N(E_i) & \xlongequal[\text{\tiny \hyperref[prop:3.3_5]{prop. ant}}]{E_i \cap E_j = \emptyset } \mu_N\left(\displaystyle \bigcup_{i = 1}^{n}E_i\right) \overset{\text{\tiny monot.}}{\leq} \mu_N\left(\displaystyle \bigcup_{i = 1}^{\infty} E_i\right) = \\[2ex]
+        & = \mu_N^*\left(\displaystyle \bigcup_{i = 1}^{\infty} E_i\right) \overset{\text{\tiny subadit.}}{\leq} \displaystyle \sum_{i = 1}^{\infty} \mu_N^*(E_i) = \displaystyle \sum_{i = 1}^{\infty} \mu_N(E_i)
+      \end{align*}
+      Y ahora, si hacemos \(n \to \infty\) obtenemos:
+      \begin{align*}
+        \displaystyle \sum_{i = 1}^{\infty} \mu_N(E_i) \leq \mu_N\left(\displaystyle \bigcup_{i = 1}^{\infty} E_i\right) \leq \displaystyle \sum_{i = 1}^{\infty} \mu_N(E_i)
+      \end{align*}
+      Por el criterio del sándwich se cumple la igualdad y por lo tanto es \(\sigma\)-aditiva.\vspace{3ex}
+    \end{itemize}
+
+    \item \textit{\((\mathbb{R}^N, \mathcal{M}_N, \mu_N)\) es completo:} Sea \(E \in \mathcal{M}_N\) con \(\mu_N(E) = 0\) y \(F \subseteq E\), entonces:
+    \begin{align*}
+      0 \leq \mu_N^*(F) \overset{\text{\tiny monot.}}{\leq} \mu_N^*(E) = 0 \implies \mu_N^*(F) = 0 \implies F \in \mathcal{M}_N
+    \end{align*}
+
+    \item \textit{Ver que \(\mu_N(C) = v_N(C)\) para todo cubo acotado \(C\)}: Sea \(C\) un cubo abierto acotado en \(\mathbb{R}^N\), por las \hyperref[prop:propiedades_muN*]{propiedades de \(\mu_N^*\)} sabemos que \(\mu_N^*(C) = v_N(C)\) y como \(C \in \mathcal{M}_N\) entonces:
+    \begin{align*}
+      \mu_N(C) = \mu_N^*(C) = v_N(C)\\
+    \end{align*}
+  \end{enumerate}
+\end{dem_box}
+\vspace{3ex}
+
+\begin{ej_box}{Nota}
+  Ahora, para cerrar este tema, nos va a faltar\footnote{Y aquí algunos estadísticos hacen barbaridades dignas de colgarles de un árbol} ver la relación entre la medida de Lebesgue y la medida de Borel:
+  \begin{align*}
+    (\mathbb{R}^N, \widetilde{\mathcal{B}_N}, \widetilde{\mu_N}) = (\mathbb{R}^N, \mathcal{M}_N, \mu_N)
+  \end{align*}
+\end{ej_box}
+\vspace{3ex}
+
+\subsection{\texorpdfstring{Caracterización topológica de los conjuntos medibles de Lebesgue de \(\mathbb{R^N}\). Teorema}{Caracterización topológica de los conjuntos medibles de Lebesgue de R\^N. Teorema}}\label{th:caract_topologica_conjuntos_medibles_Lebesgue}
+\noindent Para todo \(E \subseteq \mathbb{R}^N\) los siguientes enunciados son equivalentes:
+\begin{enumerate}
+  \item \(E \in \mathcal{M}_N\)
+  \item \(\forall \varepsilon > 0\) existe \(O\) abierto tal que \(E \subseteq O\) y \(\mu_N^*(O \setminus E) < \varepsilon\)
+  \item \(\forall \varepsilon > 0\) existe \(C\) cerrado tal que \(C \subseteq E\) y \(\mu_N^*(E \setminus C) < \varepsilon\)
+  \item \(\forall \varepsilon > 0\) existe \(O\) abierto y \(C\) cerrado tal que \(C \subseteq E \subseteq O\) y \(\mu_N^*(O \setminus C) < \varepsilon\)
+\end{enumerate}
+\vspace{2ex}
+\begin{ej_box}{Nota}
+  La demostración se hará siguiendo el esquema:
+  \begin{align*}
+    1 & \implies 2 \implies 1\\
+    1 & \implies 3 \implies 1\\
+    1 & \implies 4 \implies 2 \land 3
+  \end{align*}
+\end{ej_box}
+\vspace{2ex}
+\begin{dem_box}{Demostración}
+  \begin{enumerate}
+    \item[\(1 \Rightarrow 2\))] Sea \(E \in \mathcal{M}_N\) se puede aproximar por abiertos que lo contienen. Así se dan dos casos:
+    \begin{itemize} \leftskip -15pt
+      \item \textit{Sea \(\mu_N(E) < \infty\)}: Por \hyperref[def:medida_exterior]{definción de medida exterior}, \(\forall \varepsilon > 0\) existe un recubrimiento por cubos abiertos \(\{I_i\}_{i \in \mathbb{N}}\) tales que:
+      \begin{align*}
+        E \subseteq \displaystyle \bigcup_{i = 1}^{\infty} I_i \quad \mbox{ y } \quad \mu_N(E) + \varepsilon > \displaystyle \sum_{i = 1}^{\infty} v_N(I_i)
+      \end{align*}
+      Sea \(O \coloneq \bigcup_{i = 1}^\infty I_i\) así \(O\) es abierto y \(E \subseteq O\). Como \(E\) es medible entonces:
+      \begin{align*}
+        \mu_N(O) = \mu_N(O \cap E) + \mu_N(O \cap E^C) = \mu_N(E) + \mu_N(O \setminus E)
+      \end{align*}
+      Por lo tanto:
+      \begin{align*}
+        \mu_N(O \setminus E) & = \mu_N(O) - \mu_N(E) \leq \displaystyle \sum_{i = 1}^{\infty} v_N(I_i) - \mu_N(E) < \varepsilon
+      \end{align*}
+      \item \textit{Sea \(\mu_N(E) = \infty\)}: Descomponemos \(\mathbb{R}^N\) en conjuntos disjuntos, para ello, consideramos los cubos \(C_n \coloneq [ - n, n]^N\) con \(n \in \mathbb{N}\) y los conjuntos:
+      \begin{align*}
+        D_1 & \coloneq C_1 \in \mathcal{M}_N\\
+        D_2 & \coloneq C_2 \setminus C_1 \in \mathcal{M}_N\\
+        \vdots \hspace{0.7ex} & \hspace{10ex}\vdots \\
+        D_{n + 1} & \coloneq C_{n + 1} \setminus C_n \in \mathcal{M}_N
+      \end{align*}
+      Así, \(\mathbb{R}^N = \bigcup_{i = 1}^\infty D_n \):
+      \begin{itemize} \leftskip -10pt
+        \item \(D_n \cap D_m = \emptyset \) si \(n \neq m\)
+        \item \(D_n\) es acotado entonces \(\mu_n(D) < \infty\)
+      \end{itemize}
+      Entonces definiendo \(E_n \coloneq E \cap D_n \in \mathcal{M}_N\) tenemos:
+      \begin{align*}
+        E = \displaystyle \bigcup_{n = 1}^{\infty} E_n \quad \mbox{ y } \quad E_n \cap E_m = \emptyset \mbox{ si } n \neq m \quad \mbox{ y } \quad \mu_N(E_n) < \infty
+      \end{align*}
+      Sea \(\varepsilon > 0\) cualquiera, 
+      por el caso anterior para cada \(E_n\), \(\exists O_n\) abierto tq:
+      \begin{align*}
+        E_n \subseteq O_n \quad \mbox{ y } \quad \mu_N(O_n \setminus E_n) < \frac{\varepsilon}{2^n}
+      \end{align*} 
+      Sea \(O \coloneq \bigcup_{i = 1}^\infty O_n\) abierto entonces:
+      \begin{align*}
+        \mu_N(O \setminus E) = \mu_N\left(\displaystyle \bigcup_{n = 1}^{\infty} O_n \setminus \displaystyle \bigcup_{n = 1}^{\infty} E_n\right)  &\leq \mu_N\left(\displaystyle \bigcup_{n = 1}^{\infty} \left[O_n \setminus E_n\right]\right)  \leq \\[2ex]
+        & \leq \displaystyle \sum_{n = 1}^{\infty} \mu_N(O_n \setminus E_n) < \displaystyle \sum_{n = 1}^{\infty} \frac{\varepsilon}{2^n} = \varepsilon
+      \end{align*}
+    \end{itemize}
+    \item[\(1 \Rightarrow 3\))] Sea \(E \in \mathcal{M}_N\), entonces queremos aproximarlo por cerrados contenidos en él, así consideramos \(\varepsilon > 0\) entonces aplicando \(1 \Rightarrow 2\) a \(E^C\) existe \(O\) abierto con:
+    \begin{align*}
+      E^C \subseteq O \quad \mbox{ y } \quad \mu_N(O \setminus E^C) < \varepsilon
+    \end{align*}
+    Sea \(C \coloneq O^C\) cerrado, así \(C^C = O\) luego:
+    \begin{align*}
+      \mu_N\left(C^C\setminus E^C\right) = \mu_N(O \setminus E^C) < \varepsilon\\
+    \end{align*}
+    \item[\(1 \Rightarrow 4\))] Sea \(E \in \mathcal{M}_N\) y consideramos \(\varepsilon > 0\) cualquiera, aplicando \(1 \Rightarrow 2\) y \(1 \Rightarrow 3\) se obtienen \(O\) abierto y \(C\) cerrado tales que:
+    \begin{align*}
+      C \subseteq E \subseteq O \quad \mbox{ y } \quad \mu_N(O \setminus E) < \frac{\varepsilon}{2}, \quad \mu_N(E \setminus C) < \frac{\varepsilon}{2}
+    \end{align*}
+    Luego:
+    \begin{align*}
+      \mu_N(O\setminus C)  = \mu_N\left([O \setminus E] \cup [E \setminus C]\right) \leq \mu_N(O \setminus E) + \mu_N(E \setminus C)< \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon\\
+    \end{align*}
+    \item[\(4 \Rightarrow 2\))] \textit{(Y \(4 \Rightarrow 3\))} Por hipótesis dado \(\varepsilon > 0\) existen \(C\) cerrado y \(O \) abierto tales que:
+    \begin{align*}
+      C \subseteq E \subseteq O \quad \mbox{ y } \quad \mu_N(O \setminus C) < \varepsilon
+    \end{align*}
+    Entonces:
+    \begin{align*}
+      O\setminus E \subseteq O \setminus C & \implies \mu_N^*(O \setminus E) \leq \mu_N^*(O \setminus C) < \varepsilon\\[2ex]
+      E \setminus C \subseteq O \setminus C & \implies \mu_N^*(E \setminus C) \leq \mu_N^*(O \setminus C) < \varepsilon\\
+    \end{align*}
+    \item[\(2 \Rightarrow 1\))] Por hipótesis para cada \(n \in \mathbb{N}\) existe \(O_n\) abierto tal que:
+    \begin{align*}
+      E \subseteq O_n \quad \mbox{ y } \quad \mu_N^*(O_n \setminus E) < \frac{1}{n}
+    \end{align*}
+    Consideramos los abiertos \(G_n \coloneq \bigcap_{i = 1}^n O_i\) así:
+    \begin{itemize}
+      \item \(G_n \supseteq G_{n + 1}\)
+      \item \(E \subseteq G_n\)
+      \item \(\mu_N^*(G_n \setminus E) \leq \mu_N^*(O_n \setminus E) < \frac{1}{n}\)
+    \end{itemize}
+    Sea \(G \coloneq \bigcap_{i = 1}^\infty G_n \in \mathcal{M}_N\) tenemos que \(E \subseteq G\) y :
+    \begin{align*}
+      \mu_N^*(G \setminus E) \leq \mu_N^*(G_n \setminus E) < \frac{1}{n} \quad \forall n \in \mathbb{N}
+    \end{align*}
+    Haciendo \(n \to \infty\) obtenemos:
+    \begin{align*}
+      0 \leq \mu_N^*(G \setminus E) \leq 0 \implies N \coloneq G \setminus E \in \mathcal{M}_N \quad \mbox{ y } \quad \mu_N(N) = 0
+    \end{align*}
+    Además, como \(G, N \in \mathcal{M}_N\) entonces \(E = G \setminus N \in \mathcal{M}_N\) \vspace{2ex}
+
+    \item[\(3 \Rightarrow 1\))] Por hipótesis para cada \(n \in \mathbb{N}\) existe \(C_n\) cerrado tal que:
+    \begin{align*}
+      E \supseteq C_n \quad \mbox{ y } \quad \mu_N^*(E \setminus C_n) < \frac{1}{n}
+    \end{align*}
+    Consideramos los cerrados \(D_n \coloneq \bigcup_{i = 1}^n C_i\) así:
+    \begin{itemize}
+      \item \(D_n \subseteq D_{n + 1}\)
+      \item \(E \supseteq D_n\)
+      \item \(\mu_N^*(E \setminus D_n) \leq \mu_N^*(E \setminus C_n) < \frac{1}{n}\)
+    \end{itemize}
+    Sea \(D \coloneq \bigcup_{i = 1}^\infty D_n \in \mathcal{M}_N\), así:
+    \begin{align*}
+      E \supseteq D \quad \mbox{ y } \quad \mu_N^*(E \setminus D) \leq \mu_N^*(E \setminus D_n) < \frac{1}{n}
+    \end{align*}
+    Haciendo \(n \to \infty\) obtenemos:
+    \begin{align*}
+      0 \leq \mu_N^*(E \setminus D) \leq 0 \implies M \coloneq E \setminus D \in \mathcal{M}_N \quad \mbox{ y } \quad \mu_N(M) = 0
+    \end{align*}
+    Además, como \(D, M \in \mathcal{M}_N\) entonces \(E = D \cup M \in \mathcal{M}_N\)
+  \end{enumerate}
+\end{dem_box}
+\vspace{3ex}
+\begin{ej_box}{Nota}
+  Las implicaciones de esta demostración lo que dicen (en castellano) es:
+  \begin{itemize}
+    \item[\(1 \Rightarrow 2\))] Si \(E\) es medible entonces se puede aproximar por abiertos que lo contienen.
+    \item[\(1 \Rightarrow 3\))] Si \(E\) es medible entonces se puede aproximar por cerrados que están contenidos en él.
+    \item[\(1 \Rightarrow 4\))] Si \(E\) es medible entonces puede ser ``encajado'' entre un cerrado y un abierto.
+    \item[\(4 \Rightarrow 2\))] \textit{(y \(4 \Rightarrow 3\))} La aproximación bilateral implica la aproximación unilateral.
+    \item[\(2 \Rightarrow 1\))] Si \(E\) puede ser aproximado por abiertos que lo contienen entonces es medible.
+    \item[\(3 \Rightarrow 1\))] Si \(E\) puede ser aproximado por cerrados que están contenidos en él entonces es medible. 
+  \end{itemize}
+\end{ej_box}
+
+\begin{ej_box}{Observación}
+  Todo \(E \in \mathcal{M}_N\) se puede expresar como:
+  \begin{align*}
+    E = \left(\displaystyle \bigcap_{n = 1}^{\infty} G_n\right) \setminus N \quad \mbox{ o } \quad E = \left(\displaystyle \bigcup_{n = 1}^{\infty} D_n\right) \cup M
+  \end{align*}
+  donde \((G_n)_n\) es una sucesión decreciente de abiertos, \((D_n)_n\) es una sucesión creciente de cerrados y \(N, M\) son conjuntos de medida nula.\vspace{2ex}
+
+  Además, los conjuntos \(\bigcap_{n = 1}^\infty G_n\) y \(\bigcup_{n = 1}^\infty D_n\) son conjuntos Borelianos.
+\end{ej_box}
+\vspace{3ex}
+
+\subsection{\texorpdfstring{Medida de Borel y medida de Lebesgue en \(\mathbb{R}^N\). Corolario}{Medida de Borel y medida de Lebesgue en R\^N. Corolario}}\label{th:relacion_medida_Borel_Lebesgue}
+\noindent Se tiene que:
+\begin{align*}
+  \left(\mathbb{R}^N, \mathcal{M}_N, \mu_N\right) = \left(\mathbb{R}^N, \widetilde{\mathcal{B}_N}, \widetilde{\mu_{N|_{\mathcal{B}_N}}}\right)
+\end{align*}
+\begin{dem_box}{Demostración}
+  \begin{itemize} \leftskip -18pt
+    \item \textit{Veamos que \(\mathcal{M}_N = \widetilde{\mathcal{B}_N}\)}:
+    \begin{itemize} \leftskip -18pt
+      \item \textit{Veamos que \(\widetilde{\mathcal{B}_N} \subseteq \mathcal{M}_N\)}: Sea \(E \in \widetilde{\mathcal{B}_N}\) donde:
+      \begin{align*}
+        \widetilde{\mathcal{B}_N} \coloneq \left\{A \cup M : A \in \mathcal{B}_N, \; M \in \mathcal{N}\right\}
+      \end{align*}
+      con:
+      \begin{align*}
+        \mathcal{N} \coloneq \left\{M \subseteq \mathbb{R}^N : \exists P \in \mathcal{B}_N \mbox{ tal que } M \subseteq P \mbox{ y } \mu_N(P) = 0\right\}
+      \end{align*}
+      Así, \(E = A \cup M\) con \(A \in \mathcal{B}_N\) y \(M \in \mathcal{N}\) entonces:
+      \begin{align*}
+        A \in \mathcal{B}_N \subseteq \mathcal{M}_N \implies A \in \mathcal{M}_N
+      \end{align*}
+      Como \(\mu_N\) es completa y \(M \subseteq P\) con \(P \in \mathcal{B}_N \subseteq \mathcal{M}_N\) y \(\mu_N(P) = 0\) entonces:
+      \begin{align*}
+        M \in \mathcal{M}_N
+      \end{align*}
+      Finalmente, como \(\mathcal{M}_N\) es \(\sigma\)-álgebra, es cerrada bajo uniones numerables:
+      \begin{align*}
+        E = A \cup M \in \mathcal{M}_N\\
+      \end{align*}
+      \item \textit{Veamos que \(\mathcal{M}_N \subseteq \widetilde{\mathcal{B}_N}\)}: Sea \(E \in \mathcal{M}_N\), por el \hyperref[th:caract_topologica_conjuntos_medibles_Lebesgue]{teorema de caracterización topológica de los conjuntos medibles de Lebesgue}, \(E = D \cup M\) con \(D\) conjunto Boreliano y \(\mu_N(M) = 0\).\vspace{10ex}
+      
+      Como \(M \in \mathcal{M}_N\) y \(\mu_N(M) = 0\) entonces existe una sucesión decreciente de conjuntos abiertos \((O_n)_n\) tal que:
+      \begin{align*}
+        M \subseteq O_n \quad \mbox{ y } \quad \mu_N(O_n) \xlongequal[\mu_N(M) = 0]{} \mu_N(O_n\setminus M) < \frac{1}{n}
+      \end{align*}
+      Sea \(G \coloneq \bigcap_{n = 1}^{\infty} O_n\) entonces tenemos que:
+      \begin{itemize} \leftskip -12pt
+        \item \(G\) es intersección numerable de abiertos entonces \(G \in \mathcal{B}_N\)
+        \item \(M \subseteq G\)
+        \item \(\mu_N(G) \leq \mu_N(O_n) < \frac{1}{n} \) para todo \(n \in \mathbb{N}\) luego \(\mu_N(G) = 0\)
+      \end{itemize}
+      Por tanto, \(M \in \mathcal{N}\) y así:
+      \begin{align*}
+        E = \underbracket{D}_{\in \mathcal{B}_N} \cup \underbracket{M}_{\in \mathcal{N}} \in \widetilde{\mathcal{B}_N}
+      \end{align*}
+    \end{itemize}
+    \item \textit{Veamos que \(\mu_N = \widetilde{{\mu_N}_{|_{\mathcal{B}_N}}}\)}: Sea \(E \in \widetilde{\mathcal{B}_N}\) entonces:
+    \begin{align*}
+      E = A \cup M \quad \mbox{ con } \left\{
+        \begin{array}{l}
+          A \in \mathcal{B}_N\\
+          M \subseteq P \in \mathcal{B}_N \mbox{ y } \mu_N(P) = 0
+        \end{array}
+      \right.
+    \end{align*}
+    Luego, por definición de \(\widetilde{\mu_N}\):
+    \begin{align*}
+      \widetilde{\mu_N}(E) = \widetilde{\mu_N}(A \cup M) = \mu_N(A)
+    \end{align*}
+    Como \(E \subseteq A \cup P\) entonces:
+    \begin{align*}
+      \mu_N(E) \leq \mu_N(A \cup P) \overset{\text{subadit.}}{\leq} \mu_N(A) + \mu_N(P) = \mu_N(A) \leq \mu_N(E)
+    \end{align*}
+    Por el criterio del sándwich se cumple la igualdad y por lo tanto:
+    \begin{align*}
+      \mu_N(E) = \widetilde{\mu_N}(E)
+    \end{align*}
+  \end{itemize}
 \end{dem_box}
 \end{document}

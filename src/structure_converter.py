@@ -101,6 +101,7 @@ class StructureConverter:
     
     def convert_lists(self, content: str) -> str:
         """Convert LaTeX lists to MDX/KaTeX format.
+        Handles nested lists by processing innermost lists first.
 
         Args:
             content (str): Content to be processed.
@@ -109,29 +110,67 @@ class StructureConverter:
             str: Content with converted lists.
         """
         def convert_itemize(match):
-            # Capturar items completos, no solo la primera línea
+            # Capturar items completos con sus etiquetas personalizadas
             items_text = match.group(1)
-            # Manejar \item con etiqueta personalizada: \item[label]
-            items = re.split(r'\\item(?:\[[^\]]*\])?\s*', items_text)
-            # Filtrar items vacíos
-            items = [item.strip() for item in items if item.strip()]
-            return '\n- ' + '\n- '.join(items) + '\n'
+            # Buscar \item con o sin etiqueta: \item[label] texto o \item texto
+            # Usar DOTALL para capturar múltiples líneas incluidos bloques matemáticos
+            item_pattern = r'\\item(?:\[([^\]]*)\])?\s*(.+?)(?=\\item(?:\[[^\]]*\])?|$)'
+            items = re.findall(item_pattern, items_text, re.DOTALL)
+            
+            result = []
+            for label, text in items:
+                text = text.strip()
+                if not text:
+                    continue
+                if label:
+                    # Si hay etiqueta personalizada, ponerla en negrita al inicio
+                    result.append(f'- **{label}** {text}')
+                else:
+                    result.append(f'- {text}')
+            
+            return '\n' + '\n'.join(result) + '\n' if result else ''
         
         def convert_enumerate(match):
-            # Capturar items completos, no solo la primera línea
+            # Capturar items completos con sus etiquetas personalizadas
             items_text = match.group(1)
-            # Manejar \item con etiqueta personalizada: \item[label]
-            items = re.split(r'\\item(?:\[[^\]]*\])?\s*', items_text)
-            # Filtrar items vacíos
-            items = [item.strip() for item in items if item.strip()]
-            return '\n' + '\n'.join(f'{i+1}. {item}' for i, item in enumerate(items)) + '\n'
+            # Buscar \item con o sin etiqueta: \item[label] texto o \item texto
+            # Usar DOTALL para capturar múltiples líneas incluidos bloques matemáticos
+            item_pattern = r'\\item(?:\[([^\]]*)\])?\s*(.+?)(?=\\item(?:\[[^\]]*\])?|$)'
+            items = re.findall(item_pattern, items_text, re.DOTALL)
+            
+            result = []
+            counter = 1
+            for label, text in items:
+                text = text.strip()
+                if not text:
+                    continue
+                if label:
+                    # Si hay etiqueta personalizada, usarla en lugar del número
+                    result.append(f'- **{label}** {text}')
+                else:
+                    result.append(f'{counter}. {text}')
+                    counter += 1
+            
+            return '\n' + '\n'.join(result) + '\n' if result else ''
         
-        content = self.itemize_pattern.sub(convert_itemize, content)
-        content = self.enumerate_pattern.sub(convert_enumerate, content)
+        # Process nested lists iteratively from innermost to outermost
+        # Keep replacing until no more list environments are found
+        max_iterations = 10  # Prevent infinite loops
+        iteration = 0
+        while iteration < max_iterations:
+            old_content = content
+            content = self.itemize_pattern.sub(convert_itemize, content)
+            content = self.enumerate_pattern.sub(convert_enumerate, content)
+            if content == old_content:
+                break  # No more changes
+            iteration += 1
         
-        # Remove the \end{itemize} and \end{enumerate} tags if any remain
+        # Remove any remaining \end{itemize} and \end{enumerate} tags
         content = re.sub(r'\\end\{itemize\}', '', content)
         content = re.sub(r'\\end\{enumerate\}', '', content)
+        # Also remove any remaining \begin tags that weren't matched
+        content = re.sub(r'\\begin\{itemize\}', '', content)
+        content = re.sub(r'\\begin\{enumerate\}', '', content)
         return content
     
     def convert_images_and_urls(self, content: str) -> str:
@@ -197,10 +236,9 @@ class StructureConverter:
         content = self.hypersetup_pattern.sub('', content)
         content = self.nobgthispage_pattern.sub('', content)
         
-        # Eliminar cualquier \begin{...} y \end{...} que quede sin convertir
-        # (excepto los que deban estar en bloques matemáticos)
-        content = re.sub(r'\\begin\{(itemize|enumerate|center)\}', '', content)
-        content = re.sub(r'\\end\{(itemize|enumerate|center)\}', '', content)
+        # Eliminar cualquier \begin{center} y \end{center} que quede sin convertir
+        content = re.sub(r'\\begin\{center\}', '', content)
+        content = re.sub(r'\\end\{center\}', '', content)
         
         return content
     

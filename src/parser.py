@@ -107,8 +107,6 @@ class TexToMdxParser:
             # Reemplazar \\ con comas y espacios
             return inner.replace(r'\\', ', ')
         content = re.sub(r'\\substack\{([^}]+)\}', replace_substack, content)
-        # Eliminar \item que no se hayan convertido
-        content = re.sub(r'\\item\s*', '', content)
         return content
     
     def _create_slug(self, text: str) -> str:
