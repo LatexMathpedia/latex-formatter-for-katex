@@ -31,6 +31,9 @@ class TexToMdxParser:
         # 2. Limpiar preámbulo LaTeX
         content = self.remove_preamble(content)
         
+        # 2.5. Eliminar entornos minipage (antes de procesar el resto)
+        content = self.remove_minipage_environments(content)
+        
         # 3. Eliminar comandos \vspace (antes de procesar matemáticas)
         content = self.remove_vspace_commands(content)
         
@@ -81,6 +84,23 @@ class TexToMdxParser:
         content = re.sub(r'\\newpage', '', content)
         # Eliminar \leftskip seguido de valor en pt (ej: \leftskip -10pt)
         content = re.sub(r'\\leftskip\s+[+-]?\d+pt', '', content)
+        # Eliminar \setlength\itemsep{...} (comando de espaciado en listas)
+        content = re.sub(r'\\setlength\\itemsep\{[^}]+\}', '', content)
+        return content
+    
+    def remove_minipage_environments(self, content: str) -> str:
+        """Eliminar entornos minipage del contenido LaTeX.
+        
+        Args:
+            content (str): Contenido con posibles entornos minipage.
+        
+        Returns:
+            str: Contenido sin los tags \\begin{minipage} y \\end{minipage}.
+        """
+        # Eliminar \begin{minipage}{...}
+        content = re.sub(r'\\begin\{minipage\}\{[^}]+\}', '', content)
+        # Eliminar \end{minipage}
+        content = re.sub(r'\\end\{minipage\}', '', content)
         return content
     
     def remove_equation_commands(self, content: str) -> str:
