@@ -100,6 +100,8 @@ class TexToMdxParser:
         content = re.sub(r'\\hyperref\[[^\]]*\]\{([^}]*)\}', r'\1', content)
         # Reemplazar \underbracket por \underbrace (KaTeX no soporta underbracket)
         content = re.sub(r'\\underbracket', r'\\underbrace', content)
+        # Reemplazar \overbracket por \overbrace (KaTeX no soporta overbracket)
+        content = re.sub(r'\\overbracket', r'\\overbrace', content)
         # Convertir \substack{a\\b} a a, b (KaTeX no soporta substack)
         def replace_substack(match):
             # Extraer contenido y reemplazar \\ con comas

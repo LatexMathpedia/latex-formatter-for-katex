@@ -1,5 +1,5 @@
 ---
-title: "TEMA 3: Espacio de Medida de Lebesgue \((\mathbb{R}^N, \mathcal{M}_N, \mu_N)\)"
+title: "TEMA 4: Funciones medibles"
 author: "Diego Díaz Mendaña"
 date: "Fecha"
 ---
@@ -8,961 +8,729 @@ date: "Fecha"
 Estos apuntes son un resumen basado en el material proporcionado en la asignatura de ``Análisis III'' de la Universidad de Oviedo. Han sido escritos mediante las definiciones y demostraciones explicadas en clase. Todo el contenido ha sido organizado y formulado con fines educativos y no comerciales.
 
 ## Licencia de uso
-Apuntes Análisis III - Tema 3 © 2025 by Diego Díaz Mendaña is licensed under CC BY-NC-SA 4.0. To view a copy of this license, visit [https://creativecommons.org/licenses/by-nc-sa/4.0/](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+Apuntes Análisis III - Tema 4 © 2025 by Diego Díaz Mendaña is licensed under CC BY-NC-SA 4.0. To view a copy of this license, visit [https://creativecommons.org/licenses/by-nc-sa/4.0/](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-## Cubos y volúmenes en $\mathbb{R}^N$
-### Intervalo degenerado. Definición
-Llamamos **intervalo degenerado** a cualquier intervalo vacío o unitario.
-
-<EjemBox title="Ejemplo">
-
-Algunos intervalos degenerados son:
+## Funciones medibles
+### Función medible. Definición
+Sea $(X, \Sigma, \mu)$ espacio de medida y $f \colon X \to \overline{\mathbb{R}}$ función, se dice **medible** (o $\mu$-medible) si:
 $$
 \begin{align*}
-\{a\} = [a, a] \quad \text{ o } \quad \emptyset = (2, 1)
+\forall \alpha \in \mathbb{R} \quad \text{ se cumple } \quad \left\{x \in X : f(x) < \alpha\right\} \in \Sigma
+\end{align*}
+$$
+O, equivalentemente:
+$$
+\begin{align*}
+\forall \alpha \in \mathbb{R} \quad \text{ se cumple } \quad \left\{x \in X : f(x) \leq \alpha\right\} \in \Sigma
+\end{align*}
+$$
+$$
+\begin{align*}
+\forall \alpha \in \mathbb{R} \quad \text{ se cumple } \quad \left\{x \in X : f(x) > \alpha\right\} \in \Sigma
+\end{align*}
+$$
+$$
+\begin{align*}
+\forall \alpha \in \mathbb{R} \quad \text{ se cumple } \quad \left\{x \in X : f(x) \geq \alpha\right\} \in \Sigma
+\end{align*}
+$$
+También se puede considerar $\alpha \in \overline{\mathbb{R}}$ en cualquiera de las definiciones anteriores (se denotarán como (1'), (2'), (3') y (4')).
+
+<DemBox title="Demostración">
+
+Veamos que son equivalentes:
+
+- **$1 \Rightarrow 2$)** *Ver que $\{x : f(x) \leq \alpha\} \in \Sigma$*: empleando una aproximación por sucesiones decrecientes. Dado $\alpha \in \mathbb{R}$ podemos notar que la condición $f(x) \leq \alpha$ es equivalente a que $f(x) < \alpha + \varepsilon$ para todo $\varepsilon > 0$ (tomando $\varepsilon = \frac{1}{n}$). Por tanto:
+$$
+\begin{align*}
+\left\{x : f(x) \leq \alpha\right\} = \displaystyle \bigcap_{n = 1}^{\infty} \left\{x : f(x) < \alpha + \frac{1}{n}\right\} \in \Sigma
+\end{align*}
+$$
+que se cumple ya que:
+
+- **$2 \Rightarrow 3$)** *Ver que $\{x : f(x) > \alpha\} \in \Sigma$*: empleando que las desigualdades estrictas y no estrictas son complementarias cuando se considera el mismo valor. Dado $\alpha \in \mathbb{R}$ entonces:
+$$
+\begin{align*}
+\left\{x : f(x) > \alpha\right\} = \{\underbrace{x :f(x) \leq \alpha}_{\in \Sigma}\}^c \in \Sigma
+\end{align*}
+$$
+- **$3 \Rightarrow 4$)** *Ver que $\{x : f(x) \geq \alpha\} \in \Sigma$*: de forma análoga a $[1 \Rightarrow 2]$ empleando sucesiones crecientes, dado $\alpha \in \mathbb{R}$ entonces:
+$$
+\begin{align*}
+\left\{x : f(x) \geq \alpha\right\} = \displaystyle \bigcap_{n = 1}^{\infty} \underbrace{\left\{x : f(x) > \alpha - \frac{1}{n}\right\}}_{\in \Sigma \, \text{ por (3)}} \in \Sigma
+\end{align*}
+$$
+- **$4 \Rightarrow 1$)** *Ver que $\{x : f(x) < \alpha\} \in \Sigma$*: de forma análoga a $[2 \Rightarrow 3]$ empleando el complemento, dado $\alpha \in \mathbb{R}$ entonces:
+$$
+\begin{align*}
+\left\{x : f(x) < \alpha\right\} = \{\underbrace{x : f(x) \geq \alpha}_{\in \Sigma}\}^c \in \Sigma
 \end{align*}
 $$
 
-</EjemBox>
+</DemBox>
+<DemBox title="Demostración">
 
-### Cubo degenerado de $\mathbb{R}^N$. Definición
-Sea $N \in \mathbb{N}$, llamamos **cubo degenerado de $\mathbb{R}^N$** a cualquier cubo:
+Veamos que son equivalentes las definiciones con $\alpha \in \overline{\mathbb{R}}$ y las definiciones con $\alpha \in \mathbb{R}$:
+
+- **1)** *Ver que $(1 \Leftrightarrow 1')$*
+
+- **2)** *Ver que $(2 \Leftrightarrow 2')$*
+
+- **$\Rightarrow)$)** Trivial ya que $\mathbb{R} \subset \overline{\mathbb{R}}$.
+- **$\Leftarrow)$)** Dado $\alpha = + \infty$ entonces:
 $$
 \begin{align*}
-C = I_1 \times I_2 \times \dots \times I_N
+\left\{x : f(x) \leq + \infty\right\} = X \in \Sigma
 \end{align*}
 $$
-donde cada $I_i$ es un intervalo abierto de $\mathbb{R}$ y alguno de sus intervalos es degenerado. En general, llamamos **cubo de $\mathbb{R}^N$** a cualquier producto cartesiano:
 $$
 \begin{align*}
-I_1 \times \dots \times I_N
+\left\{x : f(x) \leq - \infty\right\} = \displaystyle \bigcap_{n = 1}^{\infty} \underbrace{\left\{x: f(x) \leq - n\right\}}_{\in \Sigma} \in \Sigma
 \end{align*}
 $$
-donde cada $I_i$ es un intervalo.
+- **3)** *Ver que $(3 \Leftrightarrow 3')$*
 
-### Volumen de un cubo. Definición
-Dado un cubo $C$ de $\mathbb{R}^N$ con $N \in \mathbb{N}$, llamamos **volumen de $C$** al número:
+- **$\Rightarrow$)** Trivial ya que $\mathbb{R} \subset \overline{\mathbb{R}}$.
+- **$\Leftarrow$)** Dado $\alpha = + \infty$ entonces:
 $$
 \begin{align*}
-v_N(C) \coloneq \left\{
-\begin{array}{ll}
-0 & \text{ si } C \text{ es degenerado} \\[2ex]
-\displaystyle \prod_{i = 1}^N |b_i - a_i| & \begin{array}{l}
-\text{si } C \text{ no es degenerado, } C = I_1 \times \dots \times I_N
-\text{ con } I_j \text{ invervalo de} \\
-\text{extr. izq. } a_j \text{ y drch. } b_j 
-\text{ tq } - \infty \leq a_j < b_j \leq \infty
-\end{array}
-\end{array}
-\right.\\
+\left\{x : f(x) > + \infty\right\} = \emptyset \in \Sigma
+\end{align*}
+$$
+Dado $\alpha = - \infty$ entonces:
+$$
+\begin{align*}
+\left\{x : f(x) > - \infty\right\} = \displaystyle \bigcup_{n = 1}^{\infty} \underbrace{\left\{x : f(x) > - n\right\}}_{\in \Sigma} \in \Sigma
+\end{align*}
+$$
+- **4)** *Ver que $(4 \Leftrightarrow 4')$*
+
+- **$\Rightarrow$)** Trivial ya que $\mathbb{R} \subset \overline{\mathbb{R}}$.
+- **$\Leftarrow$)** Dado $\alpha = + \infty$ entonces:
+$$
+\begin{align*}
+\left\{x : f(x) \geq + \infty\right\} = \displaystyle \bigcap_{n = 1}^{\infty} \underbrace{\left\{x : f(x) \geq n\right\}}_{\in \Sigma} \in \Sigma
+\end{align*}
+$$
+Dado $\alpha = - \infty$ entonces:
+$$
+\begin{align*}
+\left\{x : f(x) \geq - \infty\right\} = X \in \Sigma
+\end{align*}
+$$
+
+</DemBox>
+
+### Funciones medibles. Ejemplos
+Se tienen los siguientes ejemplos de funciones medibles:
+
+1. Toda función $f : \mathbb{N} \longrightarrow \overline{\mathbb{R}}$ es $(\mathbb{N}, \mathcal{P}(\mathbb{N}), m)$-medible, donde $m$ es la medida de conteo.
+<DemBox title="Demostración">
+
+Dado $\alpha \in \mathbb{R}$, se tiene que:
+$$
+\begin{align*}
+\left\{n \in \mathbb{N} : f(n) < \alpha\right\} = \displaystyle \bigcup_{ k \in \mathbb{N \\ f(k) < \alpha}} \{k\} \in \mathcal{P}(\mathbb{N})
+\end{align*}
+$$
+Por lo tanto, $f$ es medible.
+
+</DemBox>
+2. Sea $f \colon \mathbb{R}^N \to \mathbb{R}$ continua, es ($\mathbb{R}^N, \mathcal{M}_N, \mu_N$)-medible y $(\mathbb{R}^N, \mathcal{B}_N, \mu_N)$-medible.
+<DemBox title="Demostración">
+
+El intervalo $[ - \infty, \alpha)$ es abierto en $\overline{\mathbb{R}}$ con la topología usual ya que su complemento es $[\alpha, \infty]$ que es cerrado. Dado que $f$ es continua, la preimagen de un abierto es un abierto, es decir:
+$$
+\begin{align*}
+A_\alpha \coloneq f^{ - 1}([ - \infty, \alpha)) = \left\{x \in \mathbb{R}^N : f(x) < \alpha\right\} \quad \text{ es abierto}
+\end{align*}
+$$
+Como todo abierto de $\mathbb{R}^N$ es de Borel y además $\mathcal{B}_N \subseteq \mathcal{M}_N$ entonces:
+$$
+\begin{align*}
+A_\alpha \in \mathcal{B}_N \subseteq \mathcal{M}_N
+\end{align*}
+$$
+
+</DemBox>
+3. Dado un espacio de medida $(X, \Sigma, \mu)$ y $A \in \Sigma$ y $f \colon X \to \overline{\mathbb{R}}$ medible entonces $f_{|A}$ es medible respecto del espacio de medida $(A, \Sigma_A, \mu_{|_{\Sigma(A)}})$, donde:
+
+- $\Sigma_A = \left\{A \cap E: E \in \Sigma\right\}$
+- $\mu_{|_{\Sigma(A)}}$ es la restricción de $\mu$ a $\Sigma_A$
+
+<DemBox title="Demostración">
+
+Como $f_{|_A}(x) = f(x)$ para $x \in A$, podemos reescribir:
+$$
+\begin{align*}
+\left\{x \in A: f_{|_A}(x) < \alpha\right\} = A \cap \left\{x \in X : f(x) < \alpha\right\}
+\end{align*}
+$$
+Dado que $f$ es medible, entonces $\left\{x \in X : f(x) < \alpha\right\} \in \Sigma$ y por lo tanto:
+$$
+\begin{align*}
+\left\{x \in A: f_{|_A}(x) < \alpha\right\} \in \Sigma_A
+\end{align*}
+$$
+
+</DemBox>
+
+### Caracterización de funciones medibles. Proposición
+Dada una función $f : \to \overline{\mathbb{R}}$ y un espacio de medida $(X, \Sigma, \mu)$ se cumple que:
+$$
+\begin{align*}
+f \text{ es } \mu \text{-medible} \iff \forall O \subseteq \overline{\mathbb{R}} \text{ abierto,} \quad f^{ - 1}( O) \in \Sigma
 \end{align*}
 $$
 <EjBox title="Nota">
 
-Al final, tenemos que si algún intervalo es degenerado, el ``espesor'' del cubo en alguna dimensión será 0, por lo que su volumen $n$-dimensional sería también cero.
-
-Para cubos no degenerados, esta idea de volumen no deja de ser la generalización de lo que trabajamos en 3 dimensiones, por ejemplo, con un paralelepípedo:
-$$
-\begin{align*}
-C = [0, 1] \times [0, 2] \times [0, 3] \implies v_N(C) = |1 - 0| \cdot |2 - 0| \cdot |3 - 0| = 6
-\end{align*}
-$$
+En $\overline{\mathbb{R}}$ se considera la topología usual extendida, que tiene como base los intervalos abiertos $(a, b)$ y, además, los intervalos $(a, \infty]$ y $[ - \infty, b)$. Por tanto, cualquier abierto $O \subseteq \overline{\mathbb{R}}$ se puede escribir como una unión (a lo sumo numerable) de intervalos abiertos disjuntos dos a dos de las formas previamente indicadas.
 
 </EjBox>
-
-### Medida exterior. Definición
-Sea $A \subseteq \mathbb{R}^N$ se define su **medida exterior** como el número:
-$$
-\begin{align*}
-\mu_N^*(A) \coloneq \inf \left\{\displaystyle \sum_{i = 1}^{\infty} v_N(I_i) \colon \{I_i\}_{i \in \mathbb{N}}\text{ colección de cubos abiertos tq } A \subseteq \displaystyle \bigcup_{i \in \mathbb{N}}I_i\right\} \in [0, \infty]
-\end{align*}
-$$
-
-<EjBox title="Advertencia">
-
-$\mu_N^*$ no es una medida de verdad ya que carece de $\sigma$-aditividad.
-
-</EjBox>
-
-<EjBox title="Nota">
-
-La idea intuitiva es cubrir $A$ con una colección numerable de cubos abiertos, calcular su suma de volúmenes y tomar la menor de todas las sumas posibles considerando todos los posibles recubrimientos de $A$ con cubos abiertos.
-
-</EjBox>
-
-#### Técnicas fundamentales de $\mu_N^*$
-Las dos propiedades básicas que caracterizan la medida exterior son:
-
-- **Cota superior por recubrimientos**: Partiendo de la definición:
-$$
-\begin{align*}
-\mu_N^*(A) \leq \displaystyle \sum_{i = 1}^{\infty} v_N(I_i) \qquad \forall \{I_i\}_{i \in \mathbb{N}} \text{ colección de cubos abiertos tq } A \subseteq \displaystyle \bigcup_{i = 1}^{\infty} I_i\\
-\end{align*}
-$$
-- **Propiedad de aproximación ($\varepsilon$-cercanía):** para todo $\varepsilon > 0$ existe $\{I_i\}_{i \in \mathbb{N}}$ recubrimiento con cubos abiertos de $A$ tal que:
-$$
-\begin{align*}
-\mu_N^*(A) + \varepsilon > \sum_{i = 1}^{\infty} v_N(I_i)
-\end{align*}
-$$
-Esto es, podemos aproximar la medida exterior tanto como queramos desde arriba.
-
-<EjBox title="Obsevación">
-
-Si $\mu_N^*(A) < \infty$ esto se interpreta gráficamente como:
-
-![TikZ Graph](/blogs/images/tema-3-espacio-de-medida-de-lebesgue-mathbb-r-n_tikz_0.svg)
-
-</EjBox>
-
-<EjemBox title="Ejemplo">
-
-*Se cumple que $\mu_N^*(\emptyset ) = 0$ ya que:*
-
-Podemos recubrir $\emptyset$ con el propio conjunto vacío:
-$$
-\begin{align*}
-\emptyset \subseteq \emptyset \cup \emptyset \cup \dots
-\end{align*}
-$$
-Como el volumen de $\emptyset$ es 0 por definición de volumen de cubo degenerado entonces:
-$$
-\begin{align*}
-0 \leq \mu_N^*(\emptyset ) \leq 0 + 0 + \dots = 0
-\end{align*}
-$$
-Y por el criterio del Sandwich se cumple que $\mu_N^*(\emptyset ) = 0$
-
-</EjemBox>
-
-<EjemBox title="Ejemplo">
-
-*Sea $C$ es cubo degenerado acotado entonces $\mu_N^*(C) = 0$ ya que:*
-
-Se dan dos posibles casos:
-
-- Si $C = \emptyset$ entonces $\mu_N^*(C) = 0$ (ver ejemplo anterior)
-- Si $C \neq \emptyset$, supongamos $C = I_1 \times I_2 \times \dots \times I_N$ donde cada $I_j$ es un intervalo acotado y al menos unos de ellos es unitario. Supongamos $I_1 = \{a\}$ (la demostración es análoga si es otro). Para cualquier $\varepsilon > 0$ si $I_k$ es un intervalo de extremos $a_k$ y $b_k$ entonces:
-$$
-\begin{align*}
-C \subseteq C_\varepsilon \coloneq (a - \varepsilon, a + \varepsilon) \times (a_2 - \varepsilon, b_2 + \varepsilon) \times \dots \times (a_N - \varepsilon, b_N + \varepsilon)
-\end{align*}
-$$
-Y como esto es válido $\forall \varepsilon > 0$ tenemos que:
-$$
-\begin{align*}
-\mu_N^*(C) & \leq v_N(C_{\varepsilon}) = 2 \varepsilon \cdot (b_2 - a_2 + 2\varepsilon) \cdot \dots \cdot (b_N - a_N + 2\varepsilon) 
-\end{align*}
-$$
-Por lo que si hacemos $\varepsilon \to 0$ entonces:
-$$
-\begin{align*}
-0 \leq \mu_N^*(C) \leq 0 \cdot \underbrace{(b_2 - a_2)}_{\in \mathbb{R}} \cdot \dots \cdot \underbrace{(b_N - a_N)}_{\in \mathbb{R}} = 0
-\end{align*}
-$$
-Que se cumple ya que $C$ es acotado y, por lo tanto, $b_j - a_j < \infty$ para todo $j$.
-
-Ahora, aplicando el criterio del sandwich, tenemos que:
-$$
-\begin{align*}
-\mu_N^*(C) = 0
-\end{align*}
-$$
-
-</EjemBox>
-
-<EjemBox title="Ejemplo">
-
-*Sea $A \subseteq \mathbb{R}^N$ numerable entonces $\mu_N^*(A) = 0$ ya que:*
-
-Fijamos $\varepsilon > 0$ cualquiera con:
-$$
-\begin{align*}
-\varepsilon = \frac{\varepsilon}{2} + \frac{\varepsilon}{4} + \frac{\varepsilon}{8} + \dots = \sum_{i = 1}^{\infty} \frac{\varepsilon}{2^i}
-\end{align*}
-$$
-Como $A$ numerable entonces $A = \{a_n : n \in \mathbb{N}\}$ y por cada $a_n$ tomamos un cubo abierto $I_n$ tal que:
-$$
-\begin{align*}
-a_n \in I_n \quad \text{ y } \quad v_N(I_n) = \frac{\varepsilon}{2^n}
-\end{align*}
-$$
-Entonces:
-$$
-\begin{align*}
-A \subseteq \displaystyle \bigcup_{n \in \mathbb{N}} I_n \implies 0 \leq \mu_N^*(A) \leq \displaystyle \sum_{n = 1}^{\infty} v_N(I_n) = \displaystyle \sum_{i = 1}^{\infty} \frac{\varepsilon}{2^i} = \varepsilon 
-\end{align*}
-$$
-Y como $\varepsilon > 0$ es arbitrario, podemos hacer que $\varepsilon \to 0$, por el criterio del sándwich:
-$$
-\begin{align*}
-\mu_N^*(A) = 0
-\end{align*}
-$$
-
-</EjemBox>
-
-### Propiedades de $\mu_N^*$. Proposición
-Sea $N \in \mathbb{N}$ entonces $\mu_N^*$ cumple las siguientes propiedades:
-
-1. **Monotonía**: Sea $A \subseteq B \subseteq \mathbb{R}^N$ entonces se cumple:
-$$
-\begin{align*}
-\mu_N^*(A) \leq \mu_N^*(B)
-\end{align*}
-$$
-2. **Subaditividad numerable**: Sea $\{A_i\}_{i \in \mathbb{N}} \subseteq \mathcal{P}(\mathbb{R}^N)$ entonces se cumple:
-$$
-\begin{align*}
-\mu_N^*\left(\displaystyle \bigcup_{i \in \mathbb{N}} A_i\right) \leq \displaystyle \sum_{i = 1}^{\infty} \mu_N^*(A_i)
-\end{align*}
-$$
-3. $\forall C$ cubo compacto de $\mathbb{R}^N$ se cumple:
-$$
-\begin{align*}
-\mu_N^*(C) = v_N(C) = v_N(C^\circ) = \mu_N^*(C^\circ)
-\end{align*}
-$$
-
 <DemBox title="Demostración">
 
-1. Sea $A \subseteq B \subseteq \mathbb{R}^N$, definimos los conjuntos:
+- **$\Leftarrow$)** Si $f^{ - 1}(O) \in \Sigma$ para todo abierto $O \subseteq \overline{\mathbb{R}}$ entonces, en particular, para cada $a \in \mathbb{R}$ el intervalo $[ - \infty, a)$ es abierto en $\overline{\mathbb{R}}$ por lo que:
 $$
 \begin{align*}
-S_A & = \left\{\displaystyle \sum_{i = 1}^{\infty} v_N(I_i) \colon \{I_i\}_{i \in \mathbb{N}} \text{ cubos abiertos, } A \subseteq \displaystyle \bigcup_{i \in \mathbb{N}} I_i\right\}\\[2ex]
-S_B & = \left\{\displaystyle \sum_{i = 1}^{\infty} v_N(I_i) \colon \{I_i\}_{i \in \mathbb{N}} \text{ cubos abiertos, } B \subseteq \displaystyle \bigcup_{i \in \mathbb{N}} I_i\right\}
+\left\{x \in X : f(x) < \alpha\right\} = f^{ - 1}([ - \infty, \alpha)) \in \Sigma
 \end{align*}
 $$
+Por lo tanto, $f$ es medible por definición de función medible (1).
+- **$\Rightarrow$)** Sea $f$ medible y $O \subseteq \overline{\mathbb{R}}$ abierto, como todo abierto de $\overline{\mathbb{R}}$ es unión numerable de intervalos abiertos disjuntos dos a dos, es decir:
+$$
+\begin{align*}
+f^{ - 1}(O) = f^{ - 1}\left(\bigcup_{i \in I} J_i\right) = \bigcup_{i \in I} \underbrace{f^{ - 1}(J_i)}_{\in \Sigma \, ?}
+\end{align*}
+$$
+Basta ver que $f^{ - 1}(J_i) \in \Sigma$ para todo intervalo abierto $J_i$ de $\overline{\mathbb{R}}$.
 
-- *Ver que $S_B \subseteq S_A$.* Sea $s \in S_B$, existe $\{I_i\}_{i \in \mathbb{N}}$ recubrimiento de $B$ con cubos abiertos tal que:
+Todo intervalo abierto $J_i$ de $\overline{\mathbb{R}}$ es de la forma:
 $$
 \begin{align*}
-s = \displaystyle \sum_{i = 1}^{\infty} v_N(I_i) \quad \text{ y } \quad B \subseteq \displaystyle \bigcup_{i = 1}^{\infty} I_i
-\end{align*}
-$$
-Como $A \subseteq B$ entonces:
-$$
-\begin{align*}
-A \subseteq B \subseteq \displaystyle \bigcup_{i = 1}^{\infty} I_i \implies \{I_i\}_{i \in \mathbb{N}} \text{ recubrimiento de } A
-\end{align*}
-$$
-Por lo tanto $s \in S_A$ y así $S_B \subseteq S_A$.
-- *Ver que $\mu_N^*(A) \leq \mu_N^*(B)$.* Por definición de medida exterior y relación de ínfimos de conjuntos:
-$$
-\begin{align*}
-\mu_N^*(A) = \inf S_A \leq \inf S_B = \mu_N^*(B)\\
-\end{align*}
-$$
-2. Se consideran dos posibles casos:
-
-- Si $\sum_{n = 1}^{\infty} \mu_N^*(A_n) = \infty$ entonces la desigualdad se cumple trivialmente.
-- Si $\sum_{n = 1}^{\infty} \mu_N^*(A_n) < \infty$ entonces fijamos $\varepsilon > 0$. Para cada $i \in \mathbb{N}$, aplicando la técnica de $\varepsilon$-cercanía, existe recubrimiento $\{I_{i,j}\}_{j \in \mathbb{N}}$ con cubos abiertos de $A_i$ tal que:
-$$
-\begin{align*}
-\displaystyle \sum_{j = 1}^{\infty} v_N(I_{i,j}) < \mu_N^*(A_i) + \frac{\varepsilon}{2^i} \quad \text{ y } \quad A_i \subseteq \displaystyle \bigcup_{j = 1}^{\infty} I_{i,j}
-\end{align*}
-$$
-Como la colección $\{I_{i,j} : i, j \in \mathbb{N}\}$ es numerable y cubre $\bigcup_{i \in \mathbb{N}} A_i$ ya que:
-$$
-\begin{align*}
-\displaystyle \bigcup_{i = 1}^{\infty} A_i \subseteq \displaystyle \bigcup_{i = 1}^{\infty} \displaystyle \bigcup_{j = 1}^{\infty} I_{i,j}
-\end{align*}
-$$
-Entonces, por definición de medida exterior:
-$$
-\begin{align*}
-\mu_N^*\left(\displaystyle \bigcup_{i = 1}^{\infty} A_i\right) \leq \displaystyle \sum_{i \in \mathbb{N\\j \in \mathbb{N}}} v_N(I_{i,j}) = \displaystyle \sum_{i = 1}^{\infty} \displaystyle \sum_{j = 1}^{\infty} v_N(I_{i,j})
-\end{align*}
-$$
-Y reordenando la suma doble (ya que los términos son no negativos):
-$$
-\begin{align*}
-\displaystyle \sum_{i = 1}^{\infty} \displaystyle \sum_{j = 1}^{\infty} v_N(I_{i,j}) & = \displaystyle \sum_{i = 1}^{\infty}\left(\displaystyle \sum_{j = 1}^{\infty}v_N(I_{i,j})\right) < \displaystyle \sum_{i = 1}^{\infty} \left(\mu_N^*(A_i) + \frac{\varepsilon}{2^i}\right) =\\[2ex]
-& = \displaystyle \sum_{i = 1}^{\infty} \mu_N^*(A_i) + \displaystyle \sum_{i = 1}^{\infty} \frac{\varepsilon}{2^i} = \left(\displaystyle \sum_{i = 1}^{\infty} \mu_N^*(A_i)\right) + \varepsilon
-\end{align*}
-$$
-Así, como $\varepsilon > 0$ es arbitrario, si hacemos que $\varepsilon \to 0$ entonces:
-$$
-\begin{align*}
-0 \leq \mu_N^*\left(\displaystyle \bigcup_{i = 1}^{\infty} A_i\right) \leq \left(\displaystyle \sum_{i = 1}^{\infty} \mu_N^*(A_i)\right) \underbrace{+ \varepsilon}_{\to 0} \implies \mu_N^*\left(\displaystyle \bigcup_{i = 1}^{\infty} A_i\right) \leq \displaystyle \sum_{i = 1}^{\infty} \mu_N^*(A_i)
-\end{align*}
-$$
-3. *Para simplificar, la demostración será en $\mathbb{R}^1$ para el cubo $C = [a, b] \subseteq \mathbb{R}$ con $- \infty < a < b < \infty$. La demostración se divide en cuatro desigualdades:*
-
-- *Igualdad de volúmenes: $v_1(C^{\circ}) = v_1(C)$.* Por definición de volumen:
-$$
-\begin{align*}
-v_1(C^\circ) = v_1((a, b)) = b - a = v_1([a, b]) = v_1(C)
-\end{align*}
-$$
-- *Igualdad de medidas exteriores: $\mu_1^*(C^\circ) = \mu_1^*(C)$.* Como $(a, b) \subseteq [a, b]$:
-$$
-\begin{align*}
-\mu_1^*(\overbracket{(a, b)}^{C^\circ}) \overset{\text{\tiny monotonía}}{\leq} \mu_1^*(\overbracket{[a, b]}^{C}) & = \mu_1^*\left((a, b) \cup \{a\} \cup \{b\}\right) \overset{\text{\tiny subaditiv.}}{\leq}\\[2ex]
-& \leq \mu_1^*((a, b)) + \underbrace{\mu_1^*(\{a\})}_{= 0} + \underbrace{\mu_1^*(\{b\})}_{= 0} = \mu_1^*(\underbrace{(a, b)}_{C^\circ})
-\end{align*}
-$$
-Por tanto, aplicando el criterio del sandwich se tiene el resultado.
-- *Cota superior $\mu_1^*(C) \leq v_1$.* Sea $\varepsilon > 0$ cualquiera, entonces:
-$$
-\begin{align*}
-I_\varepsilon = (a - \varepsilon, b + \varepsilon) \supseteq [a, b] = C
-\end{align*}
-$$
-Por tanto, por definición de medida exterior:
-$$
-\begin{align*}
-\mu_1^*(C) \leq v_1(I_\varepsilon) = b - a + 2\varepsilon \quad \forall \varepsilon > 0
-\end{align*}
-$$
-Haciendo $\varepsilon \to 0$ se tiene:
-$$
-\begin{align*}
-\mu_1^*(C) \leq v_1(C) = b - a
-\end{align*}
-$$
-- *Cota inferior $v_1(C) \leq \mu_1^*(C)$.* Sea $\varepsilon > 0$ cualquiera, por definición de medida exterior sabemos que $\exists \{I_i\}_{i \in \mathbb{N}}$ colección numerable de cubos abiertos tal que:
-$$
-\begin{align*}
-C \subseteq \displaystyle \bigcup_{i = 1}^{\infty} I_i \quad \text{ y } \quad \mu_1^*(C) + \varepsilon > \displaystyle \sum_{i = 1}^{\infty} v_1(I_i)
-\end{align*}
-$$
-Como $C$ compacto, existe subrecubrimiento finito, i.e., $\exists n \in \mathbb{N}$ tal que:
-$$
-\begin{align*}
-C \subseteq \displaystyle \bigcup_{i = 1}^{n} I_i
-\end{align*}
-$$
-Cada $I_k$ es un intervalo abierto de la forma:
-$$
-\begin{align*}
-I_k = (a_k, b_k) \quad \text{ con } - \infty \leq a_k < b_k \leq \infty
-\end{align*}
-$$
-Podemos suponer que ningún $I_k$ está contenido dentro de otro, ya que en ese caso lo podríamos eliminar del recubrimiento sin perder la propiedad de recubrimiento. Además, podemos ordenarlos de forma que sus extremos izquierdos estén ordenados crecientemente:
-$$
-\begin{align*}
-a_1 < a_2 < \dots < a_n
-\end{align*}
-$$
-Así, podemos notar que para que el recubrimiento cubra todo el intervalo $[a, b]$ se deben cumplir las siguientes condiciones:
-
-</DemBox>
-
-## Espacio de medida de Lebesgue $(\mathbb{R}^N, \mathcal{M}_n, \mu_N)$
-### Conjunto medible de Lebesgue. Definición
-Sea $E \subseteq \mathbb{R}^N$ decimos que es **medible de Lebesgue** si $\forall C$ cubo abierto acotado se cumple:
-$$
-\begin{align*}
-v_N(C) = \mu_N^*(C \cap E) + \mu_N^*(C \cap E^C)
-\end{align*}
-$$
-O equivalentemente, como $v_N(C) = \mu_N^*(C)$ y $\mu_N^*$ es subaditiva:
-$$
-\begin{align*}
-v_N(C) & = \mu_N^*(C) \leq \mu_N^*(C \cap E) + \mu_N^*(C \cap E^C)
-\end{align*}
-$$
-
-<EjBox title="Nota">
-
-Al conjunto de todos los subconjuntos medibles de Lebesgue en $\mathbb{R}^N$ lo denotamos por $\mathcal{M}_N$.
-
-</EjBox>
-
-### Propiedades de $\mathcal{M}_N$. Proposición
-Sea $E \subseteq \mathbb{R}^N$ entonces:
-
-1. Si $\mu_N^*(E) = 0$ entonces $E \in \mathcal{M}_N$, en particular, $\emptyset \in \mathcal{M}_N$
-2. Si $E \in \mathcal{M}_N$ entonces $E^C \in \mathcal{M}_N$
-3. Todo semiespacio abierto de $\mathbb{R}^N$ está en $\mathcal{M}_N$, i.e., $S = I_1 \times \dots \times I_N \subseteq \mathbb{R}^N$ tal que:
-$$
-\begin{align*}
-\exists j \in \{1, \dots, N\} \text{ con } \left\{
-\begin{array}{ll}
-I_k = ( - \infty, \infty) & \text{ si } k \neq j\\[1ex]
-I_j = ( - \infty, b) \text{ ó } I_j = (a, \infty) & \text{ con } - \infty < a < b < \infty
-\end{array}
-\right.
-\end{align*}
-$$
-
-<DemBox title="Demostración">
-
-1. Sea $E \subseteq \mathbb{R}^N$ con $\mu_N^*(E) = 0$ y $C$ cubo abierto acotado cualquiera. Tenemos:
-$$
-\begin{align*}
-v_N(C) \leq \underbrace{\mu_N^*(C \cap E)}_{\overset{\text{\tiny monot.}}{=} 0} + \mu_N^*\left(C \cap E^C\right) \leq \mu_N^*\left(C \cap E^C\right) \overset{\text{\tiny monot.}}{\leq} \mu_N^*(C) = v_N(C)
-\end{align*}
-$$
-Por lo tanto, por el criterio del sándwich:
-$$
-\begin{align*}
-v_N(C) = \mu_N^*(C \cap E) + \mu_N^*(C \cap E^C) \implies E \in \mathcal{M}_N 
-\end{align*}
-$$
-2. Sea $E \in \mathcal{M}_N$ y $C$ cubo abierto acotado cualquiera entonces:
-$$
-\begin{align*}
-v_N(C) = \mu_N^*(C \cap E) + \mu_N^*(C \cap E^C) = \mu_N^*(C \cap E^C) + \mu_N^*(C \cap (E^C)^C)
-\end{align*}
-$$
-Por lo tanto $E^C \in \mathcal{M}_N$.
-3. Sin pérdida de generalidad, basta probarlo para:
-$$
-\begin{align*}
-H = (a, \infty) \times \mathbb{R} \times \overset{N - 1}{\dots } \times \mathbb{R} \quad \text{ con } - \infty < a < \infty
-\end{align*}
-$$
-Los casos $\left\{
-\begin{array}{l}
-( - \infty, a) \times \mathbb{R} \times\dots \times \mathbb{R}\\[2ex]
-H = J_1 \times\dots \times J_N \text{ con } \left\{
-\begin{array}{l}
-J_j = ( - \infty, a) \text{ ó } (a, \infty)\\
-J_i = \mathbb{R} \text{ si } i \neq j
-\end{array}
-\right.
-\end{array}
-\right.$ son análogos.
-
-Sea $C = \overbracket{(a_1, b_1)}^{J_1} \times \dots \times \overbracket{(a_N, b_N)}^{J_N}$ un cubo abierto acotado cualquiera. Así:
-$$
-\begin{align*}
-C \cap H & = \left\{
-\begin{array}{ll}
-C & \text{ si } a \leq a_1 \\[1ex]
-(a, b_1) \times J_2 \times \dots \times J_N & \text{ si } a_1 < a < b_1 \\[1ex]
-\emptyset & \text{ si } b_1 \leq a
-\end{array}
-\right. \\[3ex]
-C \cap H^C & = \left\{
-\begin{array}{ll}
-\emptyset & \text{ si } a \leq a_1 \\[1ex]
-(a_1, a] \times J_2 \times \dots \times J_N & \text{ si } a_1 < a < b_1 \\[1ex]
-C & \text{ si } b_1 \leq a
-\end{array}
-\right.
-\end{align*}
-$$
-Analicemos los 3 casos según el valor de $a$:
-
-- Si $a \leq a_1$ entonces $C \cap H = C$ y $C \cap H^C = \emptyset$ por lo que:
-$$
-\begin{align*}
-\mu_N^*(C \cap H) + \mu_N^*(C \cap H^C) = v_N(C) + v_N(\emptyset ) = \mu_N^*(C) \implies H \in \mathcal{M}_N
-\end{align*}
-$$
-- Si $a_1 < a < b_1$ entonces se tiene:
-$$
-\begin{align*}
-C \cap H & = (a, b_1) \times J_2 \times \dots \times J_N \\[2ex]
-C \cap H^C & = (a_1, a] \times J_2 \times \dots \times J_N
-\end{align*}
-$$
-Y aunque $(a_1, a]$ no es un intervalo abierto, como $\{a\}$ tiene medida cero, entonces $(a_1, a] = (a_1, a) \cup \{a\}$ tiene la misma medida que $(a_1, a)$ así:
-$$
-\begin{align*}
-\mu_N^*(C \cap H) & = v_N(C \cap H) = |a - b_1| \cdot v_N(J_2) \cdot \dots \cdot v_N(J_N)\\[2ex]
-\mu_N^*(C \cap H^C) & = v_N(C \cap H^C) = |a_1 - a| \cdot v_N(J_2) \cdot \dots \cdot v_N(J_N)
-\end{align*}
-$$
-Por lo que sumando:
-$$
-\begin{align*}
-\mu_N^*(C \cap H) + \mu_N^*(C \cap H^C) & = \overbrace{(|a - b_1| + |a_1 - a|)}^{(b_1 - a_1)} \cdot v_N(J_2) \cdot \dots \cdot v_N(J_N) = \\[2ex]
-& = v_N(J_1) \cdot v_N(J_2) \cdot \dots \cdot v_N(J_N) =\\[2ex]
-& = v_N(C) = \mu_N^*(C) \implies H \in \mathcal{M}_N
-\end{align*}
-$$
-- Si $b_1 \leq a$ entonces $C \cap H = \emptyset$ y $C \cap H^C = C$ por lo que:
-$$
-\begin{align*}
-\mu_N^*(C \cap H) + \mu_N^*(C \cap H^C) = \mu_N^*(\emptyset) + \mu_N^*(C) = \mu_N^*(C) \implies H \in \mathcal{M}_N
-\end{align*}
-$$
-
-</DemBox>
-
-### Caracterización de medibilidad de Lebesgue. Proposición
-Dado $E \subseteq \mathbb{R}^N$ los siguientes enunciados son equivalentes:
-
-1. $E \in \mathcal{M}_N$
-2. $\forall A \subseteq \mathbb{R}^N$ se cumple:
-$$
-\begin{align*}
-\mu_N^*(A) = \mu_N^*(A \cap E) + \mu_N^*(A \cap E^C)
-\end{align*}
-$$
-o equivalentemente:
-$$
-\begin{align*}
-\mu_N^*(A) \geq \mu_N^*(A \cap E) + \mu_N^*(A \cap E^C)
-\end{align*}
-$$
-
-<DemBox title="Demostración">
-
-- **$2 \Rightarrow 1)$** Trivial, tomamos $A = C$ cubo abierto acotado cualquiera y por la propiedad de la medida exterior $\mu_N^*(C) = v_N(C)$ entonces se cumple:
-$$
-\begin{align*}
-v_N(C) = \mu_N^*(C) = \mu_N^*(C \cap E) + \mu_N^*(C \cap E^C)
-\end{align*}
-$$
-Por lo tanto $E \in \mathcal{M}_N$.
-- **$1 \Rightarrow 2)$** Tomamos $A \subseteq \mathbb{R}^N$ cualquiera y tenemos dos casos:
-
-- Si $\mu_N^*(A) = \infty$, por subaditividad de $\mu_N^*$:
-$$
-\begin{align*}
-\infty = \mu_N^*(A) \leq \mu_N^*(A \cap E) + \mu_N^*(A \cap E^C) \leq \infty
-\end{align*}
-$$
-Y por el criterio del sándwich se cumple la igualdad.
-- Si $\mu_N^*(A) < \infty$ entonces $\forall \varepsilon > 0$ existe recubrimiento numerable $\{I_i\}_{i \in \mathbb{N}}$ de cubos abiertos tales que:
-$$
-\begin{align*}
-A \subseteq \displaystyle \bigcup_{i = 1}^{\infty} I_i \quad \text{ y } \quad \mu_N^*(A) + \varepsilon > \displaystyle \sum_{i = 1}^{\infty} v_N(I_i)
-\end{align*}
-$$
-Notar $\mu_N^*(A) + \varepsilon < \infty$ entonces los cubos $I_i$ son acotados. Como $E \in \mathcal{M}_N$:
-$$
-\begin{align*}
-\mu_n^*(A) + \varepsilon & \geq \displaystyle \sum_{i = 1}^{\infty} v_N(I_i) \overset{E \in \mathcal{M}_N}{ = }\displaystyle \sum_{i = 1}^{\infty} \left[\mu_N^*(I_i \cap E) + \mu_N^*(I_i \cap E^C)\right] = \\[2ex]
-& = \displaystyle \sum_{i = 1}^{\infty} \mu_N^*(I_i \cap E) + \displaystyle \sum_{i = 1}^{\infty} \mu_N^*(I_i \cap E^C) \overset{\text{\tiny subaditividad}}{\geq} \\[2ex]
-& \geq \mu_N^*\left(E \bigcap \left[\displaystyle \bigcup_{i = 1}^{\infty} I_i\right] \right) + \mu_N^*\left(E^C \bigcap \left[\displaystyle \bigcup_{i = 1}^{\infty} I_i\right]\right) \overset{\text{\tiny monotonia}}{\geq} \\[2ex]
-& \geq \mu_N^*(A \cap E) + \mu_N^*(A \cap E^C)
-\end{align*}
-$$
-Tomamos $\varepsilon > 0$ y hacemos $\varepsilon \to 0$ para concluir que:
-$$
-\begin{align*}
-\mu_N^*(A) + \underbrace{\varepsilon}_{\to 0} \geq  \mu_N^*(E \cap A) + \mu_N^*(E^C \cap A)
-\end{align*}
-$$
-
-</DemBox>
-
-### Proposición
-Sea $E, F \in \mathcal{M}_N$ entonces:
-
-1. $E \cup F \in \mathcal{M}_N$
-2. $E \cap F \in \mathcal{M}_N$
-3. $E \setminus F \in \mathcal{M}_N$
-
-<DemBox title="Demostración">
-
-1. Sea $A \subseteq \mathbb{R}^N$ cualquiera. Entonces:
-$$
-\begin{align*}
-\mu_N^*(A) & \overset{E \in \mathbb{M}_N}{=} \mu_N^*(A \cap E) + \mu_N^*(A \cap E^C) \overset{F \in \mathcal{M}_N}{=} \\[2ex]
-& = \mu_N^*(A \cap E) + \mu_N^*(A \cap E^C \cap F) + \mu_N^*(A \cap E^C \cap F^C) = \\[2ex]
-& = \mu_N^*(A \cap E) + \mu_N^*(A \cap [F \setminus E]) + \mu_N^*(A \cap [E \cup F]^C) \overset{\text{\tiny subadit.}}{\geq}\\[2ex]
-& \geq \mu_N^*(A \cap [\underbrace{E \cup(F \setminus E)}_{E \cup F}]) + \mu_N^*(A \cap [E \cup F]^C) = \\[2ex]
-& = \mu_N^*(A \cap [E \cup F]) + \mu_N^*(A \cap [E \cup F]^C) \implies E \cup F \in \mathcal{M}_N\\
-\end{align*}
-$$
-2. Como $(E \cap F)^C = E^C \cup F^C$ y como $E^C, F^C \in \mathcal{M}_N$ entonces:
-$$
-\begin{align*}
-E \cap F = (E \cap F)^{C^C} \in \mathcal{M}_N\\
-\end{align*}
-$$
-3. Como $E \setminus F = E \cap F^C$ y como $F^C \in \mathcal{M}_N$ entonces $E \setminus F \in \mathcal{M}_N$
-
-</DemBox>
-
-### Corolario
-Sean $\{E_i\}_{i \in \mathbb{N}} \subseteq \mathcal{M}_N$ con $N \in \mathbb{N}$ entonces para $n \in \mathbb{N}$:
-$$
-\begin{align*}
-\displaystyle \bigcup_{i = 1}^{n} E_i \in \mathcal{M}_N \quad \text{ y } \quad \displaystyle \bigcap_{i = 1}^{n} E_i \in \mathcal{M}_N
-\end{align*}
-$$
-<DemBox title="Demostración">
-
-Por inducción en $n$ usando la proposición anterior.
-
-</DemBox>
-
-### Proposición
-Sea $\{E_i\}_{i \in \mathbb{N}} \subseteq \mathcal{M}_N$ donde $E_i \cap E_j = \emptyset$ si $i \neq j$ y sea $A \in \mathbb{R}^N$ con $n \in \mathbb{N}$ entonces:
-$$
-\begin{align*}
-\mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n}E_i\right]\right) = \displaystyle \sum_{i = 1}^{n} \mu_N^*(A \cap E_i)
-\end{align*}
-$$
-<DemBox title="Demostración">
-
-Por inducción en $n$:
-
-- Si $n = 1$ se cumple trivialmente ya que:
-$$
-\begin{align*}
-\mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{1} E_i\right]\right) = \mu_N^*(A \cap E_1) = \displaystyle \sum_{i = 1}^{1} \mu_N^*(A \cap E_i)
-\end{align*}
-$$
-- Por hipótesis de inducción, supongamos que se cumple para $n$:
-$$
-\begin{align*}
-\mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n} E_i\right]\right) = \displaystyle \sum_{i = 1}^{n} \mu_N^*(A \cap E_i)
-\end{align*}
-$$
-Probemos que se cumple para $n + 1$, es decir:
-$$
-\begin{align*}
-\mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right]\right) = \displaystyle \sum_{i = 1}^{n + 1} \mu_N^*(A \cap E_i)
-\end{align*}
-$$
-Como $E_{n + 1} \in \mathcal{M}_N$ por carracterización de medibilidad de Lebesgue aplicada al conjunto $A \cap \left[\bigcup_{i = 1}^{n + 1} E_i\right]$ tenemos:
-$$
-\begin{align*}
-\mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right]\right) = & \mu_N^*\left(\left[A \cap \left[\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right]\right] \cap E_{n + 1}\right) + \\[1ex]
-&  + \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right]\cap E_{n + 1}^C\right)
-\end{align*}
-$$
-Como tenemos que $E_i \cap E_j = \emptyset$ si $i \neq j$ entonces el primer término es:
-$$
-\begin{align*}
-\left[A \cap \left[\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right]\right] \cap E_{n + 1} = A \cap \left[\left(\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right) \cap E_{n + 1}\right] = A \cap E_{n + 1}
-\end{align*}
-$$
-y el segundo término es:
-$$
-\begin{align*}
-\left[A \cap \left[\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right]\right] \cap E_{n + 1}^C = A \cap \left[\left(\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right) \cap E_{n + 1}^C\right] = A \cap \left[\displaystyle \bigcup_{i = 1}^{n} E_i\right]
-\end{align*}
-$$
-Luego si sustituimos en :
-$$
-\begin{align*}
-\mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n + 1} E_i\right]\right)& = \mu_N^*(A \cap E_{n + 1}) + \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n} E_i\right]\right) \overset{\text{\tiny H.I.}}{=} \\[2ex]
-& = \mu_N^*(A \cap E_{n + 1}) + \displaystyle \sum_{i = 1}^{n} \mu_N^*(A \cap E_i) = \\[2ex]
-& = \displaystyle \sum_{i = 1}^{n + 1} \mu_N^*(A \cap E_i)
-\end{align*}
-$$
-
-</DemBox>
-
-### Teorema de Medida de Lebesgue
-Para $\mu_N \coloneq {\mu_N^*}_{|_{\mathcal{M}_N}}$ se tiene que $(\mathbb{R}^N, \mathcal{M}_N, \mu_N)$ es un espacio de medida completo tal que:
-$$
-\begin{align*}
-\tau_{\mathbb{R}^N} \subseteq \mathcal{M}_N \quad \text{ y } \quad \mu_N(C) = v_N(C) \quad \forall C \text{ cubo acotado}
-\end{align*}
-$$
-<DemBox title="Demostración">
-
-1. *Ver que $\mathcal{M}_N$ es una $\sigma$-álgebra*
-
-- *$\emptyset \in \mathcal{M}_N$*: Por las propiedades de $\mathcal{M_N$} sabemos que $\emptyset \in \mathcal{M}_N$.
-- *Si $E \in \mathcal{M}_N$ entonces $E^C \in \mathcal{M}_N$*: Por las propiedades de $\mathcal{M_N$} sabemos que si $E \in \mathcal{M}_N$ entonces $E^C \in \mathcal{M}_N$.
-- *$\mathcal{M}_N$ es cerrada bajo uniones numerables:* Sea $\{E_i\}_{i \in \mathbb{N}} \subseteq \mathcal{M}_N$ aplicando desjuntificación, obtenemos: 
-$$
-\begin{align*}
-F_1 & \coloneq E_1 \in \mathcal{M}_N\\
-F_2 & \coloneq E_2 \setminus E_1 \in \mathcal{M}_N\\
-\vdots  & \vdots \\
-F_{n + 1} & \coloneq E_{n + 1} \setminus \displaystyle \bigcup_{i = 1}^{n} E_i \in \mathcal{M}_N
-\end{align*}
-$$
-Así, tenemos que $\forall n \in \mathbb{N}$ se cumple:
-$$
-\begin{align*}
-\displaystyle \bigcup_{i = 1}^{n} F_i = \displaystyle \bigcup_{i = 1}^{n} E_i \quad \text{y} \quad \displaystyle \bigcup_{i = 1}^{\infty} F_i = \displaystyle \bigcup_{i = 1}^{\infty} E_i \quad \text{ y } \quad F_i \cap F_j = \emptyset \text{ si } i \neq j
-\end{align*}
-$$
-Veamos que es medible. Sea $A \subseteq \mathbb{R}^N$ cualquiera, entonces para cada $n \in \mathbb{N}$ como $\bigcup_{i = 1}^{n} E_i \in \mathcal{M}_N$ entonces:
-$$
-\begin{align*}
-\mu_N^*(A) = \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n} E_i\right]\right) + \mu_N^*\left(A \cap \left[\displaystyle \bigcup_{i = 1}^{n}E_i\right]^C\right)
-\end{align*}
-$$
-Donde tenemos que:
-
-2. *Ver que $\tau_{\mathbb{R}^N} \subseteq \mathcal{M}_N$*: Para cada $j = 1, \dots, N$ definimos los semiespacios:
-$$
-\begin{align*}
-H_j^{ + } & \coloneq (a_j, \infty) \times \mathbb{R}^{N - 1} \\[2ex]
-H_j^{ - } & \coloneq (-\infty, a_j) \times \mathbb{R}^{N - 1}
-\end{align*}
-$$
-
-Vimos en las propiedades de $\mathcal{M_N$} que $H_j^{ + }, H_j^{ - } \in \mathcal{M}_N$.
-
-Como todo cubo abierto $C = (a_1, b_1) \times (a_2, b_2) \times \dots \times (a_N, b_N)$ puede expresarse como intersección finita de semiespacios $H_j^{ + }$ y $H_j^{ - }$:
-$$
-\begin{align*}
-C = \displaystyle \bigcap_{i = 1}^{N} \left(H_i^{ + } \cap H_i^{ - }\right)
-\end{align*}
-$$
-entonces $C \in \mathcal{M}_N$ por la propiedad de cerradura bajo intersección finita de $\mathcal{M}_N$.
-
-Ahora, definimos la base numerable de $\tau_{\mathbb{R}^N}$.:
-$$
-\begin{align*}
-\mathcal{A} \coloneq \left\{(p_1, q_1) \times (p_2, q_2) \times \dots \times (p_N, q_N) : p_i, q_i \in \mathbb{Q}, p_i < q_i\right\}
-\end{align*}
-$$
-Al ser base de $\tau_{\mathbb{R}^N}$, todo abierto $O \in \tau_{\mathbb{R}^N}$ puede expresarse como unión numerable de elementos de $\mathcal{A}$. Como $\mathcal{A} \subseteq \mathcal{M}_N$ y $\mathcal{M}_N$ es cerrada bajo uniones numerables, entonces $O \in \mathcal{M}_N$.
-3. *Ver que $\mu_N$ es medida:* Veamos que cumple las dos propiedades de la definición de medida:
-
-- *$\mu_N(\emptyset ) = 0$*: Ya hemos probado esto, por definición $\mu_N$ y por la propiedad de la medida exterior $\mu_N^*$ tenemos:
-$$
-\begin{align*}
-\mu_N(\emptyset ) = \mu_N^*(\emptyset ) = 0
-\end{align*}
-$$
-- *$\sigma$-aditividad:* Sea $\{E_i\}_{i \in \mathbb{N}} \subseteq \mathcal{M}_N$ disjuntos entonces para cada $n \in \mathbb{N}$:
-$$
-\begin{align*}
-\displaystyle \sum_{i = 1}^{n} \mu_N(E_i) & \xlongequal[\text{\tiny prop. ant}]{E_i \cap E_j = \emptyset } \mu_N\left(\displaystyle \bigcup_{i = 1}^{n}E_i\right) \overset{\text{\tiny monot.}}{\leq} \mu_N\left(\displaystyle \bigcup_{i = 1}^{\infty} E_i\right) = \\[2ex]
-& = \mu_N^*\left(\displaystyle \bigcup_{i = 1}^{\infty} E_i\right) \overset{\text{\tiny subadit.}}{\leq} \displaystyle \sum_{i = 1}^{\infty} \mu_N^*(E_i) = \displaystyle \sum_{i = 1}^{\infty} \mu_N(E_i)
-\end{align*}
-$$
-Y ahora, si hacemos $n \to \infty$ obtenemos:
-$$
-\begin{align*}
-\displaystyle \sum_{i = 1}^{\infty} \mu_N(E_i) \leq \mu_N\left(\displaystyle \bigcup_{i = 1}^{\infty} E_i\right) \leq \displaystyle \sum_{i = 1}^{\infty} \mu_N(E_i)
-\end{align*}
-$$
-Por el criterio del sándwich se cumple la igualdad y por lo tanto es $\sigma$-aditiva.
-4. *$(\mathbb{R}^N, \mathcal{M}_N, \mu_N)$ es completo:* Sea $E \in \mathcal{M}_N$ con $\mu_N(E) = 0$ y $F \subseteq E$, entonces:
-$$
-\begin{align*}
-0 \leq \mu_N^*(F) \overset{\text{\tiny monot.}}{\leq} \mu_N^*(E) = 0 \implies \mu_N^*(F) = 0 \implies F \in \mathcal{M}_N
-\end{align*}
-$$
-5. *Ver que $\mu_N(C) = v_N(C)$ para todo cubo acotado $C$*: Sea $C$ un cubo abierto acotado en $\mathbb{R}^N$, por las propiedades de $\mu_N^*$ sabemos que $\mu_N^*(C) = v_N(C)$ y como $C \in \mathcal{M}_N$ entonces:
-$$
-\begin{align*}
-\mu_N(C) = \mu_N^*(C) = v_N(C)\\
-\end{align*}
-$$
-
-</DemBox>
-
-<EjBox title="Nota">
-
-Ahora, para cerrar este tema, nos va a faltar ver la relación entre la medida de Lebesgue y la medida de Borel:
-$$
-\begin{align*}
-(\mathbb{R}^N, \widetilde{\mathcal{B}_N}, \widetilde{\mu_N}) = (\mathbb{R}^N, \mathcal{M}_N, \mu_N)
-\end{align*}
-$$
-
-</EjBox>
-
-### Caracterización topológica de los conjuntos medibles de Lebesgue de $\mathbb{R^N}$. Teorema
-Para todo $E \subseteq \mathbb{R}^N$ los siguientes enunciados son equivalentes:
-
-1. $E \in \mathcal{M}_N$
-2. $\forall \varepsilon > 0$ existe $O$ abierto tal que $E \subseteq O$ y $\mu_N^*(O \setminus E) < \varepsilon$
-3. $\forall \varepsilon > 0$ existe $C$ cerrado tal que $C \subseteq E$ y $\mu_N^*(E \setminus C) < \varepsilon$
-4. $\forall \varepsilon > 0$ existe $O$ abierto y $C$ cerrado tal que $C \subseteq E \subseteq O$ y $\mu_N^*(O \setminus C) < \varepsilon$
-
-<EjBox title="Nota">
-
-La demostración se hará siguiendo el esquema:
-$$
-\begin{align*}
-1 & \implies 2 \implies 1\\
-1 & \implies 3 \implies 1\\
-1 & \implies 4 \implies 2 \land 3
-\end{align*}
-$$
-
-</EjBox>
-
-<DemBox title="Demostración">
-
-- **$1 \Rightarrow 2$)** Sea $E \in \mathcal{M}_N$ se puede aproximar por abiertos que lo contienen. Así se dan dos casos:
-
-- *Sea $\mu_N(E) < \infty$*: Por definción de medida exterior, $\forall \varepsilon > 0$ existe un recubrimiento por cubos abiertos $\{I_i\}_{i \in \mathbb{N}}$ tales que:
-$$
-\begin{align*}
-E \subseteq \displaystyle \bigcup_{i = 1}^{\infty} I_i \quad \text{ y } \quad \mu_N(E) + \varepsilon > \displaystyle \sum_{i = 1}^{\infty} v_N(I_i)
-\end{align*}
-$$
-Sea $O \coloneq \bigcup_{i = 1}^\infty I_i$ así $O$ es abierto y $E \subseteq O$. Como $E$ es medible entonces:
-$$
-\begin{align*}
-\mu_N(O) = \mu_N(O \cap E) + \mu_N(O \cap E^C) = \mu_N(E) + \mu_N(O \setminus E)
+J_i = (\alpha, \beta) = [ - \infty, \beta) \cap (\alpha, + \infty]
 \end{align*}
 $$
 Por lo tanto:
 $$
 \begin{align*}
-\mu_N(O \setminus E) & = \mu_N(O) - \mu_N(E) \leq \displaystyle \sum_{i = 1}^{\infty} v_N(I_i) - \mu_N(E) < \varepsilon
+f^{ - 1}(J_i) = \underbrace{f^{ - 1}([ - \infty, \beta))}_{\in \Sigma} \cap \underbrace{f^{ - 1}((\alpha, + \infty])}_{\in \Sigma} \in \Sigma
 \end{align*}
 $$
-- *Sea $\mu_N(E) = \infty$*: Descomponemos $\mathbb{R}^N$ en conjuntos disjuntos, para ello, consideramos los cubos $C_n \coloneq [ - n, n]^N$ con $n \in \mathbb{N}$ y los conjuntos:
-$$
-\begin{align*}
-D_1 & \coloneq C_1 \in \mathcal{M}_N\\
-D_2 & \coloneq C_2 \setminus C_1 \in \mathcal{M}_N\\
-\vdots  & \vdots \\
-D_{n + 1} & \coloneq C_{n + 1} \setminus C_n \in \mathcal{M}_N
-\end{align*}
-$$
-Así, $\mathbb{R}^N = \bigcup_{i = 1}^\infty D_n$:
+ya que $f$ es medible por definición de función medible (1') y (3').
 
-- **$1 \Rightarrow 3$)** Sea $E \in \mathcal{M}_N$, entonces queremos aproximarlo por cerrados contenidos en él, así consideramos $\varepsilon > 0$ entonces aplicando $1 \Rightarrow 2$ a $E^C$ existe $O$ abierto con:
+</DemBox>
+
+### Proposición
+Dado un espacio de medida $(X, \Sigma, \mu)$ y $(f_n: X \to \overline{\mathbb{R}})_{n \in \mathbb{N}}$ una sucesión de funciones medibles entonces se cumplen los siguientes enunciados:
+
+- **i)** $\max \left\{f_1, \dots , f_n\right\}$ es medible para todo $n \in \mathbb{N}$.
+- **ii)** $\min \left\{f_1, \dots , f_n\right\}$ es medible para todo $n \in \mathbb{N}$.
+- **iii)** $\sup \left\{f_1, f_2, \dots \right\}$ es medible.
+- **iv)** $\inf \left\{f_1, f_2, \dots \right\}$ es medible.
+- **v)** $\displaystyle \liminf_{n \to \infty} f_n$ es medible.
+- **vi)** $\displaystyle \limsup_{n \to \infty} f_n$ es medible.
+- **vii)** Si $\exists \displaystyle \lim_{n \to \infty} f_n(x) \in \overline{\mathbb{R}}$ en todo $x \in X$ entonces $\displaystyle \lim_{n \to \infty} f_n$ es medible.
+
+<DemBox title="Demostración">
+
+Dado $\alpha \in \mathbb{R}$ cualquiera:
+
+- **i)** Como el máximo es menor que $\alpha$ si y solo si todos los elementos son menores que $\alpha$, se tiene que:
 $$
 \begin{align*}
-E^C \subseteq O \quad \text{ y } \quad \mu_N(O \setminus E^C) < \varepsilon
+\left\{x : \max \left\{f_1(x), \dots , f_n(x)\right\} < \alpha\right\} = \bigcap_{i = 1}^{n} \underbrace{\left\{x : f_i(x) < \alpha\right\}}_{\in \Sigma} \in \Sigma
 \end{align*}
 $$
-Sea $C \coloneq O^C$ cerrado, así $C^C = O$ luego:
+- **ii)** Como el mínimo es menor que $\alpha$ si y solo si al menos uno de los elementos es menor que $\alpha$, se tiene que:
 $$
 \begin{align*}
-\mu_N\left(C^C\setminus E^C\right) = \mu_N(O \setminus E^C) < \varepsilon\\
+\left\{x : \min \left\{f_1(x), \dots , f_n(x)\right\} < \alpha\right\} = \bigcup_{i = 1}^{n} \underbrace{\left\{x : f_i(x) < \alpha\right\}}_{\in \Sigma} \in \Sigma
 \end{align*}
 $$
-- **$1 \Rightarrow 4$)** Sea $E \in \mathcal{M}_N$ y consideramos $\varepsilon > 0$ cualquiera, aplicando $1 \Rightarrow 2$ y $1 \Rightarrow 3$ se obtienen $O$ abierto y $C$ cerrado tales que:
+- **iii)** Como el supremo es $\leq \alpha$ si y solo si todos los elementos son $\leq \alpha$, se tiene que:
 $$
 \begin{align*}
-C \subseteq E \subseteq O \quad \text{ y } \quad \mu_N(O \setminus E) < \frac{\varepsilon}{2}, \quad \mu_N(E \setminus C) < \frac{\varepsilon}{2}
+\left\{x : \sup_{k \in \mathbb{N}} f_k(x) \leq  \alpha\right\} = \bigcap_{n = 1}^{\infty} \underbrace{\left\{x : f_n(x) \leq  \alpha\right\}}_{\in \Sigma} \in \Sigma
 \end{align*}
 $$
-Luego:
+- **iv)** Como el ínfimo es $\geq \alpha$ si y solo si todos los elementos son $\geq \alpha$, se tiene que:
 $$
 \begin{align*}
-\mu_N(O\setminus C)  = \mu_N\left([O \setminus E] \cup [E \setminus C]\right) \leq \mu_N(O \setminus E) + \mu_N(E \setminus C)< \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon\\
+\left\{x : \inf_{k \in \mathbb{N}} f_k(x) \geq  \alpha\right\} = \bigcap_{n = 1}^{\infty} \underbrace{\left\{x : f_n(x) \geq  \alpha\right\}}_{\in \Sigma} \in \Sigma
 \end{align*}
 $$
-- **$4 \Rightarrow 2$)** *(Y $4 \Rightarrow 3$)* Por hipótesis dado $\varepsilon > 0$ existen $C$ cerrado y $O$ abierto tales que:
+- **v)** Definimos $g_n(x) = \displaystyle \inf_{k \geq n} f_k(x)$ y notamos que:
 $$
 \begin{align*}
-C \subseteq E \subseteq O \quad \text{ y } \quad \mu_N(O \setminus C) < \varepsilon
+\liminf_{k \to \infty} f_k(x) = \sup_{n \in \mathbb{N}} \left(\inf_{k \geq n} f_k(x)\right) = \sup_{n \in \mathbb{N}} g_n(x)
+\end{align*}
+$$
+ya que $g_n$ es medible por iv) (al ser ínfimo de funciones medibles) y aplicando iii) sobre el supremo de las $g_n$ se concluye que $\liminf_{k \to \infty} f_k$ es medible.
+- **vi)** De forma análoga a v) definimos $h_n(x) = \displaystyle \sup_{k \geq n} f_k(x)$ y notamos que:
+$$
+\begin{align*}
+\limsup_{k \to \infty} f_k(x) = \inf_{n \in \mathbb{N}} \left(\sup_{k \geq n} f_k(x)\right) = \inf_{n \in \mathbb{N}} h_n(x)
+\end{align*}
+$$
+ya que $h_n$ es medible por iii) (al ser supremo de funciones medibles) y aplicando iv) sobre el ínfimo de las $h_n$ se concluye que $\limsup_{k \to \infty} f_k$ es medible.
+- **vii)** Si $\exists \lim_{n \to \infty} f_n(x) \in \overline{\mathbb{R}}$ en todo $x \in X$ entonces:
+$$
+\begin{align*}
+\lim_{n \to \infty} f_n(x) = \liminf_{n \to \infty} f_n(x) = \limsup_{n \to \infty} f_n(x)
+\end{align*}
+$$
+Por lo tanto, $\lim_n f_n$ es medible (por v) y vi)).
+
+</DemBox>
+
+<EjBox title="Observación">
+
+Respecto de vii) si tenemos una sucesión de funciones medibles $(f_n)_{n \in \mathbb{N}}$ y definimos:
+$$
+\begin{align*}
+A \coloneq \left\{x \in X : \nexists \lim_{n \to \infty} f_n(x) \in \overline{\mathbb{R}}\right\} \neq \emptyset 
+\end{align*}
+$$
+Es decir, el conjunto de puntos donde la sucesión no converge (notar que no converger en $\overline{\mathbb{R}}$ implica que no converge ni a un real ni a $\pm \infty$).
+
+Entonces, se tiene que $A$ es medible y podemos considerar el espacio de medida donde el límite sí existe:
+$$
+\begin{align*}
+(X \setminus A, \Sigma_{X \setminus A}, \mu_{|_{\Sigma(X \setminus A)}})
+\end{align*}
+$$
+
+</EjBox>
+
+### Operaciones con funciones medibles. Proposición
+Sean $f, g$ funciones medibles respecto de un espacio de medida $(X, \Sigma, \mu)$ se cumplen los siguientes enunciados:
+
+- **i)** $f + g$ es medible (si $f + g$ está bien definida en todo $X$)
+- **ii)** $\forall \lambda \in \mathbb{R}$ se tiene que $\lambda f$ es medible (si $\lambda f$ está bien definida en todo $X$)
+- **iii)** $f^2$ es medible
+- **iv)** $fg$ es medible (si $fg$ está bien definida en todo $X$)
+
+<DemBox title="Demostración">
+
+- **i)** Fijamos $\alpha \in \mathbb{R}$ cualquiera. Entonces:
+$$
+\begin{align*}
+\left\{x : f(x) + g(x) < \alpha\right\} & = \left\{x : f(x) < \alpha - g(x)\right\} \xlongequal[]{\text{\tiny $\mathbb{Q}$ denso en $\mathbb{R}$}} \\[2ex]
+& = \displaystyle \bigcup_{q \in \mathbb{Q}} \left\{x : f(x) < q < \alpha - g(x)\right\} = \\[2ex]
+& = \displaystyle \bigcup_{q \in \mathbb{Q}} \left\{ \left\{x : f(x) < q\right\} \cap \left\{x : q < \alpha - g(x)\right\}\right\} = \\[2ex]
+& = \displaystyle \bigcup_{q \in \mathbb{Q}} \underbrace{\{ \underbrace{\left\{x : f(x) < q\right\} }_{\in \Sigma\text{ ($f$ medible)}}\cap \underbrace{\left\{x : g(x) < \alpha - q\right\}}_{\in \Sigma\text{ ($g$ medible)}}\}}_{\in \Sigma} \in \Sigma
+\end{align*}
+$$
+- **ii)** Se dan dos casos:
+
+- Si $\lambda = 0$ entonces $\lambda f(x) = 0$ es medible.
+- Si $\lambda > 0$ entonces, dado $\alpha \in \mathbb{R}$ se tiene:
+$$
+\begin{align*}
+\left\{x : \lambda f(x) < \alpha\right\} = \left\{x : f(x) < \frac{\alpha}{\lambda}\right\} \overset{\text{\tiny $f$ medible}}{\in} \Sigma
+\end{align*}
+$$
+- Si $\lambda < 0$, análogamente, dado $\alpha \in \mathbb{R}$ se tiene:
+$$
+\begin{align*}
+\left\{x : \lambda f(x) < \alpha\right\} = \left\{x : f(x) > \frac{\alpha}{\lambda}\right\} \overset{\text{\tiny $f$ medible}}{\in} \Sigma
+\end{align*}
+$$
+- **iii)** Sea $\alpha \in \mathbb{R}$ cualquiera. Entonces:
+
+- Si $\alpha < 0$ se tiene:
+$$
+\begin{align*}
+\left\{x : f(x)^2 \leq \alpha\right\} = \emptyset \in \Sigma
+\end{align*}
+$$
+- Si $\alpha \geq 0$ se tiene:
+$$
+\begin{align*}
+\left\{x : f(x)^2 \geq \alpha\right\} & = \left\{x : - \sqrt{\alpha} \leq f(x) \leq \sqrt{\alpha}\right\} =\\[2ex]
+& = \underbrace{\left\{x : f(x) \leq \sqrt{\alpha}\right\}}_{\text{\tiny $f$ medible $\implies \in \Sigma$}} \cap \underbrace{\left\{x : f(x) \geq - \sqrt{\alpha}\right\}}_{\text{\tiny $f$ medible $\implies \in \Sigma$}} \overset{\text{\tiny $f$ medible}}{\in} \Sigma
+\end{align*}
+$$
+- **iv)** Tenemos que la siguiente fórmula es válida $\forall x \in X$:
+$$
+\begin{align*}
+f \cdot g = \frac{1}{2}\left[(f + g)^2 - f^2 - g^2\right]
+\end{align*}
+$$
+excepto si $x$ está en alguno de los siguientes conjuntos:
+$$
+\begin{align*}
+A_1 & \coloneq \left\{x : f(x) = \infty \text{ y } g(x) \in [ - \infty, 0)\right\}\\
+A_2 & \coloneq \left\{x : f(x) = \infty \text{ y } g(x) \in (0, \infty]\right\}\\
+A_3 & \coloneq \left\{x : f(x) = - \infty \text{ y } g(x) \in [ - \infty, 0)\right\}\\
+A_4 & \coloneq \left\{x : f(x) = - \infty \text{ y } g(x) \in (0, \infty]\right\}\\
+A_5 & \coloneq \left\{x : g(x) = \infty \text{ y } f(x) \in (- \infty, 0)\right\}\\
+A_6 & \coloneq \left\{x : g(x) = \infty \text{ y } f(x) \in (0, \infty]\right\}\\
+A_7 & \coloneq \left\{x : g(x) = - \infty \text{ y } f(x) \in (- \infty, 0)\right\}\\
+A_8 & \coloneq \left\{x : g(x) = - \infty \text{ y } f(x) \in (0, \infty]\right\}
+\end{align*}
+$$
+Se tiene que $A_i \in \Sigma$ para todo $i = 1, \dots, 8$ ya que se definen como la intersección de dos conjuntos medibles (por ser $f$ y $g$ medibles). Definimos además:
+$$
+\begin{align*}
+A_9 \coloneq X \setminus \displaystyle \bigcup_{i = 1}^{8} A_i \in \Sigma
+\end{align*}
+$$
+Notamos entonces que $A_i$ son disjuntos dos a dos y que su unión es todo $X$, así tenemos que:
+
+- Para $i = 1, \dots, 8$ se cumple que $f \cdot g|_{A_i} \equiv \infty$ o bien $f \cdot g|_{A_i} \equiv - \infty$ luego:
+$$
+\begin{align*}
+f \cdot g|_{A_i} \text{ medible respecto } \left(A_i, \Sigma(A_i), \mu|_{\Sigma(A_i)}\right)
+\end{align*}
+$$
+- Para $i = 9$ se tiene:
+$$
+\begin{align*}
+f \cdot g|_{A_9} = \frac{1}{2}\left[(f + g)^2 - f^2 - g^2\right] \quad \text{ medible resp. } \left(A_9, \Sigma(A_9), \mu|_{\Sigma(A_9)}\right)
+\end{align*}
+$$
+
+Así $\forall i \in \{1, \dots, 9\}$, la función $f\cdot g|_{A_i}$ es medible respecto de $\left(A_i, \Sigma(A_i), \mu|_{\Sigma(A_i)}\right)$ luego, $\forall i \in \{1, \dots, 9\}$ tenemos:
+$$
+\begin{align*}
+f\cdot g \cdot \mathcal{X}_{A_i} \quad \text{ es medible respecto } (X, \Sigma, \mu)
 \end{align*}
 $$
 Entonces:
 $$
 \begin{align*}
-O\setminus E \subseteq O \setminus C & \implies \mu_N^*(O \setminus E) \leq \mu_N^*(O \setminus C) < \varepsilon\\[2ex]
-E \setminus C \subseteq O \setminus C & \implies \mu_N^*(E \setminus C) \leq \mu_N^*(O \setminus C) < \varepsilon\\
+\displaystyle \sum_{i = 1}^{9} f \cdot g \cdot \mathcal{X}_{A_i} = f \cdot g \quad \text{ medible respecto } (X, \Sigma, \mu)
 \end{align*}
 $$
-- **$2 \Rightarrow 1$)** Por hipótesis para cada $n \in \mathbb{N}$ existe $O_n$ abierto tal que:
-$$
-\begin{align*}
-E \subseteq O_n \quad \text{ y } \quad \mu_N^*(O_n \setminus E) < \frac{1}{n}
-\end{align*}
-$$
-Consideramos los abiertos $G_n \coloneq \bigcap_{i = 1}^n O_i$ así:
-
-- $G_n \supseteq G_{n + 1}$
-- $E \subseteq G_n$
-- $\mu_N^*(G_n \setminus E) \leq \mu_N^*(O_n \setminus E) < \frac{1}{n}$
-
-Sea $G \coloneq \bigcap_{i = 1}^\infty G_n \in \mathcal{M}_N$ tenemos que $E \subseteq G$ y :
-$$
-\begin{align*}
-\mu_N^*(G \setminus E) \leq \mu_N^*(G_n \setminus E) < \frac{1}{n} \quad \forall n \in \mathbb{N}
-\end{align*}
-$$
-Haciendo $n \to \infty$ obtenemos:
-$$
-\begin{align*}
-0 \leq \mu_N^*(G \setminus E) \leq 0 \implies N \coloneq G \setminus E \in \mathcal{M}_N \quad \text{ y } \quad \mu_N(N) = 0
-\end{align*}
-$$
-Además, como $G, N \in \mathcal{M}_N$ entonces $E = G \setminus N \in \mathcal{M}_N$
-- **$3 \Rightarrow 1$)** Por hipótesis para cada $n \in \mathbb{N}$ existe $C_n$ cerrado tal que:
-$$
-\begin{align*}
-E \supseteq C_n \quad \text{ y } \quad \mu_N^*(E \setminus C_n) < \frac{1}{n}
-\end{align*}
-$$
-Consideramos los cerrados $D_n \coloneq \bigcup_{i = 1}^n C_i$ así:
-
-- $D_n \subseteq D_{n + 1}$
-- $E \supseteq D_n$
-- $\mu_N^*(E \setminus D_n) \leq \mu_N^*(E \setminus C_n) < \frac{1}{n}$
-
-Sea $D \coloneq \bigcup_{i = 1}^\infty D_n \in \mathcal{M}_N$, así:
-$$
-\begin{align*}
-E \supseteq D \quad \text{ y } \quad \mu_N^*(E \setminus D) \leq \mu_N^*(E \setminus D_n) < \frac{1}{n}
-\end{align*}
-$$
-Haciendo $n \to \infty$ obtenemos:
-$$
-\begin{align*}
-0 \leq \mu_N^*(E \setminus D) \leq 0 \implies M \coloneq E \setminus D \in \mathcal{M}_N \quad \text{ y } \quad \mu_N(M) = 0
-\end{align*}
-$$
-Además, como $D, M \in \mathcal{M}_N$ entonces $E = D \cup M \in \mathcal{M}_N$
+Y esto está bien definido en todo $X$ ya que $A_i \cap A_j = \emptyset$ si $i \neq j$.
 
 </DemBox>
 
-<EjBox title="Nota">
-
-Las implicaciones de esta demostración lo que dicen (en castellano) es:
-
-- **$1 \Rightarrow 2$)** Si $E$ es medible entonces se puede aproximar por abiertos que lo contienen.
-- **$1 \Rightarrow 3$)** Si $E$ es medible entonces se puede aproximar por cerrados que están contenidos en él.
-- **$1 \Rightarrow 4$)** Si $E$ es medible entonces puede ser ``encajado'' entre un cerrado y un abierto.
-- **$4 \Rightarrow 2$)** *(y $4 \Rightarrow 3$)* La aproximación bilateral implica la aproximación unilateral.
-- **$2 \Rightarrow 1$)** Si $E$ puede ser aproximado por abiertos que lo contienen entonces es medible.
-- **$3 \Rightarrow 1$)** Si $E$ puede ser aproximado por cerrados que están contenidos en él entonces es medible.
-
-</EjBox>
-
 <EjBox title="Observación">
 
-Todo $E \in \mathcal{M}_N$ se puede expresar como:
-$$
-\begin{align*}
-E = \left(\displaystyle \bigcap_{n = 1}^{\infty} G_n\right) \setminus N \quad \text{ o } \quad E = \left(\displaystyle \bigcup_{n = 1}^{\infty} D_n\right) \cup M
-\end{align*}
-$$
-donde $(G_n)_n$ es una sucesión decreciente de abiertos, $(D_n)_n$ es una sucesión creciente de cerrados y $N, M$ son conjuntos de medida nula.
-
-Además, los conjuntos $\bigcap_{n = 1}^\infty G_n$ y $\bigcup_{n = 1}^\infty D_n$ son conjuntos Borelianos.
+En general, la composición de funciones medibles no tiene sentido salvo en casos especiales. Existen funciones medibles $fg$ respecto de $(\mathbb{R}, \mathcal{M}_1, \mu_1)$ tales que $g \circ f$ no es medible respecto de $(\mathbb{R}, \mathcal{M}_1, \mu_1)$.
 
 </EjBox>
 
-### Medida de Borel y medida de Lebesgue en $\mathbb{R}^N$. Corolario
-Se tiene que:
+### Composición de funciones medibles y continuas. Proposición
+Sea $(X, \Sigma, \mu)$ espacio de medida, $f: X \to \overline{\mathbb{R}}$ medible y $g: A \to \overline{\mathbb{R}}$ continua con $f(X) \subseteq A$ se tiene que:
 $$
 \begin{align*}
-\left(\mathbb{R}^N, \mathcal{M}_N, \mu_N\right) = \left(\mathbb{R}^N, \widetilde{\mathcal{B}_N}, \widetilde{\mu_{N|_{\mathcal{B}_N}}}\right)
+g \circ f \quad \text{ es medible}
 \end{align*}
 $$
 <DemBox title="Demostración">
 
-- *Veamos que $\mathcal{M}_N = \widetilde{\mathcal{B}_N}$*:
-
-\item *Veamos que $\mu_N = \widetilde{{\mu_N}_{|_{\mathcal{B}_N}}}$*: Sea $E \in \widetilde{\mathcal{B}_N}$ entonces:
+Sea $\alpha \in \mathbb{R}$ cualquiera entonces:
 $$
 \begin{align*}
-E = A \cup M \quad \text{ con } \left\{
-\begin{array}{l}
-A \in \mathcal{B}_N\\
-M \subseteq P \in \mathcal{B}_N \text{ y } \mu_N(P) = 0
-\end{array}
-\right.
+(g \circ f)^{ - 1}([ - \infty, \alpha)) = f^{ - 1}\left(g^{ - 1}([ - \infty, \alpha))\right)
 \end{align*}
 $$
-Luego, por definición de $\widetilde{\mu_N}$:
+Como $[ - \infty, \alpha)$ es abierto de $\overline{\mathbb{R}}$ y $g$ continua, entonces:
 $$
 \begin{align*}
-\widetilde{\mu_N}(E) = \widetilde{\mu_N}(A \cup M) = \mu_N(A)
+g^{ - 1}([ - \infty, \alpha)) \subseteq A \text{ es abierto de } A
 \end{align*}
 $$
-Como $E \subseteq A \cup P$ entonces:
+Como $f$ medible, por la caracterízación de funciones medibles se tiene que:
 $$
 \begin{align*}
-\mu_N(E) \leq \mu_N(A \cup P) \overset{\text{subadit.}}{\leq} \mu_N(A) + \mu_N(P) = \mu_N(A) \leq \mu_N(E)
-\end{align*}
-$$
-Por el criterio del sándwich se cumple la igualdad y por lo tanto:
-$$
-\begin{align*}
-\mu_N(E) = \widetilde{\mu_N}(E)
+f^{ - 1}\left(g^{ - 1}([ - \infty, \alpha))\right) \in \Sigma
 \end{align*}
 $$
 
 </DemBox>
+
+### Corolario
+Sea $(X, \Sigma, \mu)$ espacio de medida y $f: X \to \overline{\mathbb{R}}$ medible tal que $f(x) \neq 0$ para todo $x \in X$ entonces:
+$$
+\begin{align*}
+\frac{1}{f} \quad \text{ es medible}
+\end{align*}
+$$
+<DemBox title="Demostración">
+
+Definimos la función $g$ como:
+$$
+\begin{align*}
+g : \overline{\mathbb{R}} \setminus \{0\} & \longrightarrow \overline{\mathbb{R}} \\[1ex]
+y & \longmapsto g(y) = \frac{1}{y}
+\end{align*}
+$$
+Como $g$ continua en $\overline{\mathbb{R}} \setminus \{0\}$ y $f(X) \subseteq \overline{\mathbb{R}} \setminus \{0\}$, por la proposición anterior se tiene:
+$$
+\begin{align*}
+g \circ f = \frac{1}{f} \quad \text{ es medible}
+\end{align*}
+$$
+
+</DemBox>
+
+### Proposición
+Sean las funciones:
+$$
+\begin{align*}
+\left.
+\begin{array}{l}
+f \colon \mathbb{R} \to \mathbb{R} \text{ medible respecto de } (\mathbb{R}, \mathcal{B}_1, \mu_1) \\[2ex]
+g \colon \mathbb{R} \to \mathbb{R} \text{ medible respecto de } (\mathbb{R}, \mathcal{B}_1, \mu_1)
+\end{array}
+\right\} \implies g \circ f \text{ medible respecto de } (\mathbb{R}, \mathcal{B}_1, \mu_1)
+\end{align*}
+$$
+<DemBox title="Demostración">
+
+Se sigue de los siguientes pasos:
+
+- **1)** Se define $\mathcal{A} \coloneq \left\{B \in \mathcal{B}_1 : f^{ - 1}(B) \in \mathcal{B}_1\right\}$. Es decir, $\mathcal{A}$ es el conjunto de todos los borelianos $B$ de $\mathbb{R}$ cuya preimagen por $f$ es también boreliano.
+
+Notar que $\tau_\mathbb{R} \subseteq \mathcal{A}$ ya que $f$ es medible respecto de $(\mathbb{R}, \mathcal{B}_1, \mu_1)$ implica que:
+$$
+\begin{align*}
+B \in \tau_\mathbb{R} \implies f^{ - 1} (B) \in \mathcal{B}_1
+\end{align*}
+$$
+- **2)** *Ver que $\mathcal{A}$ es una $\sigma$-álgebra:*
+
+- **i)** *Ver que $\emptyset \in \mathcal{A}$*: trivial ya que:
+$$
+\begin{align*}
+\emptyset \in \tau_\mathbb{R} \subseteq \mathcal{A}
+\end{align*}
+$$
+- **ii)** *Ver que es cerrada para uniones numerables*: Sea $\{A_i\}_{i \in \mathbb{N}} \subseteq \mathcal{A}$ entonces:
+$$
+\begin{align*}
+f^{ - 1}\left(\bigcup_{i \in \mathbb{N}} A_i\right) = \bigcup_{i \in \mathbb{N}} \underbrace{f^{ - 1}(A_i)}_{\in \mathcal{B}_1} \in \mathcal{B}_1 \implies \bigcup_{i \in \mathbb{N}} A_i \in \mathcal{A}
+\end{align*}
+$$
+Donde hemos usado que $A_i \in \mathcal{A} \implies f^{ - 1}(A_i) \in \mathcal{B}_1$.
+- **iii)** *Ver que es cerrada para complementos*: Sea $A \in \mathcal{A}$ entonces:
+$$
+\begin{align*}
+f^{ - 1}(\mathbb{R} \setminus A) = \mathbb{R} \setminus \underbrace{f^{ - 1}(A)}_{\in \mathcal{B}_1} \in \mathcal{B}_1 \implies \mathbb{R} \setminus A \in \mathcal{A}
+\end{align*}
+$$
+Donde hemos usado que $A \in \mathcal{A} \implies f^{ - 1}(A) \in \mathcal{B}_1$.
+- **3)** *Ver que $\mathcal{A} = \mathcal{B}_1$:*
+$$
+\begin{align*}
+\left.
+\begin{array}{l}
+\tau_\mathbb{R} \subseteq \mathcal{A} \subseteq \mathcal{B}_1\\
+\mathcal{A} \text{ es } \sigma\text{-álgebra} \implies \mathcal{B}_1 \subseteq \mathcal{A}
+\end{array}
+\right\} \implies A = \mathcal{B}_1
+\end{align*}
+$$
+- **4)** *Caracterización de medibilidad:* Sea $f : \mathbb{R} \to\mathbb{R}$, por la caracterización de funciones medibles se tiene que $f$ es medible respecto de $(\mathbb{R}, \mathcal{B}_1, \mu_1)$ si y solo si:
+$$
+\begin{align*}
+\forall B \in \mathcal{B}_1 : f^{ - 1}(B) \in \mathcal{B}_1
+\end{align*}
+$$
+Como $\mathcal{A} = \mathcal{B}_1$ se tiene la equivalencia.
+- **5)** *Medibilidad de $g \circ f$ respecto de $(\mathbb{R}, \mathcal{B}_1, \mu_1)$:* dado $O \subseteq \mathbb{R}$ abierto cualquiera:
+$$
+\begin{align*}
+(g \circ f)^{ - 1}(O) = f^{ - 1}(\underbrace{g^{ - 1}(O)}_{\in \mathcal{B}_1 \text{ $g \,$medible}}) \in \mathcal{B}_1
+\end{align*}
+$$
+Por lo tanto, $g \circ f$ es medible respecto de $(\mathbb{R}, \mathcal{B}_1, \mu_1)$.
+
+</DemBox>
+
+### Función característica. Definición
+Sea $X$ conjunto y $A \subseteq X$, se dice **función característica** o **indicadora** de $A$ a la función:
+$$
+\begin{align*}
+\mathcal{X}_A : X & \longrightarrow \{0,1\} \subseteq \mathbb{R} \\[1ex]
+x & \longmapsto \mathcal{X}_{A}(x) = \left\{
+\begin{array}{ll}
+1 & \text{ si } x \in A \\[1ex]
+0 & \text{ si } x \notin A
+\end{array}
+\right. \\
+\end{align*}
+$$
+
+### Medibilidad de la función característica. Proposición
+Si $(X, \Sigma, \mu)$ es un espacio de medida entonces se tiene:
+$$
+\begin{align*}
+\mathcal{X}_A \text{ es } \mu\text{-medible} \iff A \in \Sigma\\
+\end{align*}
+$$
+<DemBox title="Demostración">
+
+- **$\Rightarrow$)** Sea $\mathcal{X}_A$ medible, entonces $\forall \alpha \in \mathbb{R}$ se tiene:
+$$
+\begin{align*}
+\left\{x : \mathcal{X}_A(x) < \alpha\right\} \in \Sigma
+\end{align*}
+$$
+En particular, tomando $\alpha = 1$ se tiene:
+$$
+\begin{align*}
+\left\{x :  \mathcal{X}_A  < 1 \right\} = \left\{x : \mathcal{X}_A(x) = 0\right\} = X \setminus A \in \Sigma \implies A = (A^c)^c \in \Sigma
+\end{align*}
+$$ \leftskip -10pt
+- **$\Leftarrow$)** Sea $A \in \Sigma$, entonces:
+
+</DemBox>
+
+### Función simple. Definición
+Se dice que $s : X \to \overline{\mathbb{R}}$ es una **función simple** si su imagen es finita, es decir:
+$$
+\begin{align*}
+s(X) \quad \text{ es un conjunto finito}
+\end{align*}
+$$
+O, equivalentemente, si existe $n \in \mathbb{N}$ tal que:
+$$
+\begin{align*}
+s(X) = \left\{\lambda_1, \dots, \lambda_n\right\} \quad \text{ con } \lambda_i \in \overline{\mathbb{R}}\\
+\end{align*}
+$$
+
+### Expresión canónica. Definición
+Sea $s(X) = \left\{\lambda_1 < \lambda_2 < \dots < \lambda_n \right\}$ con $n \in \mathbb{N}$, se dice **expresión canónica** de $s$ a:
+$$
+\begin{align*}
+s = \displaystyle \sum_{i = 1}^{n} \lambda_i \mathcal{X}_{A_i} \quad \text{ donde } A_i = s^{ - 1}(\{\lambda_i\}) = \left\{x \in X : s(x) = \lambda_i\right\}\\
+\end{align*}
+$$
+
+<EjemBox title="Ejercicio">
+
+*Demostrar que dado $(X, \Sigma, \mu)$ espacio de medida, $s : X \to \overline{\mathbb{R}}$ es una función simple medible sii para todo $i = 1, \dots , n$ se tiene que $A_i \in \Sigma$.*
+
+Para esto, consideramos los dos sentidos de la implicación:
+
+- **$\Rightarrow$)** Basta notar que para todo $i = 1, \dots , n$:
+$$
+\begin{align*}
+A_i = s^{ - 1}(\lambda_i) = \underbrace{\left\{x : s(x) \leq \lambda_i\right\}}_{\in \Sigma} \cap \underbrace{\left\{x : s(x) \geq \lambda_i\right\}}_{\in \Sigma} \in \Sigma
+\end{align*}
+$$
+- **$\Leftarrow$)** Como los $A_i$ son disjuntos dos a dos, el valor $\sum_{i = 1}^n \lambda_i \mathcal{X}_{A_i}(x)$ está bien definida para todo $x \in X$. Para todo $i$ se tiene que $A_i$ medible entonces:
+$$
+\begin{align*}
+\displaystyle \sum_{i = 1}^{n} \lambda_i \underbrace{\mathcal{X}_{A_i}(x)}_{\text{\tiny medible}} \quad \text{ es } \text{ medible}
+\end{align*}
+$$
+
+</EjemBox>
+
+### Parte positiva y negativa de una función. Definición
+Sea $f : X \to \overline{\mathbb{R}}$ una función, definimos la **parte positiva** como la función:
+$$
+\begin{align*}
+f^{ + }(x) = \max \{f(x), 0\} \quad \forall x \in X
+\end{align*}
+$$
+y llamamos **parte negativa** a la función:
+$$
+\begin{align*}
+f^{ - }(x) = - \left[f(x) - f^{ + }(x)\right] \quad \forall x \in X
+\end{align*}
+$$
+Así, se tiene que:
+$$
+\begin{align*}
+f = f^{ + } - f^{ - } \quad \text{ y } \quad |f| = f^{ + } + f^{ - }\\
+\end{align*}
+$$
+
+<EjBox title="Nota">
+
+Sea $f: X \to \overline{\mathbb{R}}$, para cada $x_0 \in X$ al menos uno de los valores $f^{ + }(x_0)$ y $f^{ - }(x_0)$ es no nulo.
+
+</EjBox>
+
+<EjBox title="Nota">
+
+Si $f : X \to \overline{\mathbb{R}}$ es medible entonces $f^{ + }$ y $f^{ - }$ son medibles.
+
+</EjBox>
+
+### Teorema
+Sea $(X, \Sigma, \mu)$ espacio de medida, para toda función medible $f: X \to [0, \infty]$ existe una sucesión de funciones simples medibles $\{s_n: X \to [0, \infty]\}_{n \in \mathbb{N}}$ tal que:
+
+1. $\forall n \in \mathbb{N}, \quad \forall x \in X$ se tiene que $0 \leq s_n(x) \leq s_{n + 1}(x) \leq f(x)$
+2. $\forall n \in \mathbb{N}, \quad \forall x \in X$ se tiene que $\exists \displaystyle  \lim_{n \to \infty} s_n(x) = f(x)$
+
+<DemBox title="Demostración">
+
+Para cada $n \in \mathbb{N}$ consideramos los conjuntos medibles:
+$$
+\begin{align*}
+E_n \coloneq f^{ - 1}([n, \infty]) \in \Sigma
+\end{align*}
+$$
+Y definimos los conjuntos disjuntos dos a dos:
+$$
+\begin{align*}
+E_{n, i} \coloneq f^{ - 1}\left(\left[\frac{i - 1}{2^n}, \frac{i}{2^n}\right)\right) \in \Sigma \quad \forall i = 1, \dots , n 2^n
+\end{align*}
+$$
+Definimos la sucesión de funciones simples medibles:
+$$
+\begin{align*}
+s_n(x) \coloneq \left[\displaystyle \sum_{i = 1}^{n2^n} \frac{i - 1}{2^n} \mathcal{X}_{E_{n, i}}(x)\right] + n \mathcal{X}_{E_n}(x) \quad \forall x \in X
+\end{align*}
+$$
+Para ver la convergencia, tomamos $x_0 \in X$ cualquiera y entonces se dan dos casos:
+
+- Si $f(x_0) = \infty$ entonces:
+$$
+\begin{align*}
+s_n(x_0) = n \xrightarrow[n \to \infty]{} \infty = f(x_0)
+\end{align*}
+$$
+- Si $0 \leq f(x_0) < \infty$ entonces, sea $m \in \mathbb{N}$ el natural más pequeño tal que $f(x_0) < m$:
+
+$$
+\begin{array}{ccccc}
+s_1(x_0) & s_2(x_0) & \ldots & s_{m - 1}(x_0) &  \leq s_m(x_0) \\
+\rotatebox{90}{ = } & \rotatebox{90}{ = } & & \rotatebox{90}{ = } &  \\
+1 &  < 2 &  < \dots  &  < m - 1 & 
+\end{array}
+$$
+
+Y para $n \geq m$ denotando $i_n$ el único natural $1 \leq i_n \leq n 2^n$ tal que:
+$$
+\begin{align*}
+f(x_0) \in \left[\frac{i_n - 1}{2^n}, \frac{i_n}{2^n}\right) = \left[\frac{2i_n - 2}{2^{n + 1}}, \frac{2i_n - 1}{2^{n + 1}}\right) \cup \left[\frac{2i_n - 1}{2^{n + 1}}, \frac{2i_n}{2^{n + 1}}\right)
+\end{align*}
+$$
+se tiene que:
+$$
+\begin{align*}
+s_n(x_0) = \frac{i_n - 1}{2^n} & \implies s_{n + 1}(x) \in \left\{\frac{2i_n - 2}{2^{n + 1}}, \frac{2i_n - 1}{2^{n + 1}} \right\} \implies \\[3ex]
+& \implies s_{n + 1}(x_0) \geq \frac{2i_n - 2}{2^{n + 1}} = s_n(x_0) \implies \\[3ex]
+& \implies \frac{i_n - 1}{2^n} = s_n(x_0) \leq f(x_0) < \frac{i_n}{2^n} = \frac{i_n - 1}{2^n} + \frac{1}{2^n} 
+\end{align*}
+$$
+Como $(s_n(x_0))_{n \in \mathbb{N}}$ es creciente entonces:
+$$
+\begin{align*}
+\exists \lim_{n \to \infty} s_n(x_0) = l
+\end{align*}
+$$
+Si $n \to \infty$ entonces:
+$$
+\begin{align*}
+l \leq f(x_0) \leq l + 0
+\end{align*}
+$$
+
+</DemBox>
+
+<EjBox title="Observación">
+
+Si $f$ es acotada (en $\mathbb{R}$), la convergencia de $s_n$ a $f$ en la demostración es uniforme.
+
+</EjBox>
