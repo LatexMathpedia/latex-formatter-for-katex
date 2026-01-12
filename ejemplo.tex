@@ -14,10 +14,15 @@
 \usepackage{cancel}
 \usepackage{pgfplots}  % Para graficar funciones en tikz
 \usepackage{background}
-\usetikzlibrary{arrows.meta}
+\usetikzlibrary{arrows.meta, patterns}
 \usepackage[bottom]{footmisc}
 \usepackage{extarrows}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 \allowdisplaybreaks
+
+\newcommand{\Lint}{\mathop{\int_{\!\!\!\!\!|\!}^{\!|\!}}}
+
 
 % Definir la marca de agua
 \backgroundsetup{
@@ -83,8 +88,12 @@ breakable = true
 \setstretch{1.2}
 \decimalpoint
 
-\title{\textbf{TEMA 4}: Funciones medibles}
-\author{Diego Díaz Mendaña}
+\title{\textbf{TEMA 5}: Integral de Lebesgue}
+\author{Diego Díaz Mendaña\\
+\& Diego Fernández Martínez\\
+\& Mateo Rama García\\
+\& Fernando Suárez Fernández\\
+\& Pablo García Pernas}
 %\date{Fecha}
 
 \begin{document}
@@ -97,7 +106,7 @@ Estos apuntes son un resumen basado en el material proporcionado en la asignatur
 
 \vspace{12ex}
 \section*{Licencia de uso}
-Apuntes Análisis III - Tema 4 © 2025 by Diego Díaz Mendaña is licensed under CC BY-NC-SA 4.0. To view a copy of this license, visit \href{https://creativecommons.org/licenses/by-nc-sa/4.0/}{https://creativecommons.org/licenses/by-nc-sa/4.0/}
+Apuntes Análisis III - Tema 5 © 2025 by Diego Díaz Mendaña is licensed under CC BY-NC-SA 4.0. To view a copy of this license, visit \href{https://creativecommons.org/licenses/by-nc-sa/4.0/}{https://creativecommons.org/licenses/by-nc-sa/4.0/}
 
 \newpage
 
@@ -106,599 +115,2418 @@ Apuntes Análisis III - Tema 4 © 2025 by Diego Díaz Mendaña is licensed under
 \hypersetup{linkcolor=blue}
 \newpage
 
-\section{Funciones medibles}
-\subsection{Función medible. Definición}\label{def:funcion_medible}
-\noindent Sea \((X, \Sigma, \mu)\) espacio de medida y \(f \colon X \to \overline{\mathbb{R}}\) función, se dice \textbf{medible} (o \(\mu\)-medible) si:
-\begin{align*}\tag{1}
-  \forall \alpha \in \mathbb{R} \quad \mbox{ se cumple } \quad \left\{x \in X : f(x) < \alpha\right\} \in \Sigma
-\end{align*}
-O, equivalentemente:
-\begin{align*}\tag{2}
-  \forall \alpha \in \mathbb{R} \quad \mbox{ se cumple } \quad \left\{x \in X : f(x) \leq \alpha\right\} \in \Sigma
-\end{align*}
-\begin{align*}\tag{3}
-  \forall \alpha \in \mathbb{R} \quad \mbox{ se cumple } \quad \left\{x \in X : f(x) > \alpha\right\} \in \Sigma
-\end{align*}
-\begin{align*}\tag{4}
-  \forall \alpha \in \mathbb{R} \quad \mbox{ se cumple } \quad \left\{x \in X : f(x) \geq \alpha\right\} \in \Sigma
-\end{align*}
-También se puede considerar \(\alpha \in \overline{\mathbb{R}}\) en cualquiera de las definiciones anteriores (se denotarán como (1'), (2'), (3') y (4')).\vspace{2ex}
-
-\begin{dem_box}{Demostración}
-  Veamos que son equivalentes:
-  \begin{itemize}
-    \item[\(1 \Rightarrow 2\))] \textit{Ver que \(\{x : f(x) \leq \alpha\} \in \Sigma\)}: empleando una aproximación por sucesiones decrecientes. Dado \(\alpha \in \mathbb{R}\) podemos notar que la condición \(f(x) \leq \alpha\) es equivalente a que \(f(x) < \alpha + \varepsilon\) para todo \(\varepsilon > 0\) (tomando \(\varepsilon = \frac{1}{n}\)). Por tanto:
-    \begin{align*}
-      \left\{x : f(x) \leq \alpha\right\} = \displaystyle \bigcap_{n = 1}^{\infty} \left\{x : f(x) < \alpha + \frac{1}{n}\right\} \in \Sigma
-    \end{align*}
-    que se cumple ya que:
-    \begin{itemize}
-      \item Cada conjunto \(\left\{x : f(x) < \alpha + \frac{1}{n}\right\} \in \Sigma\) por (1).
-      \item \(\Sigma\) es cerrada para intersecciones numerables al ser una \(\sigma\)-álgebra.
-    \end{itemize}
-    \item[\(2 \Rightarrow 3\))] \textit{Ver que \(\{x : f(x) > \alpha\} \in \Sigma\)}: empleando que las desigualdades estrictas y no estrictas son complementarias cuando se considera el mismo valor. Dado \(\alpha \in \mathbb{R}\) entonces:
-    \begin{align*}
-      \left\{x : f(x) > \alpha\right\} = \{\underbracket{x :f(x) \leq \alpha}_{\in \Sigma}\}^c \in \Sigma
-    \end{align*}
-    \item[\(3 \Rightarrow 4\))] \textit{Ver que \(\{x : f(x) \geq \alpha\} \in \Sigma\)}: de forma análoga a \([1 \Rightarrow 2]\) empleando sucesiones crecientes, dado \(\alpha \in \mathbb{R}\) entonces:
-    \begin{align*}
-      \left\{x : f(x) \geq \alpha\right\} = \displaystyle \bigcap_{n = 1}^{\infty} \underbracket{\left\{x : f(x) > \alpha - \frac{1}{n}\right\}}_{\in \Sigma \; \text{ por (3)}} \in \Sigma
-    \end{align*}
-    \item[\(4 \Rightarrow 1\))] \textit{Ver que \(\{x : f(x) < \alpha\} \in \Sigma\)}: de forma análoga a \([2 \Rightarrow 3]\) empleando el complemento, dado \(\alpha \in \mathbb{R}\) entonces:
-    \begin{align*}
-      \left\{x : f(x) < \alpha\right\} = \{\underbracket{x : f(x) \geq \alpha}_{\in \Sigma}\}^c \in \Sigma
-    \end{align*}
-  \end{itemize}
-\end{dem_box}
-\begin{dem_box}{Demostración}
-  Veamos que son equivalentes las definiciones con \(\alpha \in \overline{\mathbb{R}}\) y las definiciones con \(\alpha \in \mathbb{R}\):
-  \begin{itemize} \leftskip -12pt
-    \item[1)] \textit{Ver que \((1 \Leftrightarrow 1')\)}
-    \begin{itemize} \leftskip -15pt
-      \item[\(\Rightarrow\))] Trivial ya que \(\mathbb{R} \subset \overline{\mathbb{R}}\).
-      \item[\(\Leftarrow\))] Dado \(\alpha = + \infty\) entonces:
-      \begin{align*}
-        \left\{x \in X: f(x) < \infty\right\} = \displaystyle \bigcup_{n = 1}^{\infty} \underbracket{ \left\{x \in X: f(x) < n\right\}}_{\in \Sigma} \in \Sigma
-      \end{align*}
-      Dado \(\alpha = - \infty\) entonces\footnote{Este también existe, como Teruel}:
-      \begin{align*}
-        \left\{x \in X \colon f(x) < - \infty\right\} = \emptyset \in \Sigma
-      \end{align*}
-    \end{itemize}
-    Y ya estaría\footnote{Pues sí que va a ser como Teruel, vacío.}.
-  \item[2)] \textit{Ver que \((2 \Leftrightarrow 2')\)}
-    \begin{itemize} \leftskip -15pt
-      \item[\(\Rightarrow)\))] Trivial ya que \(\mathbb{R} \subset \overline{\mathbb{R}}\).
-      \item[\(\Leftarrow)\))] Dado \(\alpha = + \infty\) entonces:
-      \begin{align*}
-        \left\{x : f(x) \leq + \infty\right\} = X \in \Sigma
-      \end{align*}
-      \begin{align*}
-        \left\{x : f(x) \leq - \infty\right\} = \displaystyle \bigcap_{n = 1}^{\infty} \underbracket{\left\{x: f(x) \leq - n\right\}}_{\in \Sigma} \in \Sigma
-      \end{align*}
-    \end{itemize}
-  \item[3)] \textit{Ver que \((3 \Leftrightarrow 3')\)}
-    \begin{itemize} \leftskip -15pt
-      \item[\(\Rightarrow\))] Trivial ya que \(\mathbb{R} \subset \overline{\mathbb{R}}\).
-      \item[\(\Leftarrow\))] Dado \(\alpha = + \infty\) entonces:
-      \begin{align*}
-        \left\{x : f(x) > + \infty\right\} = \emptyset \in \Sigma
-      \end{align*}
-      Dado \(\alpha = - \infty\) entonces:
-      \begin{align*}
-        \left\{x : f(x) > - \infty\right\} = \displaystyle \bigcup_{n = 1}^{\infty} \underbracket{\left\{x : f(x) > - n\right\}}_{\in \Sigma} \in \Sigma
-      \end{align*}
-    \end{itemize}
-    \vspace{4ex}
-
-  \item[4)] \textit{Ver que \((4 \Leftrightarrow 4')\)}
-    \begin{itemize} \leftskip -15pt
-      \item[\(\Rightarrow\))] Trivial ya que \(\mathbb{R} \subset \overline{\mathbb{R}}\).
-      \item[\(\Leftarrow\))] Dado \(\alpha = + \infty\) entonces:
-      \begin{align*}
-        \left\{x : f(x) \geq + \infty\right\} = \displaystyle \bigcap_{n = 1}^{\infty} \underbracket{\left\{x : f(x) \geq n\right\}}_{\in \Sigma} \in \Sigma
-      \end{align*}
-      Dado \(\alpha = - \infty\) entonces:
-      \begin{align*}
-        \left\{x : f(x) \geq - \infty\right\} = X \in \Sigma
-      \end{align*}
-    \end{itemize}
-  \end{itemize}
-\end{dem_box}
-\vspace{5ex}
-
-\subsection{Funciones medibles. Ejemplos}
-\noindent Se tienen los siguientes ejemplos de funciones medibles:
-\begin{enumerate}
-  \item Toda función \(f : \mathbb{N} \longrightarrow \overline{\mathbb{R}}\) es \((\mathbb{N}, \mathcal{P}(\mathbb{N}), m)\)-medible, donde \(m\) es la medida de conteo.
-  \begin{dem_box}{Demostración}
-    Dado \(\alpha \in \mathbb{R}\), se tiene que:
-    \begin{align*}
-      \left\{n \in \mathbb{N} : f(n) < \alpha\right\} = \displaystyle \bigcup_{\substack{ k \in \mathbb{N} \\ f(k) < \alpha}} \{k\} \in \mathcal{P}(\mathbb{N})
-    \end{align*}
-    Por lo tanto, \(f\) es medible.
-  \end{dem_box}
-  \vspace{3ex}
-
-  \item Sea \(f \colon \mathbb{R}^N \to \mathbb{R}\) continua, es (\(\mathbb{R}^N, \mathcal{M}_N, \mu_N\))-medible y \((\mathbb{R}^N, \mathcal{B}_N, \mu_N)\)-medible.
-  \begin{dem_box}{Demostración}
-    El intervalo \([ - \infty, \alpha)\) es abierto en \(\overline{\mathbb{R}}\) con la topología usual ya que su complemento es \([\alpha, \infty]\) que es cerrado. Dado que \(f\) es continua, la preimagen de un abierto es un abierto, es decir:
-    \begin{align*}
-      A_\alpha \coloneq f^{ - 1}([ - \infty, \alpha)) = \left\{x \in \mathbb{R}^N : f(x) < \alpha\right\} \quad \mbox{ es abierto}
-    \end{align*}
-    Como todo abierto de \(\mathbb{R}^N\) es de Borel y además \(\mathcal{B}_N \subseteq \mathcal{M}_N\) entonces:
-    \begin{align*}
-      A_\alpha \in \mathcal{B}_N \subseteq \mathcal{M}_N
-    \end{align*}
-  \end{dem_box}
-  \vspace{8ex}
-
-  \item Dado un espacio de medida \((X, \Sigma, \mu)\) y \(A \in \Sigma\) y \(f \colon X \to \overline{\mathbb{R}}\) medible entonces \(f_{|A}\) es medible respecto del espacio de medida \((A, \Sigma_A, \mu_{|_{\Sigma(A)}})\), donde:
-  \begin{itemize}
-    \item \(\Sigma_A = \left\{A \cap E: E \in \Sigma\right\}\)
-    \item \(\mu_{|_{\Sigma(A)}}\) es la restricción de \(\mu\) a \(\Sigma_A\)
-  \end{itemize}
-  \begin{dem_box}{Demostración}
-    Como \(f_{|_A}(x) = f(x)\) para \(x \in A\), podemos reescribir:
-    \begin{align*}
-      \left\{x \in A: f_{|_A}(x) < \alpha\right\} = A \cap \left\{x \in X : f(x) < \alpha\right\}
-    \end{align*}
-    Dado que \(f\) es medible, entonces \(\left\{x \in X : f(x) < \alpha\right\} \in \Sigma\) y por lo tanto:
-    \begin{align*}
-      \left\{x \in A: f_{|_A}(x) < \alpha\right\} \in \Sigma_A
-    \end{align*}
-  \end{dem_box}
-\end{enumerate}
+\section{Integral de Lebesgue para funciones simples}
+\begin{ej_box}{Nota}
+  En lo que sigue, a menos que se indique lo contrario, se considerará siempre que:\label{sec:convenios_previos}
+  \begin{align*}
+    0 \cdot \infty = 0
+  \end{align*}
+  siempre que \(0\) o \(\infty\) representen la medida de algún conjunto.
+\end{ej_box}
 \vspace{3ex}
 
-\subsection{Caracterización de funciones medibles. Proposición}\label{prop:caracterizacion_funciones_medibles}
-\noindent Dada una función \(f : \to \overline{\mathbb{R}} \) y un espacio de medida \((X, \Sigma, \mu)\) se cumple que:
+\subsection{Integral con patas de Lebesgue para funciones simples. Definición}\label{def:integral_patas_lebesgue}
+Sea \((X, \Sigma, \mu)\) espacio de medida y \(s : X \to [0, \infty)\) función simple medible con expresión canónica:
 \begin{align*}
-  f \mbox{ es } \mu \mbox{-medible} \iff \forall O \subseteq \overline{\mathbb{R}} \mbox{ abierto,} \quad f^{ - 1}( O) \in \Sigma
+  s = \sum_{i=1}^{n} \lambda_i \mathcal{X}_{A_i} \quad \mbox{ con } 0 \leq \lambda_1 < \lambda_2 < \dots < \lambda_n < \infty
 \end{align*}
+se define la \textbf{integral con patas de Lebesgue de \(s\) sobre \(X\)} como el número:
+\begin{align*}
+  \Lint_{X} s \; d\mu := \sum_{i=1}^{n} \lambda_i \mu(A_i)\\
+\end{align*}
+
 \begin{ej_box}{Nota}
-  En \(\overline{\mathbb{R}}\) se considera la topología usual extendida, que tiene como base los intervalos abiertos \((a, b)\) y, además, los intervalos \((a, \infty]\) y \([ - \infty, b)\). Por tanto, cualquier abierto \(O \subseteq \overline{\mathbb{R}}\) se puede escribir como una unión (a lo sumo numerable) de intervalos abiertos disjuntos dos a dos de las formas previamente indicadas.
+  Implícitamente ya está definida la integral de \(s\) sobre \(E \subseteq X\) donde \(E \in \Sigma\) como:
+  \begin{align*}
+    \Lint_E s \; d\mu := \Lint_E s_{|_E} \; d \mu = \sum_{i=1}^{n} \lambda_i \mu(A_i \cap E)
+  \end{align*}
+  donde consideramos el espacio de medida \(\left(E, \Sigma_E, \mu_{|_{\Sigma(E)}}\right)\).
 \end{ej_box}
+\vspace{3ex}
+
+\subsection{Propiedades básicas de la integral con patas de Lebesgue}
+\subsubsection{Linealidad del integrando. Proposición}\label{prop:linealidad_integrando_patas}
+Sea \((X, \Sigma, \mu)\) espacio de medida, \(s \colon X \to [0, \infty)\) función simple medible y \(\{E_i\}_{i \in \mathbb{N}} \subseteq \Sigma\) con \(E_i \cap E_j = \emptyset \) si \(i \neq j\) entonces:
+\begin{align*}
+  \Lint_{\bigcup_{i = 1}^{\infty} E_i} s \; d\mu = \sum_{i=1}^{\infty} \Lint_{E_i} s \; d\mu
+\end{align*}
 \begin{dem_box}{Demostración}
-  \begin{itemize} \leftskip -10pt
-    \item[\(\Leftarrow\))] Si \(f^{ - 1}(O) \in \Sigma\) para todo abierto \(O \subseteq \overline{\mathbb{R}}\) entonces, en particular, para cada \(a \in \mathbb{R}\) el intervalo \([ - \infty, a)\) es abierto en \(\overline{\mathbb{R}}\) por lo que:
+  Sea \(s = \sum_{i = 1}^n \lambda_i \mathcal{X}_{A_i}\) la expresión canónica de \(s\). Entonces:\footnote{Cuando quería borrar y algunos alumnos no habían terminado: ``Echaros réflex o lo que queráis y terminad. Menos mal que no venís con pergamino''}
+  \begin{align*}
+    \Lint_{\bigcup_{j = 1}^\infty E_j} s \; d\mu & = \displaystyle \sum_{i = 1}^{n} \lambda_i \mu\left(A_i \cap \left[\displaystyle \bigcup_{j = 1}^\infty E_j\right]\right) \xlongequal[{\mu \text{ es medida}}]{E_i \cap E_j = \emptyset }\displaystyle \sum_{i = 1}^{n} \lambda_i \left(\displaystyle \sum_{j = 1}^{\infty}\mu(A_i \cap E_j)\right) = \\[2ex]
+    & = \displaystyle \sum_{i = 1}^{n}\left(\displaystyle \sum_{j = 1}^{\infty} \lambda_i \mu(A_i \cap E_j)\right) \overset{*}{ = } \displaystyle \sum_{j = 1}^{\infty} \displaystyle \sum_{i = 1}^{n} \lambda_i \mu(A_i \cap E_j) = \displaystyle \sum_{j = 1}^{\infty} \Lint_{E_j} s \; d\mu
+  \end{align*}
+  (*) Al ser todas las sumas con términos no negativos, se pueden reordenar las series sin alterar su valor.
+\end{dem_box}
+\vspace{3ex}
+
+\subsubsection{Linealidad parcial. Proposición}\label{prop:linealidad_parcial_integrando_patas}
+\noindent Sea \((X, \Sigma, \mu)\) espacio de medida, \(s, t \colon X \to [0, \infty)\) funciones simples medibles se tiene:
+\begin{align*}
+  \Lint_{X} (s + t) \; d\mu = \Lint_{X} s \; d\mu + \Lint_{X} t \; d\mu
+\end{align*}
+O alternativamente, para \(E \in \Sigma\) (con \(E \subseteq X\)):
+\begin{align*}
+  \Lint_E (s + t) \; d\mu = \Lint_E s \; d\mu + \Lint_E t \; d\mu\\
+\end{align*}
+
+\begin{dem_box}{Demostración}
+  Sean las expresiones canónicas de \(s\) y \(t\):
+  \begin{align*}
+    s = \sum_{i=1}^{n} \alpha_i \mathcal{X}_{A_i} \quad \mbox{ y } \quad t = \sum_{j=1}^{m} \beta_j \mathcal{X}_{B_j}
+  \end{align*}
+  Entonces tenemos:
+  \begin{align*}
+    \Lint_X s \; d\mu & \xlongequal[{\hyperref[def:integral_patas_lebesgue]{\text{int}}}]{\hyperref[def:integral_patas_lebesgue]{\text{def}}} \displaystyle \sum_{i = 1}^{n} \alpha_i \mu(A_i) \xlongequal[B_j \cap B_k = \emptyset]{\bigcup_{j = 1}^m B_j = X} \displaystyle \sum_{i = 1}^{n} \alpha_i \displaystyle \sum_{j = 1}^{m} \mu(A_i \cap B_j) = \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} \alpha_i \mu(A_i \cap B_j)\\[3ex]
+    \Lint_X t \; d\mu & \xlongequal[{\hyperref[def:integral_patas_lebesgue]{\text{int}}}]{\hyperref[def:integral_patas_lebesgue]{\text{def}}} \displaystyle \sum_{j = 1}^{m} \beta_j \mu(B_j) \xlongequal[A_i \cap A_k = \emptyset]{\bigcup_{i = 1}^n A_i = X} \displaystyle \sum_{j = 1}^{m} \beta_j \displaystyle \sum_{i = 1}^{n} \mu(A_i \cap B_j) = \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} \beta_j \mu(A_i \cap B_j)
+  \end{align*}
+  Entonces, sumando ambas expresiones:
+  \begin{align*}
+    \Lint_X s \; d\mu + \Lint_X t \; d\mu & = \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} \overbracket{(\alpha_i + \beta_j) \mu(A_i \cap B_j)}^{\text{\tiny \( =  \displaystyle \Lint_{A_i \cap B_j} (s + t) d\mu\)}} =\\[2ex]
+    & = \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} \; \Lint_{A_i \cap B_j} (s + t) d\mu \xlongequal[{\hyperref[prop:linealidad_integrando_patas]{\text{integr}}}]{\hyperref[prop:linealidad_integrando_patas]{\text{lineal}}} \Lint_{\text{\tiny \(\displaystyle \bigcup_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} [A_i \cap B_j]\)}} (s + t) d\mu = \Lint_X (s + t) d\mu
+  \end{align*}
+\end{dem_box}
+\vspace{1ex}
+
+\subsubsection{Retículo. Proposición}
+Sea \((X, \Sigma, \mu)\) espacio de medida y \(s, t \colon X \to [0, \infty)\) funciones simples medibles tales que \(s \leq t\) entonces:
+\begin{align*}
+  \Lint_X s \; d\mu \leq \Lint_X t \; d\mu
+\end{align*}
+Alternativamente, para \(E \in \Sigma\) (con \(E \subseteq X\)):
+\begin{align*}
+  \Lint_E s \; d\mu \leq \Lint_E t \; d\mu
+\end{align*}
+
+\begin{dem_box}{Demostración}
+  Sean las expresiones canónicas de \(s\) y \(t\):
+  \begin{align*}
+    s = \sum_{i=1}^{n} \alpha_i \mathcal{X}_{A_i} \quad \mbox{ y } \quad t = \sum_{j=1}^{m} \beta_j \mathcal{X}_{B_j}
+  \end{align*}
+  Entonces, por un razonamiento análogo al de la \hyperref[prop:linealidad_parcial_integrando_patas]{proposición anterior} tenemos:
+  \begin{align*}
+    \Lint_X s \; d\mu = \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} \alpha_i \mu(A_i \cap B_j) \qquad \mbox{ y } \qquad \Lint_X t \; d\mu = \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} \beta_j \mu(A_i \cap B_j)
+  \end{align*}
+  Como \(s_{|_{A_i}} = \alpha_i\) y \(t_{|_{B_j}} = \beta_j\), y sabemos \(s \leq t\) entonces en cada \(A_i \cap B_j\) se tiene:
+  \begin{align*}
+    \alpha_i = s_{|_{A_i \cap B_j}} \leq t_{|_{A_i \cap B_j}} = \beta_j \quad \forall i, j
+  \end{align*}
+  Por tanto:
+  \begin{align*}
+    \Lint_X s \; d\mu & \xlongequal[{\hyperref[def:integral_patas_lebesgue]{\text{int}}}]{\hyperref[def:integral_patas_lebesgue]{\text{def}}} \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} \alpha_i \mu(A_i \cap B_j) \leq \displaystyle \sum_{\substack{1 \leq i \leq n\\1 \leq j \leq m}} \beta_j \mu(A_i \cap B_j) \xlongequal[{\hyperref[def:integral_patas_lebesgue]{\text{int}}}]{\hyperref[def:integral_patas_lebesgue]{\text{def}}} \Lint_X t \; d\mu
+  \end{align*}
+\end{dem_box}
+\vspace{3ex}
+
+\subsubsection{Linealidad parcial. Proposición}
+Sea \((X, \Sigma, \mu)\) espacio de medida, \(s: X \to [0, \infty)\) función simple medible y \(c \in [0, \infty)\) entonces:
+\begin{align*}
+  \Lint_X (c \cdot s) \; d\mu = c \cdot \Lint_X s \; d\mu
+\end{align*}
+Alternativamente, para \(E \in \Sigma\) (con \(E \subseteq X\)):
+\begin{align*}
+  \Lint_E (c \cdot s) \; d\mu = c \cdot \Lint_E s \; d\mu\\
+\end{align*}
+\begin{dem_box}{Demostración}
+  Se contemplan dos casos:
+  \begin{itemize} \leftskip -5pt
+    \item \textit{Caso \(c = 0\):} así \(c \cdot s \equiv 0\) entonces:
     \begin{align*}
-      \left\{x \in X : f(x) < \alpha\right\} = f^{ - 1}([ - \infty, \alpha)) \in \Sigma
+      \Lint_X (c \cdot s) \; d\mu = \Lint_X 0 \; d\mu = 0 \cdot \mu(X) \xlongequal[]{\hyperref[sec:convenios_previos]{\text{convenio}}} 0 = c \cdot \Lint_X s \; d\mu
     \end{align*}
-    Por lo tanto, \(f\) es medible por \hyperref[def:funcion_medible]{definición de función medible (1)}.
-    
-    \item[\(\Rightarrow\))] Sea \(f\) medible y \(O \subseteq \overline{\mathbb{R}}\) abierto, como todo abierto de \(\overline{\mathbb{R}}\) es unión numerable de intervalos abiertos disjuntos dos a dos, es decir:
+    \item \textit{Caso \(c \neq 0\):} sea \(\sum_{i = 1}^n \lambda_i \mathcal{X}_{A_i}\) la expresión canónica de \(s\) entonces:
     \begin{align*}
-      f^{ - 1}(O) = f^{ - 1}\left(\bigcup_{i \in I} J_i\right) = \bigcup_{i \in I} \underbracket{f^{ - 1}(J_i)}_{\in \Sigma \; ?}
+      c \cdot s = \displaystyle \sum_{i = 1}^{n} c\lambda_i \mathcal{X}_{A_i} \mbox{ expresión canónica de } c \cdot s
     \end{align*}
-    Basta ver que \(f^{ - 1}(J_i) \in \Sigma\) para todo intervalo abierto \(J_i\) de \(\overline{\mathbb{R}}\).\vspace{2ex}
-    
-    Todo intervalo abierto \(J_i\) de \(\overline{\mathbb{R}}\) es de la forma:
+    Por tanto:
     \begin{align*}
-      J_i = (\alpha, \beta) = [ - \infty, \beta) \cap (\alpha, + \infty]
+      \Lint_X (c \cdot s) \; d\mu & \xlongequal[{\hyperref[def:integral_patas_lebesgue]{\text{int}}}]{\hyperref[def:integral_patas_lebesgue]{\text{def}}} \displaystyle \sum_{i = 1}^{n} c\lambda_i \mu(A_i) = c \cdot \displaystyle \sum_{i = 1}^{n} \lambda_i \mu(A_i) = c \cdot \Lint_X s \; d\mu
     \end{align*}
+  \end{itemize}
+\end{dem_box}
+\vspace{1ex}
+
+\begin{ej_box}{Nota}
+  Hemos visto que la integral de Lebesgue con patas satisface las propiedades de:
+  \begin{itemize}
+    \setlength\itemsep{0em}
+    \item Linealidad de suma y producto por escalar
+    \item Monotonía (retículo)
+    \item Aditiva respecto a conjunto disjuntos
+  \end{itemize}
+  Por tanto, el operador dado por:
+  \begin{align*}
+    s \longmapsto \Lint_X s \; d\mu
+  \end{align*}
+  es una función lineal y positiva definida sobre el espacio de funciones simples medibles no negativas.
+\end{ej_box}
+\newpage
+\section{Integral de Lebesgue para funciones no negativas}
+\subsection{Integral de Lebesgue para funciones no negativas. Definición}\label{def:integral_lebesgue_no_negativas}
+Sea \((X, \Sigma, \mu)\) espacio de medida y \(f : X \to [0, \infty]\) función medible se define la \textbf{integral de Lebesgue de \(f\) sobre \(X\)} como:
+\begin{align*}
+  \int_X f \; d\mu \coloneq \sup \left\{\Lint_X s \; d\mu \; \; : \; \; 0 \leq s \leq f \mbox{ con }s: X \to [0, \infty) \mbox{ simple medible} \right\} \in [0, \infty]
+\end{align*}
+Alternativamente, para \(E \in \Sigma\) (con \(E \subseteq X\)):
+\begin{align*}
+  \int_E f \; d\mu \coloneq \sup \left\{\Lint_E s \; d\mu \; \; : \; \; 0 \leq s \leq f_{|_E} \mbox{ con }s: E \to [0, \infty) \mbox{ simple medible} \right\} \in [0, \infty]\\
+\end{align*}
+
+\begin{ej_box}{Nota}
+  Notar que, al final una función simple medible \(s : X \to [0, \infty)\) es una función que se puede escribir como una combinación lineal finita de funciones indicadoras, es decir, que son como ``bloques'' escalonados que aproximan una función más general.\vspace{2ex}
+
+  Como imponemos la condición de que \(0 \leq s \leq f\), estamos haciendo una aproximación inferior de \(f\) y, por tanto, al elegir el supremo de todas esas aproximaciones, obtenemos la mejor aproximación posible desde abajo de \(f\) mediante funciones simples medibles.\vspace{2ex}
+
+  La idea gráficamente podría ser un poco similar a la siguiente:
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[
+        width=12cm,
+        height=7cm,
+        domain=-2:2,
+        samples=200,
+        ymin=0, ymax=1.15,
+        axis lines=middle,
+        xlabel={$x$},
+        ylabel={$f(x)$},
+        xtick={-2,-1,0,1,2},
+        ytick={0,0.2,0.4,0.6,0.8,1},
+        legend style={at={(0.02,0.98)},anchor=north west,draw=none,fill=none,font=\small},
+        clip=false,
+        enlargelimits=false
+      ]
+
+      % Función original (gaussiana)
+      \addplot[thick,black,smooth] {exp(-x^2)} node[pos=0.88, above right] {$f(x)=e^{-x^2}$};
+
+      % Aproximación gruesa (s_1) - 5 niveles
+      \addplot[const plot, blue!60, line width=1.5pt, opacity=0.7] 
+        coordinates {
+          (-2,0) (-1.6,0) (-1.2,0.08) (-0.8,0.48) 
+          (-0.4,0.8) (0,0.8) (0.4,0.8) (0.4, 0.48) (0.8,0.08) (1.2,0) (1.6,0) (2,0)
+        };
+      \addlegendentry{$s_1(x)$}
+
+      % Aproximación media (s_2) - 10 niveles
+      \addplot[const plot, orange!80!red, line width=1.3pt, opacity=0.7] 
+        coordinates {
+          (-2,0) (-1.8,0) (-1.6,0.02) (-1.4,0.05) 
+          (-1.2,0.12) (-1.0,0.32) (-0.8,0.52) (-0.6,0.68)
+          (-0.4,0.85) (-0.2,0.96) (0,0.96) (0.2, 0.96) (0.2,0.85) (0.4,0.68)
+          (0.6,0.52) (0.8,0.32) (1.0,0.12) (1.2,0.05)
+          (1.4,0.02) (1.6,0) (1.8,0) (2,0)
+        };
+      \addlegendentry{$s_2(x)$}
+
+      % Aproximación fina (s_3) - 20 niveles
+      \addplot[const plot, green!60!black, line width=1.1pt, opacity=0.7] 
+        coordinates {
+          (-2,0) (-1.9,0) (-1.8,0.008) (-1.7,0.015) 
+          (-1.6,0.03) (-1.5,0.055) (-1.4,0.085) (-1.3,0.125)
+          (-1.2,0.18) (-1.1,0.24) (-1.0,0.35) (-0.9,0.43)
+          (-0.8,0.51) (-0.7,0.60) (-0.6,0.68) (-0.5,0.76)
+          (-0.4,0.84) (-0.3,0.90) (-0.2,0.95) (-0.1,0.98)
+          (0,0.98) (0.1, 0.98) (0.1,0.95) (0.2,0.90)
+          (0.3,0.84) (0.4,0.76) (0.5,0.68) (0.6,0.60)
+          (0.7,0.51) (0.8,0.43) (0.9,0.35) (1.0,0.24)
+          (1.1,0.18) (1.2,0.125) (1.3,0.085) (1.4,0.055)
+          (1.5,0.03) (1.6,0.015) (1.7,0.008) (1.8,0) (1.9,0) (2,0)
+        };
+      \addlegendentry{$s_3(x)$}
+      
+      \end{axis}
+    \end{tikzpicture}
+  \end{center}
+
+  Donde \(s_1, s_2\) y \(s_3\) son funciones simples medibles que aproximan \(f\) desde abajo, y conforme aumentamos el número de niveles (o bloques), la aproximación mejora. También podría mejorar sin aumentar el número de niveles, simplemente ajustando mejor la altura de cada bloque.
+\end{ej_box}
+\vspace{3ex}
+
+\begin{ejem_box}{Ejemplo}
+  \textit{Sea \((\mathbb{R}, \mathcal{M}_1, \mu_1)\) espacio de medida y consideramos la función de Dirichlet \(\mathcal{X}_{\mathbb{Q}}\):}
+  \begin{align*}
+    f \equiv \mathcal{X}_{\mathbb{Q}} : \mathbb{R} & \longrightarrow [0, \infty]\\
+    x & \longmapsto \left\{
+      \begin{array}{ll}
+        1 & \mbox{ si } x \in \mathbb{Q}\\
+        0 & \mbox{ si } x \in \mathbb{R} \setminus \mathbb{Q}
+      \end{array}
+    \right.
+  \end{align*}
+  \textit{Y le aplicamos la restricción a \([0, 1]\), es decir, consideramos el espacio de medida \(([0, 1], \mathcal{M}_1^{[0, 1]}, \mu_1^{[0, 1]})\) y la función:}
+  \begin{align*}
+    f \equiv \mathcal{X}_{\mathbb{Q} \cap [0, 1]} : [0, 1] &\longrightarrow [0, \infty]\\[2ex]
+    x & \longmapsto \left\{
+      \begin{array}{ll}
+        1 & \mbox{ si } x \in \mathbb{Q} \cap [0, 1]\\
+        0 & \mbox{ si } x \in ([0, 1] \setminus \mathbb{Q})
+      \end{array}
+    \right.
+  \end{align*}
+  \textit{Podemos ver que no es integrable en el sentido de Riemann pero sí lo es en el sentido de Lebesgue.}\vspace{2ex}
+
+  \begin{itemize}
+    \item \textit{Integrabilidad de Riemann}: Podemos notar que en cualquier intervalo hay racionales e irracionales, por lo que cualquier suma superior de Darboux será 1 (ya que el supremo en cualquier subintervalo es 1) y cualquier suma inferior será 0 (ya que el ínfimo en cualquier subintervalo es 0). Por lo tanto:
+    \begin{align*}
+      \overline{\int}_0^1 f = 1 \quad \mbox{ y } \quad \underline{\int}_0^1 f = 0
+    \end{align*}
+    Como la suma superior y la suma inferior no coinciden, \(f \notin \mathcal{R}([0, 1])\).\vspace{2ex}
+
+    \item \textit{Integrabilidad de Lebesgue}: Como la integral de Lebesgue no mira el comportamiento punto a punto en subintervalos, si no que analiza la medida que tiene el conjunto donde la función toma cada valor, tenemos que:
+    \begin{align*}
+      \int_{[0, 1]} f \; d\mu = 1 \cdot \mu_1(\mathbb{Q} \cap [0, 1]) + 0 \cdot \mu_1([0, 1] \setminus \mathbb{Q}) 
+    \end{align*}
+    Donde tenemos que:
+    \begin{itemize}
+      \item \(\mu_1(\mathbb{Q} \cap [0, 1]) = 0\) ya que los racionales son numerables y la medida de Lebesgue de un conjunto numerable es 0.
+      \item \(\mu_1([0, 1] \setminus \mathbb{Q}) = 1\) ya que los irracionales en \([0, 1]\) son no numerables y su complemento (los racionales) tiene medida 0.
+    \end{itemize}
     Por lo tanto:
     \begin{align*}
-      f^{ - 1}(J_i) = \underbracket{f^{ - 1}([ - \infty, \beta))}_{\in \Sigma} \cap \underbracket{f^{ - 1}((\alpha, + \infty])}_{\in \Sigma} \in \Sigma
-    \end{align*}
-    ya que \(f\) es medible por \hyperref[def:funcion_medible]{definición de función medible (1') y (3')}.
-  \end{itemize}
-\end{dem_box}
-\vspace{3ex}
-
-\subsection{Proposición}
-Dado un espacio de medida \((X, \Sigma, \mu)\) y \((f_n: X \to \overline{\mathbb{R}})_{n \in \mathbb{N}}\) una sucesión de funciones medibles entonces se cumplen los siguientes enunciados:
-\begin{enumerate}
-  \item[i)] \(\max \left\{f_1, \dots , f_n\right\}\) es medible para todo \(n \in \mathbb{N}\).
-  \item[ii)] \(\min \left\{f_1, \dots , f_n\right\}\) es medible para todo \(n \in \mathbb{N}\).
-  \item[iii)] \(\sup \left\{f_1, f_2, \dots \right\}\) es medible.
-  \item[iv)] \(\inf \left\{f_1, f_2, \dots \right\}\) es medible.
-  \item[v)] \(\displaystyle \liminf_{n \to \infty} f_n\) es medible.
-  \item[vi)] \(\displaystyle \limsup_{n \to \infty} f_n\) es medible.
-  \item[vii)] Si \(\exists \displaystyle \lim_{n \to \infty} f_n(x) \in \overline{\mathbb{R}}\) en todo \(x \in X\) entonces \(\displaystyle \lim_{n \to \infty} f_n\) es medible.
-\end{enumerate}
-\vspace{2ex}
-
-\begin{dem_box}{Demostración}
-  Dado \(\alpha \in \mathbb{R}\) cualquiera:
-  \begin{enumerate} \leftskip -10pt
-    \item[i)] Como el máximo es menor que \(\alpha\) si y solo si todos los elementos son menores que \(\alpha\), se tiene que:
-    \begin{align*}
-      \left\{x : \max \left\{f_1(x), \dots , f_n(x)\right\} < \alpha\right\} = \bigcap_{i = 1}^{n} \underbracket{\left\{x : f_i(x) < \alpha\right\}}_{\in \Sigma} \in \Sigma
-    \end{align*}
-    \item[ii)] Como el mínimo es menor que \(\alpha\) si y solo si al menos uno de los elementos es menor que \(\alpha\), se tiene que:
-    \begin{align*}
-      \left\{x : \min \left\{f_1(x), \dots , f_n(x)\right\} < \alpha\right\} = \bigcup_{i = 1}^{n} \underbracket{\left\{x : f_i(x) < \alpha\right\}}_{\in \Sigma} \in \Sigma
-    \end{align*}
-
-    \vspace{20ex}
-
-    \item[iii)] Como el supremo es \(\leq \alpha\) si y solo si todos los elementos son \(\leq \alpha\), se tiene que:
-    \begin{align*}
-      \left\{x : \sup_{k \in \mathbb{N}} f_k(x) \leq  \alpha\right\} = \bigcap_{n = 1}^{\infty} \underbracket{\left\{x : f_n(x) \leq  \alpha\right\}}_{\in \Sigma} \in \Sigma
-    \end{align*}
-    \item[iv)] Como el ínfimo es \(\geq \alpha\) si y solo si todos los elementos son \(\geq \alpha\), se tiene que:
-    \begin{align*}
-      \left\{x : \inf_{k \in \mathbb{N}} f_k(x) \geq  \alpha\right\} = \bigcap_{n = 1}^{\infty} \underbracket{\left\{x : f_n(x) \geq  \alpha\right\}}_{\in \Sigma} \in \Sigma
-    \end{align*}
-    \item[v)] Definimos \(g_n(x) = \displaystyle \inf_{k \geq n} f_k(x)\) y notamos que:
-    \begin{align*}
-      \liminf_{k \to \infty} f_k(x) = \sup_{n \in \mathbb{N}} \left(\inf_{k \geq n} f_k(x)\right) = \sup_{n \in \mathbb{N}} g_n(x)
-    \end{align*}
-    ya que \(g_n\) es medible por iv) (al ser ínfimo de funciones medibles) y aplicando iii) sobre el supremo de las \(g_n\) se concluye que \(\liminf_{k \to \infty} f_k\) es medible.
-    \item[vi)] De forma análoga a v) definimos \(h_n(x) = \displaystyle \sup_{k \geq n} f_k(x)\) y notamos que:
-    \begin{align*}
-      \limsup_{k \to \infty} f_k(x) = \inf_{n \in \mathbb{N}} \left(\sup_{k \geq n} f_k(x)\right) = \inf_{n \in \mathbb{N}} h_n(x)
-    \end{align*}
-    ya que \(h_n\) es medible por iii) (al ser supremo de funciones medibles) y aplicando iv) sobre el ínfimo de las \(h_n\) se concluye que \(\limsup_{k \to \infty} f_k\) es medible.
-
-    \item[vii)] Si \(\exists \lim_{n \to \infty} f_n(x) \in \overline{\mathbb{R}}\) en todo \(x \in X\) entonces:
-    \begin{align*}
-      \lim_{n \to \infty} f_n(x) = \liminf_{n \to \infty} f_n(x) = \limsup_{n \to \infty} f_n(x)
-    \end{align*}
-    Por lo tanto, \(\lim_n f_n\) es medible (por v) y vi)).
-  \end{enumerate}
-\end{dem_box}
-\vspace{3ex}
-
-\begin{ej_box}{Observación}
-  Respecto de vii) si tenemos una sucesión de funciones medibles \((f_n)_{n \in \mathbb{N}}\) y definimos:
-  \begin{align*}
-    A \coloneq \left\{x \in X : \nexists \lim_{n \to \infty} f_n(x) \in \overline{\mathbb{R}}\right\} \neq \emptyset 
-  \end{align*}
-  Es decir, el conjunto de puntos donde la sucesión no converge (notar que no converger en \(\overline{\mathbb{R}}\) implica que no converge ni a un real ni a \(\pm \infty\)).\vspace{2ex}
-
-  Entonces, se tiene que \(A\) es medible y podemos considerar el espacio de medida donde el límite sí existe:
-  \begin{align*}
-    (X \setminus A, \Sigma_{X \setminus A}, \mu_{|_{\Sigma(X \setminus A)}})
-  \end{align*}
-\end{ej_box}
-\vspace{3ex}
-
-\subsection{Operaciones con funciones medibles. Proposición}
-Sean \(f, g\) funciones medibles respecto de un espacio de medida \((X, \Sigma, \mu)\) se cumplen los siguientes enunciados:
-\begin{enumerate}
-  \item[i)] \(f + g\) es medible (si \(f + g\) está bien definida en todo \(X\))
-  \item[ii)] \(\forall \lambda \in \mathbb{R}\) se tiene que \(\lambda f\) es medible (si \(\lambda f\) está bien definida en todo \(X\))
-  \item[iii)] \(f^2\) es medible
-  \item[iv)] \(fg\) es medible (si \(fg\) está bien definida en todo \(X\))
-\end{enumerate}
-\begin{dem_box}{Demostración}
-  \begin{enumerate} \leftskip -15pt
-    \item[i)] Fijamos \(\alpha \in \mathbb{R}\) cualquiera. Entonces:
-    \begin{align*}
-      \left\{x : f(x) + g(x) < \alpha\right\} & = \left\{x : f(x) < \alpha - g(x)\right\} \xlongequal[]{\text{\tiny \(\mathbb{Q}\) denso en \(\mathbb{R}\)}} \\[2ex]
-      & = \displaystyle \bigcup_{q \in \mathbb{Q}} \left\{x : f(x) < q < \alpha - g(x)\right\} = \\[2ex]
-      & = \displaystyle \bigcup_{q \in \mathbb{Q}} \left\{ \left\{x : f(x) < q\right\} \cap \left\{x : q < \alpha - g(x)\right\}\right\} = \\[2ex]
-      & = \displaystyle \bigcup_{q \in \mathbb{Q}} \underbracket{\{ \underbracket{\left\{x : f(x) < q\right\} }_{\in \Sigma\text{ (\(f\) medible)}}\cap \underbracket{\left\{x : g(x) < \alpha - q\right\}}_{\in \Sigma\text{ (\(g\) medible)}}\}}_{\in \Sigma} \in \Sigma
-    \end{align*}
-    \item[ii)] Se dan dos casos:
-    \begin{itemize}  \leftskip -18pt
-      \item Si \(\lambda = 0\) entonces \(\lambda f(x) = 0\) es medible.
-      \item Si \(\lambda > 0\) entonces, dado \(\alpha \in \mathbb{R}\) se tiene:
-      \begin{align*}
-        \left\{x : \lambda f(x) < \alpha\right\} = \left\{x : f(x) < \frac{\alpha}{\lambda}\right\} \overset{\text{\tiny \(f\) medible}}{\in} \Sigma
-      \end{align*}
-      \item Si \(\lambda < 0\), análogamente, dado \(\alpha \in \mathbb{R}\) se tiene:
-      \begin{align*}
-        \left\{x : \lambda f(x) < \alpha\right\} = \left\{x : f(x) > \frac{\alpha}{\lambda}\right\} \overset{\text{\tiny \(f\) medible}}{\in} \Sigma
-      \end{align*}
-    \end{itemize}
-    \item[iii)] Sea \(\alpha \in \mathbb{R}\) cualquiera. Entonces:
-    \begin{itemize}  \leftskip -18pt
-      \item Si \(\alpha < 0\) se tiene:
-      \begin{align*}
-        \left\{x : f(x)^2 \leq \alpha\right\} = \emptyset \in \Sigma
-      \end{align*}
-      \item Si \(\alpha \geq 0\) se tiene:
-      \begin{align*}
-        \left\{x : f(x)^2 \geq \alpha\right\} & = \left\{x : - \sqrt{\alpha} \leq f(x) \leq \sqrt{\alpha}\right\} =\\[2ex]
-        & = \underbracket{\left\{x : f(x) \leq \sqrt{\alpha}\right\}}_{\text{\tiny \(f\) medible \( \implies \in \Sigma\)}} \cap \underbracket{\left\{x : f(x) \geq - \sqrt{\alpha}\right\}}_{\text{\tiny \(f\) medible \( \implies \in \Sigma\)}} \overset{\text{\tiny \(f\) medible}}{\in} \Sigma
-      \end{align*}
-    \end{itemize}
-    \item[iv)] Tenemos que la siguiente fórmula es válida \(\forall x \in X\):
-    \begin{align*}
-      f \cdot g = \frac{1}{2}\left[(f + g)^2 - f^2 - g^2\right]
-    \end{align*}
-    excepto si \(x\) está en alguno de los siguientes conjuntos:
-    \begin{align*}
-      A_1 & \coloneq \left\{x : f(x) = \infty \mbox{ y } g(x) \in [ - \infty, 0)\right\}\\
-      A_2 & \coloneq \left\{x : f(x) = \infty \mbox{ y } g(x) \in (0, \infty]\right\}\\
-      A_3 & \coloneq \left\{x : f(x) = - \infty \mbox{ y } g(x) \in [ - \infty, 0)\right\}\\
-      A_4 & \coloneq \left\{x : f(x) = - \infty \mbox{ y } g(x) \in (0, \infty]\right\}\\
-      A_5 & \coloneq \left\{x : g(x) = \infty \mbox{ y } f(x) \in (- \infty, 0)\right\}\\
-      A_6 & \coloneq \left\{x : g(x) = \infty \mbox{ y } f(x) \in (0, \infty]\right\}\\
-      A_7 & \coloneq \left\{x : g(x) = - \infty \mbox{ y } f(x) \in (- \infty, 0)\right\}\\
-      A_8 & \coloneq \left\{x : g(x) = - \infty \mbox{ y } f(x) \in (0, \infty]\right\}
-    \end{align*}
-    Se tiene que \(A_i \in \Sigma\) para todo \(i = 1, \dots, 8\) ya que se definen como la intersección de dos conjuntos medibles (por ser \(f\) y \(g\) medibles). Definimos además:
-    \begin{align*}
-      A_9 \coloneq X \setminus \displaystyle \bigcup_{i = 1}^{8} A_i \in \Sigma
-    \end{align*}
-    Notamos entonces que \(A_i\) son disjuntos dos a dos y que su unión es todo \(X\), así tenemos que:
-    \begin{itemize} \leftskip -18pt
-      \item Para \(i = 1, \dots, 8\) se cumple que \(f \cdot g|_{A_i} \equiv \infty\) o bien \( f \cdot g|_{A_i} \equiv - \infty\) luego:
-      \begin{align*}
-        f \cdot g|_{A_i} \mbox{ medible respecto } \left(A_i, \Sigma(A_i), \mu|_{\Sigma(A_i)}\right)
-      \end{align*}
-      \item Para \(i = 9\) se tiene:
-      \begin{align*}
-        f \cdot g|_{A_9} = \frac{1}{2}\left[(f + g)^2 - f^2 - g^2\right] \quad \mbox{ medible resp. } \left(A_9, \Sigma(A_9), \mu|_{\Sigma(A_9)}\right)
-      \end{align*}
-    \end{itemize}
-    Así \(\forall i \in \{1, \dots, 9\}\), la función \(f\cdot g|_{A_i}\) es medible respecto de \(\left(A_i, \Sigma(A_i), \mu|_{\Sigma(A_i)}\right)\) luego, \(\forall i \in \{1, \dots, 9\}\) tenemos:
-    \begin{align*}
-      f\cdot g \cdot \mathcal{X}_{A_i} \quad \mbox{ es medible respecto } (X, \Sigma, \mu)
-    \end{align*}
-    Entonces:
-    \begin{align*}
-      \displaystyle \sum_{i = 1}^{9} f \cdot g \cdot \mathcal{X}_{A_i} = f \cdot g \quad \mbox{ medible respecto } (X, \Sigma, \mu)
-    \end{align*}
-    Y esto está bien definido en todo \(X\) ya que \(A_i \cap A_j = \emptyset\) si \(i \neq j\).
-  \end{enumerate}
-\end{dem_box}
-\vspace{3ex}
-
-\begin{ej_box}{Observación}
-  En general, la composición de funciones medibles no tiene sentido salvo en casos especiales. Existen funciones medibles \(fg\) respecto de \((\mathbb{R}, \mathcal{M}_1, \mu_1)\) tales que \(g \circ f\) no es medible respecto de \((\mathbb{R}, \mathcal{M}_1, \mu_1)\).
-\end{ej_box}
-\vspace{3ex}
-
-\subsection{Composición de funciones medibles y continuas. Proposición}\label{prop:composicion_funciones_medibles_continuas}
-Sea \((X, \Sigma, \mu)\) espacio de medida, \(f: X \to \overline{\mathbb{R}}\) medible y \(g: A \to \overline{\mathbb{R}}\) continua con \(f(X) \subseteq A\) se tiene que:
-\begin{align*}
-  g \circ f \quad \mbox{ es medible}
-\end{align*}
-\begin{dem_box}{Demostración}
-  Sea \(\alpha \in \mathbb{R}\) cualquiera entonces:
-  \begin{align*}
-    (g \circ f)^{ - 1}([ - \infty, \alpha)) = f^{ - 1}\left(g^{ - 1}([ - \infty, \alpha))\right)
-  \end{align*}
-  Como \([ - \infty, \alpha)\) es abierto de \(\overline{\mathbb{R}}\) y \(g\) continua, entonces:
-  \begin{align*}
-    g^{ - 1}([ - \infty, \alpha)) \subseteq A \mbox{ es abierto de } A
-  \end{align*}
-  Como \(f\) medible, por la \hyperref[prop:caracterizacion_funciones_medibles]{caracterízación de funciones medibles} se tiene que:
-  \begin{align*}
-    f^{ - 1}\left(g^{ - 1}([ - \infty, \alpha))\right) \in \Sigma
-  \end{align*}
-\end{dem_box}
-\vspace{3ex}
-
-\subsection{Corolario}
-Sea \((X, \Sigma, \mu)\) espacio de medida y \(f: X \to \overline{\mathbb{R}}\) medible tal que \(f(x) \neq 0\) para todo \(x \in X\) entonces:
-\begin{align*}
-  \frac{1}{f} \quad \mbox{ es medible}
-\end{align*}
-\begin{dem_box}{Demostración}
-  Definimos la función \(g\) como:
-  \begin{align*}
-    g : \overline{\mathbb{R}} \setminus \{0\} & \longrightarrow \overline{\mathbb{R}} \\[1ex]
-    y & \longmapsto g(y) = \frac{1}{y}
-  \end{align*}
-  Como \(g\) continua en \(\overline{\mathbb{R}} \setminus \{0\}\) y \(f(X) \subseteq \overline{\mathbb{R}} \setminus \{0\}\), por la \hyperref[prop:composicion_funciones_medibles_continuas]{proposición anterior} se tiene:
-  \begin{align*}
-    g \circ f = \frac{1}{f} \quad \mbox{ es medible}
-  \end{align*}
-\end{dem_box}
-\vspace{3ex}
-
-\subsection{Proposición}
-\noindent Sean las funciones:
-\begin{align*}
-  \left.
-    \begin{array}{l}
-      f \colon \mathbb{R} \to \mathbb{R} \mbox{ medible respecto de } (\mathbb{R}, \mathcal{B}_1, \mu_1) \\[2ex]
-      g \colon \mathbb{R} \to \mathbb{R} \mbox{ medible respecto de } (\mathbb{R}, \mathcal{B}_1, \mu_1)
-    \end{array}
-  \right\} \implies g \circ f \mbox{ medible respecto de } (\mathbb{R}, \mathcal{B}_1, \mu_1)
-\end{align*}
-\begin{dem_box}{Demostración}
-  Se sigue de los siguientes pasos:
-  \begin{enumerate} \leftskip -10pt
-    \item[1)] Se define \(\mathcal{A} \coloneq \left\{B \in \mathcal{B}_1 : f^{ - 1}(B) \in \mathcal{B}_1\right\}\). Es decir, \(\mathcal{A}\) es el conjunto de todos los borelianos \(B\) de \(\mathbb{R}\) cuya preimagen por \(f\) es también boreliano.\vspace{2ex}
-    
-    Notar que \(\tau_\mathbb{R} \subseteq \mathcal{A}\) ya que \(f\) es medible respecto de \((\mathbb{R}, \mathcal{B}_1, \mu_1)\) implica que:
-    \begin{align*}
-      B \in \tau_\mathbb{R} \implies f^{ - 1} (B) \in \mathcal{B}_1
-    \end{align*}
-    \item[2)] \textit{Ver que \(\mathcal{A}\) es una \(\sigma\)-álgebra:}
-    \begin{itemize}
-      \item[i)] \textit{Ver que \(\emptyset \in \mathcal{A}\)}: trivial ya que:
-      \begin{align*}
-        \emptyset \in \tau_\mathbb{R} \subseteq \mathcal{A}
-      \end{align*}
-      \item[ii)] \textit{Ver que es cerrada para uniones numerables}: Sea \(\{A_i\}_{i \in \mathbb{N}} \subseteq \mathcal{A}\) entonces:
-      \begin{align*}
-        f^{ - 1}\left(\bigcup_{i \in \mathbb{N}} A_i\right) = \bigcup_{i \in \mathbb{N}} \underbracket{f^{ - 1}(A_i)}_{\in \mathcal{B}_1} \in \mathcal{B}_1 \implies \bigcup_{i \in \mathbb{N}} A_i \in \mathcal{A}
-      \end{align*}
-      Donde hemos usado que \(A_i \in \mathcal{A} \implies f^{ - 1}(A_i) \in \mathcal{B}_1\).
-      \item[iii)] \textit{Ver que es cerrada para complementos}: Sea \(A \in \mathcal{A}\) entonces:
-      \begin{align*}
-        f^{ - 1}(\mathbb{R} \setminus A) = \mathbb{R} \setminus \underbracket{f^{ - 1}(A)}_{\in \mathcal{B}_1} \in \mathcal{B}_1 \implies \mathbb{R} \setminus A \in \mathcal{A}
-      \end{align*}
-      Donde hemos usado que \(A \in \mathcal{A} \implies f^{ - 1}(A) \in \mathcal{B}_1\).
-    \end{itemize}
-    \item[3)] \textit{Ver que \(\mathcal{A} = \mathcal{B}_1\):}
-    \begin{align*}
-      \left.
-        \begin{array}{l}
-          \tau_\mathbb{R} \subseteq \mathcal{A} \subseteq \mathcal{B}_1\\
-          \mathcal{A} \mbox{ es } \sigma\mbox{-álgebra} \implies \mathcal{B}_1 \subseteq \mathcal{A}
-        \end{array}
-      \right\} \implies A = \mathcal{B}_1
-    \end{align*}
-    \item[4)] \textit{Caracterización de medibilidad:} Sea \(f : \mathbb{R} \to\mathbb{R}\), por la \hyperref[prop:caracterizacion_funciones_medibles]{caracterización de funciones medibles} se tiene que \(f\) es medible respecto de \((\mathbb{R}, \mathcal{B}_1, \mu_1)\) si y solo si:
-    \begin{align*}
-      \forall B \in \mathcal{B}_1 : f^{ - 1}(B) \in \mathcal{B}_1
-    \end{align*}
-    Como \(\mathcal{A} = \mathcal{B}_1\) se tiene la equivalencia.
-    \item[5)] \textit{Medibilidad de \(g \circ f\) respecto de \((\mathbb{R}, \mathcal{B}_1, \mu_1)\):} dado \(O \subseteq \mathbb{R}\) abierto cualquiera:
-    \begin{align*}
-      (g \circ f)^{ - 1}(O) = f^{ - 1}(\underbracket{g^{ - 1}(O)}_{\in \mathcal{B}_1 \text{ \(g \, \)medible}}) \in \mathcal{B}_1
-    \end{align*}
-    Por lo tanto, \(g \circ f\) es medible respecto de \((\mathbb{R}, \mathcal{B}_1, \mu_1)\).
-  \end{enumerate}
-\end{dem_box}
-\vspace{3ex}
-
-\subsection{Función característica. Definición}
-\noindent Sea \(X\) conjunto y \(A \subseteq X\), se dice \textbf{función característica} o \textbf{indicadora} de \(A\) a la función:
-\begin{align*}
-  \mathcal{X}_A : X & \longrightarrow \{0,1\} \subseteq \mathbb{R} \\[1ex]
-  x & \longmapsto \mathcal{X}_{A}(x) = \left\{
-    \begin{array}{ll}
-      1 & \mbox{ si } x \in A \\[1ex]
-      0 & \mbox{ si } x \notin A
-    \end{array}
-  \right. \\
-\end{align*}
-
-\subsection{Medibilidad de la función característica. Proposición}
-\noindent Si \((X, \Sigma, \mu)\) es un espacio de medida entonces se tiene:
-\begin{align*}
-  \mathcal{X}_A \mbox{ es } \mu\mbox{-medible} \iff A \in \Sigma\\
-\end{align*}
-\begin{dem_box}{Demostración}
-  \begin{itemize} \leftskip -10pt
-    \item[\(\Rightarrow\))] Sea \(\mathcal{X}_A\) medible, entonces \(\forall \alpha \in \mathbb{R}\) se tiene:
-    \begin{align*}
-      \left\{x : \mathcal{X}_A(x) < \alpha\right\} \in \Sigma
-    \end{align*}
-    En particular, tomando \(\alpha = 1\) se tiene:
-    \begin{align*}
-      \left\{x :  \mathcal{X}_A  < 1 \right\} = \left\{x : \mathcal{X}_A(x) = 0\right\} = X \setminus A \in \Sigma \implies A = (A^c)^c \in \Sigma
-    \end{align*} \leftskip -10pt
-    \item[\(\Leftarrow\))] Sea \(A \in \Sigma\), entonces:
-    \begin{itemize}
-      \setlength{\itemsep}{1.5ex}
-      \item \textit{Si \(\alpha \leq 0\)} entonces: \(\{x : \mathcal{X}_A(x) < \alpha\} = \emptyset \in \Sigma\)
-      \item \textit{Si \(0 < \alpha \leq 1\)} entonces: \(\{x : \mathcal{X}_A(x) < \alpha\} = X \setminus A \in \Sigma\)
-      \item \textit{Si \(\alpha > 1\)} entonces: \(\{x : \mathcal{X}_A(x) < \alpha\} = X \in \Sigma\)
-    \end{itemize}
-    Por lo tanto, \(\mathcal{X}_A\) es medible.
-  \end{itemize}
-\end{dem_box}
-
-\subsection{Función simple. Definición}
-\noindent Se dice que \(s : X \to \overline{\mathbb{R}}\) es una \textbf{función simple} si su imagen es finita, es decir:
-\begin{align*}
-  s(X) \quad \mbox{ es un conjunto finito}
-\end{align*}
-O, equivalentemente, si existe \(n \in \mathbb{N}\) tal que:
-\begin{align*}
-  s(X) = \left\{\lambda_1, \dots, \lambda_n\right\} \quad \mbox{ con } \lambda_i \in \overline{\mathbb{R}}\\
-\end{align*}
-
-\subsection{Expresión canónica. Definición}
-\noindent Sea \(s(X) = \left\{\lambda_1 < \lambda_2 < \dots < \lambda_n \right\}\) con \(n \in \mathbb{N}\), se dice \textbf{expresión canónica} de \(s\) a:
-\begin{align*}
-  s = \displaystyle \sum_{i = 1}^{n} \lambda_i \mathcal{X}_{A_i} \quad \mbox{ donde } A_i = s^{ - 1}(\{\lambda_i\}) = \left\{x \in X : s(x) = \lambda_i\right\}\\
-\end{align*}
-
-\begin{ejem_box}{Ejercicio}
-  \textit{Demostrar que dado \((X, \Sigma, \mu)\) espacio de medida, \(s : X \to \overline{\mathbb{R}} \) es una función simple medible sii para todo \(i = 1, \dots , n\) se tiene que \(A_i \in \Sigma\).}\vspace{2ex}
-
-  Para esto, consideramos los dos sentidos de la implicación:
-  \begin{itemize}
-    \item[\(\Rightarrow\))] Basta notar que para todo \(i = 1, \dots , n\):
-    \begin{align*}
-      A_i = s^{ - 1}(\lambda_i) = \underbracket{\left\{x : s(x) \leq \lambda_i\right\}}_{\in \Sigma} \cap \underbracket{\left\{x : s(x) \geq \lambda_i\right\}}_{\in \Sigma} \in \Sigma
-    \end{align*}
-    \item[\(\Leftarrow\))] Como los \(A_i\) son disjuntos dos a dos, el valor \(\sum_{i = 1}^n \lambda_i \mathcal{X}_{A_i}(x)\) está bien definida para todo \(x \in X\). Para todo \(i\) se tiene que \(A_i\) medible entonces:
-    \begin{align*}
-      \displaystyle \sum_{i = 1}^{n} \lambda_i \underbracket{\mathcal{X}_{A_i}(x)}_{\text{\tiny medible}} \quad \mbox{ es } \mbox{ medible}
+      \int_{[0, 1]} f \; d\mu = 1 \cdot 0 + 0 \cdot 1 = 0
     \end{align*}
   \end{itemize}
 \end{ejem_box}
 \vspace{3ex}
 
-\subsection{Parte positiva y negativa de una función. Definición}
-\noindent Sea \(f : X \to \overline{\mathbb{R}}\) una función, definimos la \textbf{parte positiva} como la función:
-\begin{align*}
-  f^{ + }(x) = \max \{f(x), 0\} \quad \forall x \in X
-\end{align*}
-\noindent y llamamos \textbf{parte negativa} a la función:
-\begin{align*}
-  f^{ - }(x) = - \left[f(x) - f^{ + }(x)\right] \quad \forall x \in X
-\end{align*}
-Así, se tiene que:
-\begin{align*}
-  f = f^{ + } - f^{ - } \quad \mbox{ y } \quad |f| = f^{ + } + f^{ - }\\
-\end{align*}
+\begin{ejem_box}{Ejemplo}
+  \textit{Se considera la función dada por:}
+  \begin{align*}
+    f(x) = \left\{
+      \begin{array}{ll}
+        0 & \mbox{ si } x \in ([0, 1] \setminus \mathbb{Q}) \cup \{0\}\\[2ex]
+        \frac{1}{q} & \mbox{ si } x \in [0, 1] \cap \mathbb{Q}, \; x = \frac{p}{q}, \; p \in \mathbb{N}, \; q \in \mathbb{N}, \; \gcd(p, q) = 1
+      \end{array}
+    \right.
+  \end{align*}
+  \begin{itemize}
+    \item \textit{Integrabilidad de Riemann}: Podemos ver que la función es discontinua en los racionales (que son numerables y por tanto de medida nula) y continua en los irracionales (que son casi todos los puntos del intervalo).\vspace{2ex}
+    
+    Como sabemos que las funciones con discontinuidades en un conjunto de medida nula son integrables en el sentido de Riemann y la función toma valores arbitrariamente pequeños cerca de casi todo punto, tenemos:
+    \begin{align*}
+      \int_0^1 f = 0
+    \end{align*}
+    \item \textit{Integrabilidad de Lebesgue}: Las funciones simples medibles \(s\) que satisfacen \(0 \leq s \leq f\) solo pueden ser no nulas en un conjunto de racionales con denominador acotado (ya que \(f\) vale 0 en los irracionales). \vspace{2ex}
+    
+    El conjunto donde \(f > 0\) es numerable (ya que es la unión de los racionales en \([0, 1]\)) y, como la medida de un conjunto numerable es 0, tenemos que:
+    \begin{align*}
+      \mu\left(\left\{x \in [0, 1] : f(x) > 0\right\}\right) = 0 \implies \Lint_{[0, 1]} s \; d\mu_1 = 0
+    \end{align*}
+    Por lo tanto, el supremo de todas esas integrales con patas es 0, es decir:
+    \begin{align*}
+      \int_0^1 f \; d\mu_1 = 0
+    \end{align*}
+  \end{itemize}
+\end{ejem_box}
 
 \begin{ej_box}{Nota}
-  Sea \(f: X \to \overline{\mathbb{R}}\), para cada \(x_0 \in X\) al menos uno de los valores \(f^{ + }(x_0)\) y \(f^{ - }(x_0)\) es no nulo.
+  Para funciones simples medibles \(s : X \to [0, \infty)\), no hay diferencia entre la integral con patas y la integral de Lebesgue, es decir:
+  \begin{align*}
+    \int_X s \; d\mu = \Lint_X s \; d\mu
+  \end{align*}
+  Ya que \(s\) es una función simple medible que satisface \(0 \leq s \leq s\) entonces:
+  \begin{align*}
+    \int_X s \; d\mu = \max \left\{\Lint_X t \; d\mu : 0 \leq t \leq s \mbox{ simple medible} \right\}
+  \end{align*}
 \end{ej_box}
-\vspace{2ex}
-
-\begin{ej_box}{Nota}
-  Si \(f : X \to \overline{\mathbb{R}}\) es medible entonces \(f^{ + }\) y \(f^{ - }\) son medibles.
-\end{ej_box}
-\vspace{2ex}
+\vspace{3ex}
 
 
-\subsection{Teorema}
-Sea \((X, \Sigma, \mu)\) espacio de medida, para toda función medible \(f: X \to [0, \infty]\) existe una sucesión de funciones simples medibles \(\{s_n: X \to [0, \infty]\}_{n \in \mathbb{N}}\) tal que:
-\begin{enumerate}
-  \item \(\forall n \in \mathbb{N}, \quad \forall x \in X\) se tiene que \(0 \leq s_n(x) \leq s_{n + 1}(x) \leq f(x)\)
-  \item \(\forall n \in \mathbb{N}, \quad \forall x \in X\) se tiene que \(\exists \displaystyle  \lim_{n \to \infty} s_n(x) = f(x)\)
-\end{enumerate}
+\subsection{Propiedades de la integral de Lebesgue para funciones no negativas}
+\subsubsection{Retículo. Proposición}\label{prop:reticulo_integrando}
+\noindent Sean \((X, \Sigma, \mu)\) espacio de medida, \(f, g : X \to [0, \infty]\) funciones medibles entonces:
+\begin{align*}
+  0 \leq f \leq g \implies \int_X f \; d\mu \leq \int_X g \; d\mu
+\end{align*}
 \begin{dem_box}{Demostración}
-  Para cada \(n \in \mathbb{N}\) consideramos los conjuntos medibles:
+  Sean los conjuntos definidos como:
   \begin{align*}
-    E_n \coloneq f^{ - 1}([n, \infty]) \in \Sigma
+    \mathcal{S}_f & \coloneq \left\{\Lint_X s \; d\mu : 0 \leq s \leq f \mbox{ simple medible, } s : X \to [0, \infty) \right\}\\[2ex]
+    \mathcal{S}_g & \coloneq \left\{\Lint_X s \; d\mu : 0 \leq s \leq g \mbox{ simple medible, } s : X \to [0, \infty) \right\}
   \end{align*}
-  Y definimos los conjuntos disjuntos dos a dos:
+  Tenemos que \(\mathcal{S}_f \subseteq \mathcal{S}_g\) ya que, sea \(s \in \mathcal{S}_f\) entonces:
   \begin{align*}
-    E_{n, i} \coloneq f^{ - 1}\left(\left[\frac{i - 1}{2^n}, \frac{i}{2^n}\right)\right) \in \Sigma \quad \forall i = 1, \dots , n 2^n
+    0 \leq s \leq f \leq g \quad \mbox{ y } s \mbox{ simple} \implies s \in \mathcal{S}_g
   \end{align*}
-  Definimos la sucesión de funciones simples medibles:
+  Por tanto, por la definición de integral de Lebesgue y tomando supremos:
   \begin{align*}
-    s_n(x) \coloneq \left[\displaystyle \sum_{i = 1}^{n2^n} \frac{i - 1}{2^n} \mathcal{X}_{E_{n, i}}(x)\right] + n \mathcal{X}_{E_n}(x) \quad \forall x \in X
+    \int_X f \; d\mu = \sup \mathcal{S}_f \leq \sup \mathcal{S}_g = \int_X g \; d\mu
   \end{align*}
-  Para ver la convergencia, tomamos \(x_0 \in X\) cualquiera y entonces se dan dos casos:
-  \begin{itemize} \leftskip -15pt
-    \item Si \(f(x_0) = \infty\) entonces:
-    \begin{align*}
-      s_n(x_0) = n \xrightarrow[n \to \infty]{} \infty = f(x_0)
-    \end{align*}
-    \vspace{20ex}
+\end{dem_box}
+\vspace{3ex}
 
-    \item Si \(0 \leq f(x_0) < \infty\) entonces, sea \(m \in \mathbb{N}\) el natural más pequeño tal que \(f(x_0) < m\):
-    \begin{center}
-      \begin{tabular}{ccccc}
-        \(s_1(x_0)\) & \(s_2(x_0)\) & \(\ldots\) & \(s_{m - 1}(x_0)\) & \( \leq s_m(x_0)\) \\
-        \rotatebox{90}{\( = \)} & \rotatebox{90}{\( = \)} & & \rotatebox{90}{\( = \)} &  \\
-        \(1\) & \( < 2\) & \( < \dots \) & \( < m - 1\) & 
-      \end{tabular}
-    \end{center}
-    Y para \(n \geq m\) denotando \(i_n\) el único natural \(1 \leq i_n \leq n 2^n\) tal que:
+\subsubsection{Linealidad parcial. Proposición}\label{prop:linealidad_parcial_integrando}
+\noindent Sean \((X, \Sigma, \mu)\) espacio de medida, \(f : X \to [0, \infty]\) función medible y \(c \in [0, \infty)\) entonces:
+\begin{align*}
+  \int_X c \cdot f \; d\mu = c \cdot \int_X f \; d\mu
+\end{align*}
+\begin{dem_box}{Demostración}
+  Se consideran dos casos:
+  \begin{itemize} \leftskip -5pt
+    \item \textit{Caso \(c = 0\):} así \(c \cdot f \equiv 0\) entonces la única función simple medible \(s\) que satisface \(0 \leq s \leq c \cdot f\) es \(s \equiv 0\) luego:
     \begin{align*}
-      f(x_0) \in \left[\frac{i_n - 1}{2^n}, \frac{i_n}{2^n}\right) = \left[\frac{2i_n - 2}{2^{n + 1}}, \frac{2i_n - 1}{2^{n + 1}}\right) \cup \left[\frac{2i_n - 1}{2^{n + 1}}, \frac{2i_n}{2^{n + 1}}\right)
+      \int_X c \cdot f \; d\mu = \sup \left\{\Lint_X s \; d\mu : 0 \leq s \leq 0 \right\} = \Lint_X 0 \; d\mu = 0 = c \cdot \int_X f \; d\mu
     \end{align*}
-    se tiene que:
+    \item \textit{Caso \(c > 0\):} Por la \hyperref[def:integral_lebesgue_no_negativas]{definición de integral de Lebesgue} tenemos que:
     \begin{align*}
-      s_n(x_0) = \frac{i_n - 1}{2^n} & \implies s_{n + 1}(x) \in \left\{\frac{2i_n - 2}{2^{n + 1}}, \frac{2i_n - 1}{2^{n + 1}} \right\} \implies \\[3ex]
-      & \implies s_{n + 1}(x_0) \geq \frac{2i_n - 2}{2^{n + 1}} = s_n(x_0) \implies \\[3ex]
-      & \implies \frac{i_n - 1}{2^n} = s_n(x_0) \leq f(x_0) < \frac{i_n}{2^n} = \frac{i_n - 1}{2^n} + \frac{1}{2^n} 
+      \int_X c \cdot f \; d\mu & = \sup \left\{\Lint_X s \; d\mu : 0 \leq s \leq c \cdot f \mbox{ simple medible, } s : X \to [0, \infty) \right\}\\[4ex]
+      c \cdot \int_X f \; d\mu & = c \cdot \sup \left\{\Lint_X t \; d\mu : 0 \leq t \leq f \mbox{ simple medible, } t : X \to [0, \infty) \right\} \xlongequal[]{c > 0}\\[1ex]
+      & = \sup \left\{\Lint_X c \cdot t \; d\mu : 0 \leq t \leq f \mbox{ simple medible, } t : X \to [0, \infty) \right\}
     \end{align*}
-    Como \((s_n(x_0))_{n \in \mathbb{N}}\) es creciente entonces:
+    Además, podemos notar que:
     \begin{align*}
-      \exists \lim_{n \to \infty} s_n(x_0) = l
+      0 \leq t \leq f \xLeftrightarrow[]{c > 0} 0 \leq \underbracket{c \cdot t}_{= s} \leq c \cdot f
     \end{align*}
-    Si \(n \to \infty\) entonces:
+    Por tanto, los conjuntos de funciones simples medibles que definen ambos supremos son iguales, luego:
     \begin{align*}
-      l \leq f(x_0) \leq l + 0
+      \int_X c \cdot f \; d\mu = c \cdot \int_X f \; d\mu
     \end{align*}
   \end{itemize}
 \end{dem_box}
 \vspace{3ex}
 
+\subsubsection{Integral de la función nula. Proposición}\label{prop:integral_funcion_nula}
+\noindent Sea \((X, \Sigma, \mu)\) espacio de medida y \(f: X \to [0, \infty]\) tal que \(f \equiv 0\) entonces:
+\begin{align*}
+  \int_X f \; d\mu = 0
+\end{align*}
+\begin{dem_box}{Demostración}
+  La única función simple medible \(s\) que satisface \(0 \leq s \leq f\) es \(s \equiv 0\) luego:
+  \begin{align*}
+    \int_X f \; d\mu = \sup \left\{\Lint_X s \; d\mu : 0 \leq s \leq 0 \right\} = \Lint_X 0 \; d\mu = 0
+  \end{align*}  
+\end{dem_box}
+\vspace{3ex}
+
+\subsubsection{Integral sobre conjuntos de medida nula. Proposición}\label{prop:integral_conjunto_medida_nula}
+Sea \((X, \Sigma, \mu)\) espacio de medida con \(E \in \Sigma\) tal que \(\mu(E) = 0\), y \(f : X \to [0, \infty]\) función medible entonces:
+\begin{align*}
+  \int_E f \; d\mu = 0
+\end{align*}
+\begin{dem_box}{Demostración}
+  Por la \hyperref[def:integral_lebesgue_no_negativas]{definición de integral de Lebesgue} tenemos que:
+  \begin{align*}
+    \int_E f \; d\mu = \sup \left\{\Lint_E s \; d\mu : 0 \leq s \leq f_{|_E} \mbox{ simple medible, } s : E \to [0, \infty) \right\}
+  \end{align*}
+  Sea \(s : E \to [0, \infty)\) función simple medible tal que \(0 \leq s \leq f_{|_E}\) entonces:
+  \begin{align*}
+    \Lint_E s \; d\mu = \sum_{i=1}^{n} \alpha_i \underbracket{\mu(A_i)}_{\leq \mu(E)} \overset{\mu(E) = 0}{=} 0 \implies \int_E f \; d\mu = \sup \{0\} = 0
+  \end{align*}
+\end{dem_box}
+
+
+\subsubsection{Integral sobre subconjuntos. Proposición}
+Sea \((X, \Sigma, \mu)\) espacio de medida con \(E, D \in \Sigma\) y \(E \subseteq D\), \(f : X \to [0, \infty]\) función medible entonces:
+\begin{enumerate}
+  \item \(\displaystyle \int_E f \; d\mu = \int_D f \cdot \mathcal{X}_E \; d\mu\)
+  \item \(\displaystyle \int_E f \; d\mu \leq \int_D f \; d\mu\)
+\end{enumerate}
+\begin{dem_box}{Demostración}
+  \begin{enumerate} \leftskip -15pt
+    \item \textit{Igualdad bajo la función indicadora:}
+    \begin{itemize} \leftskip -25pt
+      \item Sea \(t : E \to [0, \infty)\) simple con \(0 \leq t \leq f_{|_E}\) entonces su extensión a \(D\):
+      \begin{align*}
+        \tilde{t} : D & \longrightarrow [0, \infty)\\
+        x & \longmapsto \left\{
+          \begin{array}{ll}
+            t(x) & \mbox{ si } x \in E\\
+            0 & \mbox{ si } x \in D \setminus E
+          \end{array}
+        \right.
+      \end{align*}
+      es simple en \(D\) y satisface \(0 \leq \tilde{t} \leq f \cdot \mathcal{X}_E\) luego:
+      \begin{align*}
+        \Lint_E t \; d\mu = \sum_{i=1}^{n} \alpha_i \mu(A_i \cap E) = \sum_{i=1}^{n} \alpha_i \mu\left(\left\{x \in D : \tilde{t}(x) = \alpha_i\right\}\right) = \Lint_D \tilde{t} \; d\mu
+      \end{align*}
+      \item Sea \(s : D \to [0, \infty)\) simple con \(0 \leq s \leq f \cdot \mathcal{X}_E\) entonces su restricción a \(E\):
+      \begin{align*}
+        s_{|_E} : E & \longrightarrow [0, \infty)\\
+        x & \longmapsto s(x)
+      \end{align*}
+      es simple en \(E\) y satisface \(0 \leq s_{|_E} \leq f_{|_E}\) luego:
+      \begin{align*}
+        \Lint_D s \; d\mu = \sum_{i=1}^{n} \alpha_i \mu(A_i \cap E) = \sum_{i=1}^{n} \alpha_i \mu\left(\left\{x \in E : s_{|_E}(x) = \alpha_i\right\}\right) = \Lint_E s_{|_E} \; d\mu
+      \end{align*}
+    \end{itemize}
+    Por lo tanto, tomando supremos en ambos casos se tiene la igualdad buscada.
+    \item \textit{Desigualdad sobre subconjuntos:} Como \(0 \leq f \cdot \mathcal{X}_E \leq f\) entonces:
+    \begin{align*}
+      \int_E f \; d\mu \overset{(1)}{ = } \int_D f \cdot \mathcal{X}_E \; d\mu \overset{\hyperref[prop:reticulo_integrando]{\text{retic}}}{\leq} \int_D f \; d\mu
+    \end{align*}
+  \end{enumerate}
+\end{dem_box}
+\vspace{3ex}
+
+\subsection{Teorema de la convergencia monótona}\label{thm:convergencia_monotona}
+Sea \((X, \Sigma, \mu)\) espacio de medida, \(\{f_n : X \to [0, \infty] \}_{n \in \mathbb{N}}\) sucesión de funciones medibles tales que:
+\begin{align*}
+  f_n(x) \leq f_{n+1}(x) \quad \forall n \in \mathbb{N}, \forall x \in X \quad \mbox{ y } \quad f_n(x) \xrightarrow[n \to \infty]{} f(x) \quad \forall x \in X
+\end{align*}
+donde \(f : X \to [0, \infty]\) es función medible entonces:
+\begin{align*}
+  \lim_n \int_X f_n \; d\mu = \int_X f \; d\mu
+\end{align*}
+
+\begin{dem_box}{Demostración}
+  \begin{enumerate} \leftskip -15pt
+    \item \textit{La sucesión de integrales es creciente y con límite \(\alpha\):} Como \(f_n \leq f_{n + 1}\), por la \hyperref[prop:reticulo_integrando]{proposición de retículo} se tiene que:
+    \begin{align*}
+      \int_X f_n \; d\mu \leq \int_X f_{n + 1} \; d \mu \quad \forall n \in \mathbb{N}
+    \end{align*}
+    Entonces, la sucesión \(\left\{\int_X f_n \; d\mu\right\}_{n}\) es creciente en \([0, \infty]\), por lo que existe el límite (finito o infinito):
+    \begin{align*}
+      \alpha \coloneq \lim_{n \to \infty} \int_X f_n \; d\mu \in [0, \infty]
+    \end{align*}
+    \item \textit{Desigualdad \(\alpha \leq \int f \):} Como \(f_n \leq f\) para todo \(n \in \mathbb{N}\), por la \hyperref[prop:reticulo_integrando]{proposición de retículo} se tiene que:
+    \begin{align*}
+      \int_X f_n \; d\mu \leq \int_X f \; d\mu \quad \forall n \in \mathbb{N}
+    \end{align*}
+    Luego, tomando límites cuando \(n \to \infty\) se tiene:
+    \begin{align*}
+      \alpha = \lim_{n \to \infty} \int_X f_n \; d\mu \leq \int_X f \; d\mu
+    \end{align*}
+    \item \textit{Desigualdad \(\int f \leq \alpha\):} Basta ver que si \(s\) función simple con \(0 \leq s \leq f\) entonces:
+    \begin{align*}
+      \Lint_X s \; d\mu \leq \alpha \eqcolon \lim_{n \to \infty} \int_X f_n \; d\mu
+    \end{align*}
+    Como se cumple \(\forall s\) medible simple con \(s \leq f\), entonces, pasando al supremo sobre todas esas funciones simples medibles, se obtiene la desigualdad buscada.\vspace{2ex}
+    
+    Sea \(s: X \to [0, \infty]\) simple medible tal que \(0 \leq s \leq f\) y sea \(c \in (0, 1)\) entonces, por la definición de límite puntual, \(\forall x \in X\) existe \(n_x \in \mathbb{N}\) tal que:
+    \begin{align*}
+      f_n(x) \geq c \cdot s(x) \quad \forall n \geq n_x
+    \end{align*}
+    Definimos los conjuntos:
+    \begin{align*}
+      A_n \coloneq \left\{x \in X : f_n(x) \geq c \cdot s(x)\right\} \quad \forall n \in \mathbb{N}
+    \end{align*}
+    Entonces, se tiene que:
+    \begin{align*}
+      X = \bigcup_{n=1}^{\infty} A_n \quad \mbox{ y } \quad A_n \subseteq A_{n + 1} \quad \forall n \in \mathbb{N}
+    \end{align*}
+    Por lo tanto, por un resultado previo sobre medidas, sabemos que:
+    \begin{align*}
+      \mu\left(\bigcup_{n=1}^{\infty} A_n\right) = \lim_{n \to \infty} \mu(A_n) = \mu(X)
+    \end{align*}
+    Luego, por la \hyperref[prop:integral_conjunto_medida_nula]{proposición de integral sobre subconjuntos} se tiene que:
+    \begin{align*}
+      \Lint_X c \cdot s \; d\mu & = \lim_{n \to \infty} \Lint_{A_n} c \cdot s \; d\mu \leq \lim_{n \to \infty} \Lint_{A_n} f_n \; d\mu \leq \lim_{n \to \infty} \int_X f_n \; d\mu = \alpha
+    \end{align*}
+    Donde hemos usado que \(c \cdot s \leq f_n\) en \(A_n\) por definición de \(A_n\) y la \hyperref[prop:integral_conjunto_medida_nula]{proposición de integral sobre conjuntos de medida nula} para extender la integral sobre \(A_n\) a \(X\).\vspace{2ex}
+
+    Como \(\forall s\) simple medible con \(0 \leq s \leq f\) y todo \(c \in (0, 1)\) se tiene que:
+    \begin{align*}
+      \Lint_X c \cdot s \; d\mu \leq \alpha \implies \Lint_X c \cdot s \; d \mu \xrightarrow[c \to 1^-]{} \Lint_X s \; d\mu \leq \alpha
+    \end{align*}
+    Por la \hyperref[def:integral_lebesgue_no_negativas]{definición de integral de Lebesgue} se tiene:
+    \begin{align*}
+      \int_X f \; d\mu = \sup \left\{\Lint_X s \; d\mu : 0 \leq s \leq f \mbox{ simple medible} \right\} \leq \alpha
+    \end{align*}
+  \end{enumerate}
+\end{dem_box}
+
+\subsection{Linealidad parcial. Proposición}\label{prop:linealidad_parcial_integrando}
+\noindent Sea \((X, \Sigma, \mu)\) espacio de medida, \(f, g: X \to [0, \infty]\) se tiene que:
+\begin{align*}
+  \int_X (f + g) \; d\mu = \int_X f \; d\mu + \int_X g \; d\mu
+\end{align*}
+Alternativamente, para \(E \in \Sigma\) (con \(E \subseteq X\)):
+\begin{align*}
+  \int_E (f + g) \; d\mu = \int_E f \; d\mu + \int_E g \; d\mu
+\end{align*}
+\begin{dem_box}{Demostración}
+  Sean \(f, g: X \to [0, \infty]\) medibles entonces existen \(\{s_n: X \to [0, \infty)\}_{n \in \mathbb{N}}\) y \(\{t_n: X \to [0, \infty)\}_{n \in \mathbb{N}}\) sucesiones de funciones simples medibles tales que:
+  \begin{align*}
+    0 \leq s_n \leq s_{n + 1} \leq f \quad \forall n \in \mathbb{N} \quad \mbox{ y } \quad s_n(x) \xrightarrow[n \to \infty]{} f(x) \quad \forall x \in X\\[2ex]
+    0 \leq t_n \leq t_{n + 1} \leq g \quad \forall n \in \mathbb{N} \quad \mbox{ y } \quad t_n(x) \xrightarrow[n \to \infty]{} g(x) \quad \forall x \in X
+  \end{align*}
+  Así, tenemos que:
+  \begin{align*}
+    0 \leq s_n(x) + t_n(x) \leq s_{n + 1}(x) + t_{n + 1}(x) \xrightarrow[n \to \infty]{} f(x) + g(x) \quad \forall x \in X
+  \end{align*}
+  Por lo que, por el \hyperref[thm:convergencia_monotona]{Teorema de la Convergencia Monótona} se tiene:
+  \begin{align*}
+    \int_X (f + g) \; d\mu & = \int_X \lim_{n \to \infty} (s_n + t_n) \; d\mu \xlongequal[]{\hyperref[thm:convergencia_monotona]{\text{TCM}}} \lim_{n \to \infty} \int_X (s_n + t_n) \; d\mu =\\[2ex]
+    & = \lim_{n \to \infty} \left(\int_X s_n \; d\mu + \int_X t_n \; d\mu\right) = \lim_{n \to \infty} \int_X s_n \; d\mu + \lim_{n \to \infty} \int_X t_n \; d\mu \xlongequal[]{\hyperref[thm:convergencia_monotona]{\text{TCM}}} \\[2ex]
+    & = \int_X \lim_{n \to \infty} s_n \; d\mu + \int_X \lim_{n \to \infty} t_n \; d\mu = \int_X f \; d\mu + \int_X g \; d\mu
+  \end{align*}
+\end{dem_box}
+\vspace{3ex}
+
+\subsection{Linealidad del integrando. Proposición}
+Sea \((X, \Sigma, \mu)\) espacio de medida, \(f: X \to [0, \infty]\) función medible y \(\{E_i\}_{i \in \mathbb{N}} \subseteq \Sigma\) disjuntos dos a dos entonces:
+\begin{align*}
+  \int_{\bigcup_{i=1}^{\infty} E_i} f \; d\mu = \sum_{i=1}^{\infty} \int_{E_i} f \; d\mu
+\end{align*}
+\begin{dem_box}{Demostración}
+  Basta notar que:
+  \begin{align*}
+    \int_{\bigcup_{i=1}^{n} E_i} f \; d\mu & = \int_X f \cdot \mathcal{X}_{\bigcup_{i=1}^{n} E_i} \; d\mu \xlongequal[]{E_i \cap E_j = \emptyset } \int_X \displaystyle \sum_{i = 1}^{n} f \cdot \mathcal{X}_{E_i} \; d\mu
+  \end{align*}
+  Ahora, si definimos la sucesión de funciones dada por:
+  \begin{align*}
+    s_n \coloneq \sum_{i=1}^{n} f \cdot \mathcal{X}_{E_i} \quad \forall n \in \mathbb{N}
+  \end{align*}
+  Entonces, se tiene que:
+  \begin{itemize}
+    \item \(0 \leq s_n(x) \leq s_{n + 1}(x) \leq f(x)\) para todo \(n \in \mathbb{N}\) y todo \(x \in X\).
+    \item \(s_n(x) \xrightarrow[n \to \infty]{} f(x) \cdot \mathcal{X}_{\bigcup_{i=1}^{\infty} E_i}(x)\) para todo \(x \in X\).
+  \end{itemize}
+  Por lo que, aplicando el \hyperref[thm:convergencia_monotona]{Teorema de la Convergencia Monótona} se tiene:
+  \begin{align*}
+    \int_{\bigcup_{i=1}^{\infty} E_i} f \; d\mu & = \int_X f \cdot \mathcal{X}_{\bigcup_{i=1}^{\infty} E_i} \; d\mu = \int_X \lim_{n \to \infty} s_n \; d\mu \xlongequal[]{\hyperref[thm:convergencia_monotona]{\text{TCM}}} \lim_{n \to \infty} \int_X s_n \; d\mu =\\[2ex]
+    & = \lim_{n \to \infty} \int_X \sum_{i=1}^{n} f \cdot \mathcal{X}_{E_i} \; d\mu \xlongequal[{\hyperref[prop:linealidad_parcial_integrando]{\text{parcial}}}]{\hyperref[prop:linealidad_parcial_integrando]{\text{linealidad}}} \lim_{n \to \infty} \sum_{i=1}^{n} \int_X f \cdot \mathcal{X}_{E_i} \; d\mu =\\[2ex]
+    & = \lim_{n \to \infty} \sum_{i=1}^{n} \int_{E_i} f \; d\mu = \sum_{i=1}^{\infty} \int_{E_i} f \; d\mu
+  \end{align*}
+\end{dem_box}
+\vspace{3ex}
+
+\subsection{Lema de Fatou. Lema}\label{lem:fatou}
+\noindent Sea \((X, \Sigma, \mu)\) espacio de medida y \(\{f_n : X \to [0, \infty]\}_{n \in \mathbb{N}}\) funciones medibles entonces:
+\begin{align*}
+  \int_X \liminf_n f_n \; d \mu \leq \liminf_n \int_X f_n \; d\mu
+\end{align*}
+\begin{dem_box}{Demostración}
+  Para cada \(n \in \mathbb{N}\) definimos la función:
+  \begin{align*}
+    g_n(x) \coloneq \inf_{k \geq n} f_k(x)
+  \end{align*}
+  Por un resultado del tema 4, sabemos que el ínfimo de funciones medibles es medible, por tanto \(g_n\) es medible para todo \(n \in \mathbb{N}\).\vspace{2ex}
+  
+  Además, sean \(n, m \in \mathbb{N}\) tales que \(n \leq m\) entonces:
+  \begin{align*}
+    \left\{f_k : k \geq m \right\} \subseteq \left\{f_k : k \geq n \right\} \implies \inf_{k \geq n} f_k(x) \leq \inf_{k \geq m} f_k(x) \quad \forall x \in X
+  \end{align*}
+  Por lo tanto, \(g_n \leq g_{n + 1}\), es decir, la sucesión \((g_n)_n\) es creciente punto a punto. Además, por definición de \(\liminf\) se tiene que:
+  \begin{align*}
+    \lim_{n \to \infty} g_n(x) = \liminf_{n \to \infty} f_n(x) \quad \forall x \in X
+  \end{align*}
+  Por lo que, aplicando el \hyperref[thm:convergencia_monotona]{Teorema de la Convergencia Monótona} a \(g_n\) se tiene:
+  \begin{align*}\label{eq:fatou_1}\tag{I}
+    \int_X \liminf_{n} f_n \; d\mu = \int_X \lim_n g_n \; d\mu \overset{\text{TCM}}{=} \lim_n \int_X g_n \; d\mu
+  \end{align*}
+  Finalmente, para cada \(n \in \mathbb{N}\) y cada \(k \geq n\) se tiene que \(g_n(x) \leq f_k(x)\) para todo \(x \in X\), por lo que, por la \hyperref[prop:reticulo_integrando]{proposición de retículo} se tiene:
+  \begin{align*}
+    \int_X g_n \; d\mu \leq \int_X f_k \; d\mu \quad \forall k \geq n \implies \int_X g_n \; d\mu \leq \inf_{k \geq n} \int_X f_k \; d\mu
+  \end{align*}
+  Luego, tomando el límite cuando \(n \to \infty\) en ambos lados, se obtiene:
+  \begin{align*}
+    \lim_{n \to \infty}\int_X g_n \; d\mu \leq \lim_{n \to \infty} \inf_{k \geq n} \int_X f_k \; d\mu = \liminf_{n \to \infty} \int_X f_n \; d\mu
+  \end{align*}
+  Por lo tanto, juntando con la \eqref{eq:fatou_1} se tiene el resultado buscado:
+  \begin{align*}
+    \int_X \liminf_n f_n \; d\mu = \lim_n \int_X g_n \; d\mu \leq \liminf_n \int_X f_n \; d\mu
+  \end{align*}
+\end{dem_box}
+\vspace{3ex}
+
+\begin{ejem_box}{Ejemplo}
+  \textit{En general, la igualdad en el Lema de Fatou no se cumple.}\vspace{2ex}
+
+  Basta considerar la sucesión de funciones indicadoras, es decir, \(f_n = \mathcal{X}_{[n, \infty)}\) entonces:
+  \begin{align*}
+    \int_{\mathbb{R}} \liminf_n f_n \; d\mu_1 & = \int_{\mathbb{R}} 0 \; d\mu_1 = 0\\[2ex]
+    \liminf_n \int_{\mathbb{R}} f_n \; d\mu_1 & = \liminf_n 1 \cdot \mu_1([n, \infty)) = \liminf_n \infty = \infty
+  \end{align*}
+\end{ejem_box}
+\vspace{3ex}
+
+\subsection{Igualdad en casi todo punto. Definición}\label{def:igualdad_casi_todo_punto}
+Sea \((X, \Sigma, \mu)\) espacio de medida y \(f, g : X \to \overline{\mathbb{R}}\) funciones, se dice que son \textbf{iguales en casi todo punto} (denotado \(f = g \; \mu\text{-a.e.}\) o \(f \xlongequal[]{\mu\text{-a.e.}} g\)) si \(\exists B \in \Sigma\) con \(\mu(B) = 0\) tal que:
+\begin{align*}
+  \left\{x \in X : f(x) \neq g(x)\right\} \subseteq B\\
+\end{align*}
+
+\begin{ej_box}{Nota}
+  La idea de igualdad en casi todo punto es que las funciones \(f\) y \(g\) pueden diferir en un conjunto de medida nula. O lo que es lo mismo, \(f\) y \(g\) coinciden salvo en un conjunto de medida nula.
+  \begin{align*}
+    N \coloneq \left\{x \in X : f(x) \neq g(x)\right\} \subseteq B \in \Sigma \quad \mbox{ con } \mu(B) = 0 \implies \mu(N) = 0
+  \end{align*}
+  En particular, se tiene que:
+  \begin{align*}
+    g(x) = f(x) \quad \forall x \in X \setminus N
+  \end{align*}
+\end{ej_box}
+\vspace{3ex}
+
+\begin{ejem_box}{Ejercicio}
+  \textit{Si en la definición anterior se exige que \((X, \Sigma, \mu)\) sea espacio de medida completo y \(f\) medible con \(f = g \; \mu\text{-a.e.}\) entonces \(g\) es medible.}\vspace{2ex}
+
+  Sea \(\alpha \in \mathbb{R}\), queremos ver que se cumple la condición de medibilidad:
+  \begin{align*}
+    \left\{x \in X : g(x) > \alpha \right\} \in \Sigma
+  \end{align*}
+  Sea \(N \coloneq \left\{x \in X : f(x) \neq g(x)\right\} \subseteq B \in \Sigma\) con \(\mu(B) = 0\) entonces:
+  \begin{align*}
+    \left\{g > \alpha\right\} = \left(\left\{f > \alpha\right\} \setminus N\right) \cup \left(\left\{g > \alpha\right\} \cap N\right)
+  \end{align*}
+  Entonces tenemos que:
+  \begin{itemize}
+    \item \(f\) medible \(\implies \left\{f > \alpha\right\} \in \Sigma\)
+    \item Como \(N \subseteq B\) y \(\mu(B) = 0\) y el espacio es completo, entonces \(N \in \Sigma\) y así:
+    \begin{align*}
+      \left\{g > \alpha\right\} \cap N \subseteq N \in \Sigma \implies \left\{g > \alpha\right\} \cap N \in \Sigma
+    \end{align*}
+  \end{itemize}
+  Por tanto, la unión de ambos conjuntos está en \(\Sigma\) y \(g\) es medible.
+\end{ejem_box}
+\vspace{3ex}
+
+\subsection{Integral de Lebesgue con \(\mu\)-a.e. Proposición}\label{prop:integral_igualdad_casi_todo_punto}
+\noindent Sea \((X, \Sigma, \mu)\) espacio de medida y \(f, g: X \to [0, \infty]\) funciones medibles, se tiene:
+\begin{align*}
+  f = g \; \mu\text{-a.e.} \implies \int_X f \; d\mu = \int_X g \; d\mu\\
+\end{align*}
+\begin{dem_box}{Demostración}
+  Sea \(B \in \Sigma\) con \(\mu(B) = 0\) tal que:
+  \begin{align*}
+    N \coloneq \left\{x \in X : f(x) \neq g(x)\right\} \subseteq B
+  \end{align*}
+  Entonces, como \(f, g\) son medibles, se tiene que:
+  \begin{align*}
+    \left\{x \in X : f(x) \neq g(x)\right\} = \underbracket{\left\{x \in X : f(x) > g(x)\right\}}_{\in \Sigma} \cup \underbracket{\left\{x \in X : g(x) > f(x)\right\}}_{\in \Sigma} \in \Sigma
+  \end{align*}
+  Como sabemos que \(X = (X \setminus B) \cup B\) y \(f(x) = g(x)\) para todo \(x \in X \setminus B\), entonces:
+  \begin{align*}
+    \int_{X\setminus B} f \; d\mu & = \int_{X\setminus B} g \; d\mu
+  \end{align*}
+  Por otro lado, por la \hyperref[prop:integral_conjunto_medida_nula]{proposición de integral sobre conjuntos de medida nula}, como \(B\) medible y \(\mu(B) = 0\) entonces:
+  \begin{align*}
+    \int_B f \; d\mu = 0 \quad \mbox{ y } \quad \int_B g \; d\mu = 0
+  \end{align*}
+  Por lo tanto, juntando ambas integrales se tiene:
+  \begin{align*}
+    \int_X f \; d\mu & = \int_{(X\setminus B) \cup B} f \; d\mu = \underbracket{\int_{X\setminus B} f \; d\mu}_{\int_{X\setminus B} g \; d\mu} + \underbracket{\int_B f \; d\mu}_{0} = \int_{X\setminus B} g \; d\mu + \int_B g \; d\mu = \int_X g \; d\mu
+  \end{align*}
+\end{dem_box}
+
 \begin{ej_box}{Observación}
-  Si \(f\) es acotada (en \(\mathbb{R}\)), la convergencia de \(s_n\) a \(f\) en la demostración es uniforme.\footnote{Y entonces me podrías decir, ``¿y por qué no nos quedamos con Riemann?'' Y yo os diré: ``NO pedazo de brutos''.}
+  En el momento que se define la integral de Lebesgue para funciones de signo cualquiera, el resultado se verá que es válido para \(f, g: X \to \overline{\mathbb{R}}\).\vspace{1ex}
+
+  Basta pensar que si \(f = g \; \mu\text{-a.e.}\) entonces \(f^{ + } = g^{ + } \; \mu\text{-a.e.}\) y \(f^{ - } = g^{ - } \; \mu\text{-a.e.}\) y aplicar la proposición a ambas funciones. No obstante, hay que esperar a la definición de integral para funciones de signo cualquiera.
+\end{ej_box}
+
+\subsection{Integral de función nula en casi todo punto. Proposición}\label{prop:integral_funcion_nula_casi_todo_punto}
+\noindent Sea \((X, \Sigma, \mu)\) espacio de medida y \(f: X \to [0, \infty]\) función medible, entonces:
+\begin{align*}
+  f = 0 \; \mu\text{-a.e.} \iff \int_X f \; d\mu = 0
+\end{align*}
+\begin{dem_box}{Demostración}
+  \begin{itemize} \leftskip -10pt
+    \item[\(\Rightarrow\))] Aplicando la \hyperref[prop:integral_igualdad_casi_todo_punto]{proposición anterior} a la función nula, es decir, \(g \equiv 0\) se tiene que:
+    \begin{align*}
+      \int_X f \; d\mu = \int_X 0 \; d\mu \xlongequal[{\hyperref[prop:integral_funcion_nula]{\text{de función nula}}}]{\hyperref[prop:integral_funcion_nula]{\text{prop. integral}}} 0
+    \end{align*}
+    \item[\(\Leftarrow\))] La idea es que si una función no negativa tuviera valores positivos en un conjunto de medida no nula, la integral no podría ser 0, así para cada \(n \in \mathbb{N}\) definimos:
+    \begin{align*}
+      E_n \coloneq \left\{x \in X : f(x) \geq \frac{1}{n}\right\} \in \Sigma
+    \end{align*}
+    Es decir, que \(E_n\) detecta los puntos donde la función es al menos \(\frac{1}{n}\). Si \(f\) no fuera casi nula, entonces alguno de estos conjuntos tendría medida positiva. Definimos también:
+    \begin{align*}
+      E & \coloneq \left\{x : f(x) > 0\right\} = \displaystyle \bigcup_{n = 1}^\infty E_n \in \Sigma
+    \end{align*}
+    Ya que cualquier número positivo es mayor o igual que \(\frac{1}{n}\) para algún \(n \in \mathbb{N}\) por la propiedad arquimediana.
+    
+    \vspace{2ex}
+
+    Para un \(E_n\) cualquiera y \(\frac{1}{n}\) fijo, se tiene que:
+    \begin{align*}\label{eq:funcion_nula_casi_todo_punto}\tag{I}
+      \int_{E_n} \frac{1}{n} \; d\mu = \frac{1}{n} \cdot \mu(E_n)
+    \end{align*}
+    Y además, como en \(E_n\) \(f(x) \geq \frac{1}{n}\), por la \hyperref[prop:reticulo_integrando]{proposición de retículo} se tiene que:
+    \begin{align*} \label{eq:funcion_nula_casi_todo_punto_2}\tag{II}
+      \int_{E_n} \frac{1}{n} \; d\mu \leq \int_{E_n} f \; d\mu \overset{E_n \subseteq X}{\leq} \int_X f \; d\mu
+    \end{align*}
+    Como por hipótesis \(\int_X f \; d\mu = 0\) entonces, si juntamos \eqref{eq:funcion_nula_casi_todo_punto} y \eqref{eq:funcion_nula_casi_todo_punto_2} se tiene:
+    \begin{align*}
+      0 \leq \frac{1}{n} \cdot \mu(E_n) = \int_{E_n} \frac{1}{n} \; d\mu \leq \int_X f \; d\mu = 0 \implies \mu(E_n) = 0
+    \end{align*}
+    Por lo tanto, como \(E = \bigcup_{n=1}^{\infty} E_n\) y la unión numerable de conjuntos de medida nula es de medida nula, se tiene:
+    \begin{align*}
+      0 \leq \mu(E) = \mu\left(\bigcup_{n=1}^{\infty} E_n\right) \overset{\text{subadit.}}{\leq} \sum_{n=1}^{\infty} \mu(E_n) = 0 \implies \mu(E) = 0
+    \end{align*}
+    Por tanto, \(E = \{x : f(x) > 0\}\) es de medida nula, es decir, \(f = 0 \; \mu\text{-a.e.}\)
+  \end{itemize}
+\end{dem_box}
+\vspace{3ex}
+
+\begin{ej_box}{Nota}
+  Si extendemos la proposición al caso de funciones \(f : X \to \overline{\mathbb{R}}\) de signo cualquiera, tenemos que:
+  \begin{itemize}
+    \item La implicación \(\Rightarrow)\) sigue siendo válida.
+    \item Para la implicación \(\Leftarrow )\) hay que exigir que \(f \geq 0\) ya que en otro caso, si \(f\) toma valores negativos podría ocurrir que unas zonas con otras se compensaran y la integral fuera 0 sin que \(f\) fuera nula casi en todas partes. Basta pensar en una integral similar a la que se muestra a continuación:
+    \begin{center}
+      \begin{tikzpicture}
+        \draw[-{Latex}] (-4,0) -- (4,0) node[right] {\(x\)};
+        \draw[-{Latex}] (0,-2) -- (0,2) node[above] {\(f(x)\)};
+        \draw[thick,domain=-3:3,smooth,variable=\x,blue] plot ({\x},{sin(deg(\x))});
+        \fill[blue!20,domain=-3:0,smooth,variable=\x] plot ({\x},{sin(deg(\x))}) -- (0,0) -- (-3,0) -- cycle;
+        \fill[red!20,domain=0:3,smooth,variable=\x] plot ({\x},{sin(deg(\x))}) -- (3,0) -- (0,0) -- cycle;
+        \draw[thick, blue] (-3,0) -- (-3,{sin(deg(-3))});
+        \draw[thick, blue] (3,0) -- (3,{sin(deg(3))});
+        \node[red] at (1.5,1.5) {\(\int f(x) \; dx > 0\)};
+        \node[blue] at (-1.5,-1.5) {\(\int f(x) \; dx < 0\)};
+        \node at (0,-2.5) {\(\int f(x) \; dx = 0\)};
+      \end{tikzpicture}
+    \end{center}
+  \end{itemize}
+\end{ej_box}
+
+\newpage
+\section{Integral de Lebesgue para funciones medibles \(f : X \to \overline{\mathbb{R}}\)}
+\subsection{Función integrable Lebesgue. Definición}
+Sea \((X, \Sigma, \mu)\) espacio de medida y \(f : X \to \overline{\mathbb{R}}\) función medible, decimos que \(f\) es una \textbf{función integrable de Lebesgue} si se da alguna de las siguientes condiciones (no excluyentes):
+\begin{align*}
+  \int_X f^{ + } \; d\mu < \infty \qquad \mbox{ o } \qquad \int_X f^{ - } \; d\mu < \infty\\
+\end{align*}
+\begin{ej_box}{Nota}
+  Notar que aunque permitimos que el valor de la integral sea infinito, lo que queremos restringir es que no sea infinito en ambas partes (positiva y negativa) a la vez, ya que en ese caso la integral no estaría bien definida (tendríamos una indeterminación del tipo \(\infty - \infty\)).
+\end{ej_box}
+\vspace{3ex}
+
+\subsection{Función sumable (1-sumable). Definición}
+Sea \((X, \Sigma, \mu)\) espacio de medida y \(f : X \to \overline{\mathbb{R}}\) función medible, decimos que \(f\) es una \textbf{función sumable (1-sumable)} si:
+\begin{align*}
+  \int_X f^{ + } \; d\mu < \infty \quad \mbox{ y } \quad \int_X f^{ - } \; d\mu < \infty\\
+\end{align*}
+\begin{ej_box}{Nota}
+  Notar que en este caso, al ser ambas integrales finitas, tendremos que la integral de \(f\) será un número real finito y, además, la integral del valor absoluto de \(f\) también será finita.
+\end{ej_box}
+\vspace{3ex}
+
+\subsection{Integral de Lebesgue para funciones medibles \(f : X \to \overline{\mathbb{R}}\). Definición}\label{def:integral_lebesgue_signo_cualquiera}
+\noindent Sea \((X, \Sigma, \mu)\) espacio de medida y \(f: X \to \overline{\mathbb{R}}\) función medible (integrable o sumable), se define la \textbf{integral de Lebesgue de \(f\) sobre \(X\)} como:
+\begin{align*}
+  \int_X f \; d\mu \coloneq \left(\int_X f^{ + } \; d\mu\right) - \left(\int_X f^{ - } \; d\mu\right) \in \overline{\mathbb{R}}\\
+\end{align*}
+
+\begin{ej_box}{Observación}
+  Como sabemos que:
+  \begin{align*}
+    |f| = f^{ + } + f^{ - }
+  \end{align*}
+  Y por propiedades de la integral, se tiene:
+  \begin{align*}
+    \int_X |f| \; d\mu < \infty & \iff \int_X f^{ + } \; d\mu + \int_X f^{ - } \; d\mu < \infty
+  \end{align*}
+  Entonces, como tenemos que:
+  \begin{align*}
+    f \mbox{ sumable} \iff f^{ + } \mbox{ y } f^{ - } \mbox{ sumables} \iff |f| \mbox{ sumable}
+  \end{align*}
+  Lo que nos da la siguiente equivalencia:
+  \begin{align*}
+    f \mbox{ sumable} \iff \int_X f \; d\mu \in \mathbb{R} \iff \int_X |f| \; d\mu \in [0, \infty)
+  \end{align*}
+\end{ej_box}
+\vspace{3ex}
+
+\subsection{Desigualdad triangular. Proposición}\label{prop:desigualdad_triangular_integral}
+\noindent Sea \((X, \Sigma, \mu)\) espacio de medida y \(f : X \to\overline{\mathbb{R}}\) función integrable se tiene:
+\begin{align*}
+  \left|\int_X f \; d\mu\right| \leq \int_X |f| \; d\mu\\
+\end{align*}
+\begin{dem_box}{Demostración}
+  Sabemos que:
+  \begin{align*}
+    -|f| \leq f \leq |f|
+  \end{align*}
+  Por la \hyperref[prop:reticulo_integrando]{proposición de retículo} se tiene:
+  \begin{align*}
+    \int_X -|f| \; d\mu \leq \int_X f \; d\mu \leq \int_X |f| \; d\mu
+  \end{align*}
+  Luego, como \(\int_X -|f| \; d\mu = - \int_X |f| \; d\mu\) por la \hyperref[prop:linealidad_parcial_integrando]{proposición de linealidad parcial de la integral} se tiene:
+  \begin{align*}
+    - \int_X |f| \; d\mu \leq \int_X f \; d\mu \leq \int_X |f| \; d\mu
+  \end{align*}
+  Por lo tanto, por la definición de valor absoluto se obtiene la desigualdad buscada:
+  \begin{align*}
+    \left|\int_X f \; d\mu\right| \leq \int_X |f| \; d\mu
+  \end{align*}
+\end{dem_box}
+\vspace{3ex}
+
+\begin{dem_box}{Demostración}
+  Otra forma de demostrar la desigualdad triangular es aplicando la desigualdad triangular para números reales a las integrales de las partes positiva y negativa:
+  \begin{align*}
+    \left|\int_X f \; d\mu\right| & = \left|\int_X f^{ + } \; d\mu - \int_X f^{ - } \; d\mu\right| \leq \left|\int_X f^{ + } \; d\mu\right| + \left|\int_X f^{ - } \; d\mu\right| = \\[2ex]
+    & = \int_X f^{ + } \; d\mu + \int_X f^{ - } \; d\mu = \int_X |f| \; d\mu
+  \end{align*}
+  Donde hemos usado que las integrales de las partes positiva y negativa son no negativas ya que \(f^{ + }, f^{ - } \geq 0\) y por tanto sus integrales también lo son.
+\end{dem_box}
+\vspace{1ex}
+
+\begin{ej_box}{Nota}
+  Gráficamente, podemos interpretar este resultado como:
+  \begin{center}
+    \begin{tikzpicture}[scale=0.8]
+      \draw[-{Latex}] (-3.5,0) -- (3.5,0) node[right] {\(x\)};
+      \draw[-{Latex}] (0,-2) -- (0,2) node[above] {\(f(x)\)};
+      
+      %función f(x)
+      \draw[thick,domain=-3:3,smooth,variable=\x,blue] plot ({\x},{sin(deg(\x))});
+      \fill[blue!20,domain=-3:0,smooth,variable=\x] plot ({\x},{sin(deg(\x))}) -- (0,0) -- (-3,0) -- cycle;
+      \fill[red!20,domain=0:3,smooth,variable=\x] plot ({\x},{sin(deg(\x))}) -- (3,0) -- (0,0) -- cycle;
+      \draw[thick, blue] (-3,0) -- (-3,{sin(deg(-3))});
+      \draw[thick, blue] (3,0) -- (3,{sin(deg(3))});
+      \node[red] at (1.5,1.5) {\(\int f(x) \; dx > 0\)};
+      \node[blue] at (-1.5,-1.5) {\(\int f(x) \; dx < 0\)};
+      \node at (0,-2.5) {\(\left|\int f(x) \; dx\right| = 0\)};
+
+      \begin{scope}[xshift=9cm]
+        \draw[-{Latex}] (-3.5,0) -- (3.5,0) node[right] {\(x\)};
+        \draw[-{Latex}] (0,-2) -- (0,2) node[above] {\(|f(x)|\)};
+        
+        %función |f(x)|
+        \draw[thick,domain=-3:3,smooth,variable=\x,blue] plot ({\x},{abs(sin(deg(\x)))});
+        \fill[blue!20,domain=-3:3,smooth,variable=\x] plot ({\x},{abs(sin(deg(\x)))}) -- (3,0) -- (-3,0) -- cycle;
+        \draw[thick, blue] (-3,0) -- (-3,{abs(sin(deg(-3)))});
+        \draw[thick, blue] (3,0) -- (3,{abs(sin(deg(3)))});
+        \node at (0,-2.5) {\(\int |f(x)| \; dx > 0\)};
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+\end{ej_box}
+\vspace{3ex}
+
+\subsection{Conjunto de funciones sumables. Definición}
+Sea \((X, \Sigma, \mu)\) espacio de medida se define el \textbf{conjunto de todas las funciones sumables \(f: X \to \mathbb{R}\)} como \(\mathcal{L}_1(X)\) (también denotado \(\mathcal{L}_1(X, \Sigma, \mu)\) o \(\mathcal{L}_1(\mu)\)) como:
+\begin{align*}
+  \mathcal{L}_1(X) \coloneq \left\{f : X \to \mathbb{R} : f \mbox{ sumable}\right\}
+\end{align*}
+
+\begin{ej_box}{Nota}
+  Se tiene que si \(E \in \Sigma\) conjunto medible tal que \(E \subseteq X\) entonces:
+  \begin{align*}
+    \mathcal{L}_1\left(E, \Sigma(E), \mu_{|_{\Sigma(E)}}\right) = \mathcal{L}_1(E)
+  \end{align*}
+  Notar que \(f: E \to \mathbb{R}\) es medible respecto \(\Sigma(E) \iff \exists F: X \to \mathbb{R}\) medible tal que:
+  \begin{align*}
+    F_{|_E} = f
+  \end{align*}
+  Entonces al definir esta restricción a \(E\) no se cambia la integrabilidad ya que:
+  \begin{align*}
+    \int_E f\; d\mu = \int_X F \cdot \mathcal{X}_E \; d\mu \quad \implies \quad \int_E |f| \; d\mu < \infty \iff \int_X |F \cdot \mathcal{X}_E| \; d\mu < \infty
+  \end{align*}
+\end{ej_box}
+\vspace{2ex}
+
+\subsection{Estructura de espacio vectorial y forma lineal. Teorema}
+\noindent Sea \((X, \Sigma, \mu)\) espacio de medida entonces:
+\begin{enumerate}
+  \item[a)] \(\mathcal{L}_1(X)\) es un espacio vectorial
+  \item[b)] La aplicación definida como:
+  \begin{align*}
+    \int_X : \mathcal{L}_1(X) & \longrightarrow \mathbb{R}\\
+    f & \longmapsto \int_X f \; d\mu
+  \end{align*}
+  es una forma lineal, es decir, es lineal respecto a combinaciones lineales.\vspace{2ex}
+\end{enumerate}
+
+\begin{ej_box}{Recordatorio}
+  \textit{¿Qué quiere decir que \(\mathcal{L}_1(X)\) es un espacio vectorial?}\vspace{2ex}
+
+  Sea \(f, g \in \mathcal{L}_1(X)\) funciones integrables y \(\lambda, \mu \in \mathbb{R}\) escalares, entonces:
+  \begin{align*}
+    \lambda f + \mu g \in \mathcal{L}_1(X)
+  \end{align*}
+  Es decir, dentro de las funciones integrables, se puede sumar y multiplicar por escalares y el resultado sigue siendo una función integrable. Esto es:
+  \begin{align*}
+    \int_X \left(\lambda f + \mu g\right) \; d\mu = \lambda \cdot \int_X f \; d\mu + \mu \cdot \int_X g \; d\mu
+  \end{align*}
+\end{ej_box}
+
+\begin{dem_box}{Demostración}
+  \begin{enumerate} \leftskip -10pt
+    \item[a)] \textit{Veamos que \(\mathcal{L}_1(X)\) es espacio vectorial:} Sean \(f, g \in \mathcal{L}_1(X)\) y \(\lambda, \mu \in \mathbb{R}\) entonces:
+    \begin{align*}
+      (\lambda f + \mu g)(x) = \lambda f(x) + \mu g(x) \quad \forall x \in X \implies  \mbox{ está bien definida}
+    \end{align*}
+    Ahora, veamos que es integrable, para ello usamos la \hyperref[prop:desigualdad_triangular]{desigualdad triangular}:
+    \begin{align*}
+      |\lambda f + \mu g| \leq |\lambda f| + |\mu g| = |\lambda| \cdot |f| + |\mu| \cdot |g|
+    \end{align*}
+    Así, por la \hyperref[prop:reticulo_integrando]{proposición de retículo} se tiene:
+    \begin{align*}
+      \int_X |\lambda f + \mu g| \; d \mu & \leq \int_X |\lambda| \cdot |f| + |\mu| \cdot |g| \; d\mu
+    \end{align*}
+    Ahora, aplicando la \hyperref[prop:linealidad_parcial_integrando]{proposición de linealidad parcial de la integral} se tiene:
+    \begin{align*}
+      \int_X |\lambda| \cdot |f| + |\mu| \cdot |g| \; d\mu & = |\lambda|  \cdot \int_X  |f| \; d\mu + |\mu| \cdot\int_X  |g| \; d\mu
+    \end{align*}
+    Y como \(f, g \in \mathcal{L}_1(X)\) entonces sus integrales son finitas, y juntando todo:
+    \begin{align*}
+      \int_X \left|\lambda f + \mu g \right| \; d\mu \leq & |\lambda| \underbracket{\int_X  |f| \; d\mu}_{\in \mathbb{R}} + |\mu| \underbracket{\int_X  |g| \; d\mu}_{\in \mathbb{R}} \in [0, \infty) \implies \lambda f + \mu g \in \mathcal{L}_1(X)
+    \end{align*}
+    \item[b)] \textit{Veamos que la integral es una forma lineal, para ello tiene que verificar las dos propiedades siguientes:}
+    \begin{itemize} \leftskip -10pt
+      \item \(\forall \lambda \in \mathbb{R}\) \(\int_X \lambda \cdot f \; d \mu = \lambda \cdot \int_X f \; d\mu\)
+      \item \(f, g \in \mathcal{L}_1(X) \implies \int_X (f + g) \; d\mu = \int_X f \; d\mu + \int_X g \; d\mu\)
+    \end{itemize}
+    \textit{Veamos cada caso por separado:}
+    \begin{itemize} \leftskip -10pt
+      \item[b.1)] \textit{La integral respeta escalares:}
+      \begin{itemize} \leftskip -20pt
+        \item Si \(\lambda = 0\) entonces:
+        \begin{align*}
+          \lambda \cdot f(x) \equiv 0 \quad \forall x \in X \implies \int_X 0 \cdot f \; d\mu = 0 = 0 \cdot \underbracket{\int_X f \; d\mu}_{f \in \mathcal{L}_1(X) \Rightarrow \in \mathbb{R}}
+        \end{align*}
+        \item Si \(\lambda  > 0\) entonces tenemos que:
+        \begin{align*}
+          (\lambda f)^{ + } = \lambda f^{ + } \quad \mbox{ y } \quad (\lambda f)^{ - } = \lambda f^{ - }
+        \end{align*}
+        Por \hyperref[def:integral_lebesgue_signo_cualquiera]{definición de integral de Lebesgue para funciones medibles} se tiene:
+        \begin{align*}
+          \int \lambda f & = \int (\lambda f)^{ + } - \int (\lambda f)^{ - } = \int \lambda f^{ + } - \int \lambda f^{ - } \xlongequal[{\hyperref[prop:linealidad_parcial_integrando]{\text{parcial}}}]{\hyperref[prop:linealidad_parcial_integrando]{\text{linealidad}}}\\[2ex]
+          & =\lambda \int f^{ + } - \lambda \int f^{ - } = \lambda \left(\int f^{ + } - \int f^{ - }\right) \xlongequal[{\hyperref[def:integral_lebesgue_signo_cualquiera]{\text{fun. med.}}}]{\hyperref[def:integral_lebesgue_signo_cualquiera]{\text{def. int. Leb.}}} \lambda \int f
+        \end{align*}
+        \item Si \(\lambda < 0\), de forma análoga al caso anterior, tenemos que:
+        \begin{align*}
+          (\lambda f)^{ + } = - \lambda f^{ - } \quad \mbox{ y } \quad (\lambda f)^{ - } = - \lambda f^{ + }
+        \end{align*}
+        Por \hyperref[def:integral_lebesgue_signo_cualquiera]{definición de integral de Lebesgue para funciones medibles} se tiene:        
+        \begin{align*}
+          \int \lambda f & = \int (\lambda f)^{ + } - \int (\lambda f)^{ - } = \int -\lambda f^{ - } - \int -\lambda f^{ + } \xlongequal[{\hyperref[prop:linealidad_parcial_integrando]{\text{parcial}}}]{\hyperref[prop:linealidad_parcial_integrando]{\text{linealidad}}}\\[2ex]
+          & =- \lambda \int f^{ - } - (-\lambda) \int f^{ + } = \lambda \left( - \int f^{ - } + \int f^{ + }\right) \xlongequal[{\hyperref[def:integral_lebesgue_signo_cualquiera]{\text{int.}}}]{\hyperref[def:integral_lebesgue_signo_cualquiera]{\text{def}}} \lambda \int f
+        \end{align*}
+      \end{itemize}
+      \item[b.2)] \textit{La integral respecta sumas:} Tenemos que:
+      \begin{align*}
+        f = f^{ + } - f^{ - } \qquad
+        g = g^{ + } - g^{ - } \qquad 
+        f + g = (f + g)^{ + } - (f + g)^{ - }
+      \end{align*}
+      Por lo que, si sustituimos en la última expresión:
+      \begin{align*}
+        (f + g)^{ + } - (f + g)^{ - } = f^{ + } - f^{ - } + g^{ + } - g^{ - }
+      \end{align*}
+      Aplicando una reordenación obtenemos que:
+      \begin{align*}
+        (f + g)^{ + } + f^{ - } + g^{ - } = (f + g)^{ - } + f^{ + } + g^{ + }
+      \end{align*}
+      Y ahora, aplicando la \hyperref[prop:linealidad_parcial_integrando]{linealidad parcial} tenemos:
+      \begin{align*}
+        \int (f + g)^{ + } + \int f^{ - } + \int g^{ - } = \int (f + g)^{ - } + \int f^{ + } + \int g^{ + }
+      \end{align*}
+      Y despejando tenemos que:
+      \begin{align*}
+        \int (f + g)^{ + } - \int (f + g)^{ - } = \left(\int f^{ + } - \int f^{ - }\right) + \left(\int g^{ + } - \int g^{ - }\right)
+      \end{align*}
+      Que, por la \hyperref[def:integral_lebesgue_signo_cualquiera]{definición de integral de Lebesgue para funciones medibles} es equivalente a:
+      \begin{align*}
+        \int (f + g) \; d\mu = \int f \; d\mu + \int g \; d\mu
+      \end{align*}
+    \end{itemize}
+  \end{enumerate}
+\end{dem_box}
+\vspace{3ex}
+
+\begin{ej_box}{Nota}
+  Como se vé en el último apartado, se ha prescindido de algunos elementos de la integral a la hora de escribirlos. Esto es algo propio de estos apuntes, el profesor en ningún momento ha hecho esto en clase, simplemente es una forma más breve de escribirlo para no repetir tanto la expresión \(\; d\mu\) y el \(\int_X\) cuando no hay lugar a confusión.\vspace{2ex}
+
+  No obstante, es importante tener en cuenta que a la hora de resolver ejercicios en el examen, hay que escribir todo correctamente.
+\end{ej_box}
+\vspace{3ex}
+
+\begin{ejem_box}{Ejercicio}
+  \textit{Sea \((X, \Sigma, \mu)\) espacio de medida, \(f\) sumable y \(\{E_i\}_{i \in \mathbb{N}} \subseteq \Sigma\) disjuntos dos a dos. Probar que:}
+  \begin{align*}
+    \int_{\bigcup_{i = 1}^\infty E_i} f \; d\mu = \sum_{i = 1}^\infty \int_{E_i} f \; d\mu
+  \end{align*}
+  La idea es descomponer \(f\) en sus partes positiva y negativa para aplicar la aditividad.\vspace{2ex}
+
+  Como sabemos que:
+  \begin{align*}
+    f = f^{ + } - f^{ - } \quad \mbox{ con } f^{ + }, f^{ - } \geq 0
+  \end{align*}
+  Como \(f\) es sumable, entonces \(f^{ + }\) y \(f^{ - }\) son sumables, es decir:
+  \begin{align*}
+    \int_X f^{ + } \; d\mu < \infty \quad \mbox{ y } \quad \int_X f^{ - } \; d\mu < \infty
+  \end{align*}
+  Por la \hyperref[prop:aditividad_integral]{proposición de aditividad de la integral} tenemos que:
+  \begin{align*}
+    \int_{\bigcup_{i = 1}^\infty E_i} f^{ + } \; d\mu & = \sum_{i = 1}^\infty \int_{E_i} f^{ + } \; d\mu\\
+    \int_{\bigcup_{i = 1}^\infty E_i} f^{ - } \; d\mu & = \sum_{i = 1}^\infty \int_{E_i} f^{ - } \; d\mu
+  \end{align*}
+  Por lo tanto, aplicando la \hyperref[def:integral_lebesgue_signo_cualquiera]{definición de integral de Lebesgue para funciones medibles}:
+  \begin{align*}
+    \int_{\bigcup_{i = 1}^\infty E_i} f \; d\mu & = \int_{\bigcup_{i = 1}^\infty E_i} f^{ + } \; d\mu - \int_{\bigcup_{i = 1}^\infty E_i} f^{ - } \; d\mu = \\[2ex]
+    & = \sum_{i = 1}^\infty \int_{E_i} f^{ + } \; d\mu - \sum_{i = 1}^\infty \int_{E_i} f^{ - } \; d\mu = \\[2ex]
+    & = \sum_{i = 1}^\infty \left(\int_{E_i} f^{ + } \; d\mu - \int_{E_i} f^{ - } \; d\mu\right) = \sum_{i = 1}^\infty \int_{E_i} f \; d\mu
+  \end{align*}
+\end{ejem_box}
+\vspace{3ex}
+
+\subsection{Equivalencia entre funciones sumables y en \(\mathcal{L}_1(X)\). Proposición}
+Sea \((X, \Sigma, \mu)\) espacio de medida y \(f: X \to \overline{\mathbb{R}}\) función sumable, entonces \(\exists g \in \mathcal{L}_1(X)\) función integrable tal que:
+\begin{align*}
+  f = g \; \mu\text{-a.e.}
+\end{align*}
+\begin{dem_box}{Demostración}
+  Sea \(f\) sumable, definimos los siguientes conjuntos:
+  \begin{align*}
+    A \coloneq \left\{x : f(x) = \infty\right\} \in \Sigma \quad \mbox{y} \quad B \coloneq \left\{x : f(x) = -\infty\right\} \in \Sigma
+  \end{align*}
+  Además, son de medida nula. Basta suponer que \(\mu(A) > 0\), entonces:
+  \begin{align*}
+    \int_X |f| \; d\mu & = \int_X f^{ + } \; d\mu + \int_X f^{ - } \; d\mu \geq \int_X f^{ + } \; d\mu \geq \int_A f^{ + } \; d\mu = \int_A \infty \; d\mu = \infty
+  \end{align*}
+  Lo cual es una contradicción ya que \(f\) es sumable, por tanto:
+  \begin{align*}
+    \mu(A) = 0 \quad \mbox{ y } \quad \mu(B) = 0
+  \end{align*}
+  Ahora, definimos la función \(g\) como:
+  \begin{align*}
+    g (x) \coloneq \left\{
+      \begin{array}{ll}
+        f(x) & \mbox{ si } x \in X \setminus A \cup B\\
+        0 & \mbox{ si } x \in A \cup B
+      \end{array}
+    \right.
+  \end{align*}
+  Que es la misma función que \(f\) salvo en el conjunto \(A \cup B\) de medida nula, así:
+  \begin{align*}
+    g = f \; \mu\text{-a.e.}
+  \end{align*}
+  Ahora, como \(f\) es medible, \(A, B \in \Sigma\) y la función \(g\) se puede expresar como:
+  \begin{align*}
+    g = f \cdot \mathcal{X}_{X \setminus (A \cup B)} + 0 \cdot \mathcal{X}_{A \cup B} = f \cdot \mathcal{X}_{X \setminus (A \cup B)}
+  \end{align*}
+  Al ser producto de funciones medibles, \(g\) también es medible. Además:
+  \begin{align*}
+    |g| = |f| \cdot \mathcal{X}_{X \setminus (A \cup B)} \leq |f|
+  \end{align*}
+  Y como \(f\) es sumable, es decir, \(\int_X |f| < \infty\), por la \hyperref[prop:reticulo_integrando]{proposición de retículo} se tiene:
+  \begin{align*}
+    \int_X |g| \; d\mu \leq \int_X |f| \; d\mu < \infty
+  \end{align*}
+  Así \(g\) es sumable, es decir, \(g \in \mathcal{L}_1(X)\).
+\end{dem_box}
+\vspace{5ex}
+
+\begin{ej_box}{Observación}
+  En las condiciones del enunciado restringidos a un conjunto medible \(E \in \Sigma\) entonces:
+  \begin{align*}
+    f = g \quad \mbox{ en } E \setminus N \quad \mbox{ con } \mu(N) = 0
+  \end{align*}
+  Por tanto, aplicando la \hyperref[prop:propiedad_conjunto_medida_nula]{propiedad de conjuntos de medida nula} se tiene:
+  \begin{align*}
+    \int_E g \; d\mu = \int_E f \; d\mu
+  \end{align*}
+\end{ej_box}
+\vspace{5ex}
+
+\subsection{Teorema de la convergencia dominada. Teorema}\label{thm:convergencia_dominada}
+Sea \((X, \Sigma, \mu)\) espacio de medida, \(\{f_n : X \to \mathbb{R}\}_{n \in \mathbb{N}}\) funciones medibles y \(g \in \mathcal{L}_1(X)\) función integrable con \(|f_n| \leq g\) para todo \(n \in \mathbb{N}\). Si \(f_n \xrightarrow[n]{pX} f\) entonces:
+\begin{enumerate}
+  \item[a)] \(f \in \mathcal{L}_1(X)\)
+  \item[b)] \(\displaystyle \int_X |f_n - f| \; d\mu \underset{n}{\longrightarrow} 0\)
+  \item[c)] \(\displaystyle \int_X f_n \; d \mu \overset{n}{\longrightarrow} \int_X f \; d\mu\)
+\end{enumerate}
+\vspace{3ex}
+\begin{dem_box}{Demostración}
+  \begin{enumerate} \leftskip -10pt
+    \item[a)] Se tiene que \(\forall n \in \mathbb{N}\) se cumple que:
+    \begin{align*}
+      |f_n(x)| \leq |g(x)| \quad \forall x \in X \implies -|g(x)| \leq f_n (x) \leq |g(x)| \quad \forall x \in X
+    \end{align*}
+    Por tanto, cuando \(n \to \infty\) se tiene:
+    \begin{align*}
+      -|g(x)| \leq \underbracket{\lim_{n} f_n (x)}_{= f(x)} \leq |g(x)| \quad \forall x \in X \implies |f(x)| \leq |g(x)| \quad \forall x \in X
+    \end{align*}
+    Así, por la \hyperref[prop:reticulo_integrando]{proposición de retículo} se tiene:
+    \begin{align*}
+      \int |f| \leq \int |g| < \infty \implies f \in \mathcal{L}_1(X)
+    \end{align*}
+    \item[b)] Notemos que \(\forall n \in \mathbb{N}\) se cumple:
+    \begin{align*}
+      |f_n - f| \leq \underbracket{\overset{\in \mathcal{L}_1(X)}{|f_n|}}_{ \leq g} + \underbracket{\overset{\in \mathcal{L}_1(X)}{|f|}}_{ \leq g} \in \mathcal{L}_1(X) \implies |f_n - f| \leq g + g = 2g \in \mathcal{L}_1(X)
+    \end{align*}
+    Entonces se tiene que:
+    \begin{align*}
+      h_n \coloneq 2g - |f_n - f| \geq 0
+    \end{align*}
+    Que es integrable ya que \(2g \in \mathcal{L}_1(X)\) y \(|f_n - f| \in \mathcal{L}_1(X)\) por ser \(f_n, f \in \mathcal{L}_1(X)\). Además, cuando \(n \to \infty\):
+    \begin{align*}
+      \lim_{n} h_n = 2g - \underbracket{\lim_{n} |f_n - f|}_{= 0} = 2g
+    \end{align*}
+    Por tanto, aplicando el \hyperref[lem:fatou]{lema de Fatou} tenemos:
+    \begin{align*}
+      \int \liminf_n h_n \leq \liminf_n \int h_n
+    \end{align*}
+    Pero como \(\liminf_n h_n = \lim_n h_n\) (ya que la sucesión converge), tenemos:
+    \begin{align*}\label{eq:thm_convergencia_dominada_1}\tag{I}
+      \int \lim_{n} h_n = \int 2g \leq \liminf_n \int h_n
+    \end{align*}
+    Ahora, como se tiene:
+    \begin{align*}
+      \int h_n = \int \left(2g - |f_n - f|\right) \xlongequal[{\hyperref[prop:linealidad_parcial_integrando]{\text{parcial}}}]{\hyperref[prop:linealidad_parcial_integrando]{\text{linealidad}}} 2\int g - \int |f_n - f|
+    \end{align*}
+    Sustituyendo en \hyperref[eq:thm_convergencia_dominada_1]{(I)} tenemos:
+    \begin{align*}\label{eq:thm_convergencia_dominada_2}\tag{II}
+      2 \int g \leq \liminf_n \left(2 \int g - \int |f_n - f|\right)
+    \end{align*}
+    \vspace{3ex}
+
+    Como \(2 \int g\) es un número fijo (ya que \(g \in \mathcal{L}_1(X)\)), podemos aplicar la propiedad de límites de sucesiones:
+    \begin{align*}
+      \liminf_n (c - b_n) = c - \limsup_n b_n
+    \end{align*}
+    Así, aplicando esta propiedad en \hyperref[eq:thm_convergencia_dominada_2]{(II)} tenemos:
+    \begin{align*}
+      2 \int g \leq 2 \int g - \limsup_n \int |f_n - f|
+    \end{align*}
+    Y aplicando de nuevo que \(2 \int g\) es un número fijo, podemos restar ambos lados:
+    \begin{align*}
+      \cancel{2 \int g} \leq \cancel{2 \int g} - \limsup_n \int |f_n - f| \implies 0 \leq - \limsup_n \int |f_n - f|
+    \end{align*}
+    Como la integral de un valor absoluto no puede ser negativa, tenemos:
+    \begin{align*}
+      0 \leq \liminf_n \int |f_n - f| \leq \limsup_n \int |f_n - f| \leq 0
+    \end{align*}
+    Por tanto, se tiene que:
+    \begin{align*}
+      \exists \lim_n \int |f_n - f| = 0
+    \end{align*}
+    \item[c)] Por la \hyperref[prop:desigualdad_triangular_integral]{desigualdad triangular para la integral} se tiene:
+    \begin{align*}
+      \left|\int f_n - \int f \; \right| & \xlongequal[\text{linealidad}]{f_n, f \in \mathcal{L}_1(X)} \left|\int (f_n - f)\right| \leq \int |f_n - f|
+    \end{align*}
+    Y como hemos visto en el apartado b) que \(\int |f_n - f| \to 0\), entonces:
+    \begin{align*}
+      \left|\int f_n - \int f \; \right| \to 0 \implies \int f_n \to \int f
+    \end{align*}
+  \end{enumerate}
+\end{dem_box}
+\vspace{3ex}
+\newpage
+
+
+\section{\texorpdfstring{Cálculo efectivo de la integral de Lebesgue en \(\mathbb{R}^N\)}{Cálculo efectivo de la integral de Lebesgue en R^N}}
+En esta sección vamos a ver la aplicación práctica del cálculo de la integral de Lebesgue en \(\mathbb{R}^N\) para funciones reales de variable real y de variable en \(\mathbb{R}^N\).\vspace{2ex}
+
+\noindent Inicialmente, se va a estudiar el caso más sencillo, es decir, el caso \(N = 1\) para, posteriormente, generalizarlo al caso \(N > 1\).\vspace{3ex}
+
+\subsection{Calculo para \(N = 1\)}
+\subsubsection{Equivalencia entre integrable Riemann y Lebesgue. Teorema}\label{thm:equivalencia_riemann_lebesgue}
+\noindent Sea \(f : [a, b] \to \mathbb{R}\) función acotada (en \(\mathbb{R}\)) se tiene que:
+\begin{align*}
+  \mu_1\left(\right\{x \in [a,b] : f \text{ discontinua en } x\left\}\right) = 0 \iff f \in \mathcal{R}\left([a, b]\right)
+\end{align*}
+Y además, si \(f \in \mathcal{R}\left([a, b]\right)\) se tiene que:
+\begin{align*}
+  f \in \mathcal{L}_1([a, b]) \quad \mbox{y} \quad \int_a^b f(x) \; dx = \int_{[a, b]} f \; d\mu_1\\
+\end{align*}
+\begin{ej_box}{Nota}
+  Recordemos que \(\overline{S}(f, P)\) y \(\underline{S}(f, P)\) son las sumas superior e inferior de Darboux de \(f\) respecto a la partición \(P\) de \([a, b]\), es decir:
+  \begin{align*}
+    \overline{S}(f, P) & = \displaystyle \sum_{i = 1}^{k} \sup f([x_{i - 1}, x_i]) \cdot (x_i - x_{i - 1})\\[2ex]
+    \underline{S}(f, P) & = \displaystyle \sum_{i = 1}^{k} \inf f([x_{i - 1}, x_i]) \cdot (x_i - x_{i - 1})
+  \end{align*}
+  donde \(P = \{a = x_0 < x_1 < \dots < x_k = b\}\).
+\end{ej_box}
+
+\begin{ej_box}{Nota}
+  La idea de la demostración será:
+  \begin{enumerate} \leftskip -10pt
+    \item Aproximar la función desde arriba y desde abajo mediante funciones simples construidas a partir de particiones cada vez más finas.
+    \item Refinar las particiones para que la diferencia entre las sumas superiores e inferiores tienda a cero. Así, ambas se acercarán al valor de \(f\) en los puntos de continuidad.
+    \item La diferencia entre ambas aproximaciones se hace pequeña cuando los puntos en los que no coinciden son de medida nula
+  \end{enumerate}
+\end{ej_box}
+
+\begin{dem_box}{Demostración}
+  Como \(f\) acotada, existe \(M \in[0, \infty)\) tal que:
+  \begin{align*}\label{eq:thm_equivalencia_riemann_lebesgue_1}\tag{I}
+    |f(x)| \leq M \quad \forall x \in [a, b]
+  \end{align*}
+  Se considera la sucesión de particiones dada por:
+  \begin{align*}
+    P_n = \{a = x_0^n < x_1^n < \dots < x_{k_n}^n = b\} \in \mathcal{P}([a, b]) \quad \mbox{ con } n \in \mathbb{N}
+  \end{align*}
+  Es decir, una sucesión de particiones cada vez más finas de \([a, b]\) que cumple para cada \(n \in \mathbb{N}\) que:
+  \begin{itemize}
+    \item \(x_i^n - x_{i - 1}^n < \frac{1}{n} \quad \forall i = 1, 2, \dots, k_n\)
+    \item \(P_n \subseteq P_{n + 1}\) entonces tendremos que:
+    \begin{align*} \label{eq:thm_equivalencia_riemann_lebesgue_3}\tag{II}
+      \sup f((x_{i - 1}^n, x_i^n)) &\geq \sup f((x_{i - 1}^{n + 1}, x_i^{n + 1})) \\[2ex]
+      \inf f((x_{i - 1}^n, x_i^n)) &\leq \inf f((x_{i - 1}^{n + 1}, x_i^{n + 1}))
+    \end{align*}
+    Ya que los subintervalos de \(P_{n + 1}\) son más pequeños que los de \(P_n\) y, por tanto, se están ``refinando'' las cotas superior e inferior.
+  \end{itemize}
+  Ahora, para cada \(n \in \mathbb{N}\) y cada \(i = 1, 2, \dots, k_n\) definimos:
+  \begin{align*}
+    M_i^n \coloneq \sup \left\{f(x) : x \in [x_{i - 1}^n, x_i^n]\right\} \quad \mbox{y} \quad m_i^n \coloneq \inf \left\{f(x) : x \in [x_{i - 1}^n, x_i^n]\right\}
+  \end{align*}
+  Es decir, el valor más grande y más pequeño que toma \(f\) en el subintervalo \([x_{i - 1}^n, x_i^n]\). Así, por \hyperref[eq:thm_equivalencia_riemann_lebesgue_1]{(I)} se tiene que:
+  \begin{align*}
+    - M \leq m_i^n \leq M_i^n \leq M
+  \end{align*}
+  Ahora, definimos las siguientes funciones simples \(\mu_1\)-medibles:
+  \begin{align*}
+    s_n \coloneq \displaystyle \sum_{i = 1}^{k_n} M_i^n \cdot \mathcal{X}_{[x_{i - 1}^n, x_i^n)} \qquad \mbox{y} \qquad t_n \coloneq \displaystyle \sum_{i = 1}^{k_n} m_i^n \cdot \mathcal{X}_{[x_{i - 1}^n, x_i^n)}
+  \end{align*}
+  Entonces, aplicando la \hyperref[def:integral_patas_lebesgue]{definición de integral de Lebesgue para funciones simples} tenemos:
+  \begin{align*} \label{eq:thm_equivalencia_riemann_lebesgue_2}\tag{III}
+    \int_{[a, b]} s_n \; d\mu_1 & = \displaystyle \sum_{i = 1}^{k_n} M_i^n \cdot \underbracket{\mu_1([x_{i - 1}^n, x_i^n))}_{v_1([x_{i - 1}^n, x_i^n))} = \displaystyle \sum_{i = 1}^{k_n} M_i^n \cdot (x_i^n - x_{i - 1}^n) = \overline{S}(f, P_n)\\[2ex]
+    \int_{[a, b]} t_n \; d\mu_1 & = \displaystyle \sum_{i = 1}^{k_n} m_i^n \cdot \underbracket{\mu_1([x_{i - 1}^n, x_i^n))}_{v_1([x_{i - 1}^n, x_i^n))} = \displaystyle \sum_{i = 1}^{k_n} m_i^n \cdot (x_i^n - x_{i - 1}^n) = \underline{S}(f, P_n)
+  \end{align*}
+  Ahora, si definimos el conjunto que contiene todos los puntos de las particiones:
+  \begin{align*}
+    V \coloneq \{x_i^n : n \in \mathbb{N}, 0 \leq i \leq k_n\}
+  \end{align*}
+  tenemos que es numerable ya que es una unión numerable de conjuntos finitos. Además, como \(P_n \subseteq P_{n + 1}\) (aplicando \hyperref[eq:thm_equivalencia_riemann_lebesgue_3]{(II)}) se tiene que para cada \(x \in [a, b]\):
+  \begin{align*}
+    s_n(x) \geq s_{n + 1}(x) \xrightarrow[n \to \infty]{} s(x) \quad \mbox{y} \quad t_n(x) \leq t_{n + 1}(x) \xrightarrow[n \to \infty]{} t(x)
+  \end{align*}
+  Como \(s_n\) y \(t_n\) son monótonas y además son acotadas ya que:
+  \begin{align*}
+    - M \leq t_n(x) \leq t(x) \leq f(x) \leq s(x) \leq s_n(x) \leq M \quad \forall x \in [a, b], \forall n \in \mathbb{N}
+  \end{align*}
+  entonces existen los límites puntuales de \(s_n\) y \(t_n\) que denotamos como \(s\) y \(t\) respectivamente.\vspace{4ex}
+
+  \textit{Además, podemos ver que para \(x_0 \in [a, b] \setminus V\) se tiene que}\footnote{Los puntos que están en \(V\) me importan un bledo, son como los votantes para los políticos después de las elecciones, hasta dentro de 4 años no vuelven a importarme}\textit{:}
+  \begin{align*}
+    f \mbox{ continua en } x_0 \iff s(x_0) = t(x_0)
+  \end{align*}
+  \begin{itemize}
+    \item[\(\Rightarrow\))] Si \(f\) es continua en \(x_0\), entonces \(\forall \varepsilon > 0\) existe \(\delta > 0\) tal que:
+    \begin{align*}
+      |x - x_0| < \delta \implies |f(x) - f(x_0)| < \varepsilon
+    \end{align*}
+    Elegimos \(n_0 \in \mathbb{N}\) tal que \(\frac{1}{n_0} < \delta\). entonces \(x_0\) pertenece a un único intervalo, es decir, \(\exists! j \in \{1, 2, \dots, k_{n_0}\}\) tq:
+    \begin{align*}
+      x_0 \in (x_{j - 1}^{n_0}, x_j^{n_0}) \subseteq (x_0 - \delta, x_0 + \delta)
+    \end{align*}
+    Así, para cada \(x \in (x_{j - 1}^{n_0}, x_j^{n_0})\) se cumple:
+    \begin{align*}
+      f(x_0) - \varepsilon \leq m_j^{n_0} \leq f(x) \leq M_j^{n_0} \leq f(x_0) + \varepsilon
+    \end{align*}
+    Por lo tanto, se tiene que:
+    \begin{align*}
+      f(x_0) - \varepsilon \leq t_{n_0}(x_0) \leq t(x_0) \leq s(x_0) \leq s_{n_0}(x_0) \leq f(x_0) + \varepsilon
+    \end{align*}
+    Y como \(\varepsilon\) es arbitrario, se tiene que \(s(x_0) = t(x_0)\).\vspace{2ex}
+    
+    \item[\(\Leftarrow\))] Si \(s(x_0) = f(x_0) = t(x_0)\), entonces sea \(\varepsilon > 0\) cualquiera, como \(s_n(x_0) \to s(x_0)\) y \(t_n(x_0) \to t(x_0)\), existe \(n_0 \in \mathbb{N}\) tal que:
+    \begin{align*}
+      0 \leq s_{n_0}(x_0) - t_{n_0}(x_0) < \varepsilon
+    \end{align*}
+    \vspace{20ex}
+
+    Ahora, \(\exists! j \in \{1, 2, \dots, k_{n_0}\}\) tal que \(x_0 \in (x_{j - 1}^{n_0}, x_j^{n_0})\) y, tomando \(\delta > 0\) suficientemente pequeño para que:
+    \begin{align*}
+      (x_0 - \delta, x_0 + \delta) \subseteq (x_{j - 1}^{n_0}, x_j^{n_0})
+    \end{align*}
+    se tiene que, para \(x \in (x_0 - \delta, x_0 + \delta)\):
+    \begin{align*}
+      f(x_0) - \varepsilon < t_n(x_0) \leq m_j^{n_0} \leq f(x) \leq M_j^{n_0} \leq s_{n_0}(x_0) < f(x_0) + \varepsilon
+    \end{align*}
+    Por tanto, \(f\) es continua en \(x_0\) ya que \(\varepsilon\) es arbitrario.\vspace{4ex}
+  \end{itemize}
+
+  \textit{Ahora, veamos que se cumple la equivalencia del enunciado:}
+  \begin{itemize}
+    \item[\(\Rightarrow)\)] Denotamos al conjunto donde \(f\) es discontinua como \(D\), es decir:
+    \begin{align*}
+      D = \{x \in [a, b] : f \text{ discontinua en } x\} = \{x \in [a, b] : s(x) \neq t(x)\}
+    \end{align*}
+    En particular, como \(s \leq t\) se tiene que:
+    \begin{align*}
+      D = \{x \in [a, b] : s(x) < t(x)\}
+    \end{align*}
+    Como por hipótesis \(\mu(D) = 0\), se tiene que \(s = t\) \(\mu\)-a.e. Si definimos la función:
+    \begin{align*}
+      h \coloneq t - s \implies \left\{
+        \begin{array}{l}
+          h \geq 0\\
+          h = 0 \quad \mu\text{-a.e.}
+        \end{array}
+      \right.
+    \end{align*}
+    Aplicando la \hyperref[prop:integral_funcion_nula_casi_todo_punto]{proposición de integral de función nula casi en todo punto}:
+    \begin{align*}
+      \int_{[a, b]} h \; d\mu = 0 \implies \int_{[a, b]} (t - s) \; d\mu = 0
+    \end{align*}
+    Además, como \(0 \leq s_n - t_n \leq 2M\) y además \(s_n - t_n \to s - t\) puntualmente, podemos aplicar el \hyperref[thm:convergencia_dominada]{teorema de la convergencia dominada} y obtener:
+    \begin{align*}
+      0 & = \int_{[a, b]} (t - s) \; d\mu  = \int_{[a, b]} \lim_{n} (t_n - s_n) \; d\mu \xlongequal[]{\hyperref[thm:convergencia_dominada]{TCD}} \lim_{n} \int_{[a, b]} (t_n - s_n) \; d\mu \xlongequal[]{\text{linealidad}} \\[2ex]
+      & = \lim_{n} \left(\int_{[a, b]} t_n \; d\mu - \int_{[a, b]} s_n \; d\mu\right) \xlongequal[]{\hyperref[eq:thm_equivalencia_riemann_lebesgue_2]{(III)}} \lim_{n} \left(\underline{S}(f, P_n) - \overline{S}(f, P_n)\right)
+    \end{align*}
+    Por lo tanto, como el límite es cero, por el criterio de Riemann tenemos que \(f\) es Riemann-integrable, es decir, \(f \in \mathcal{R}([a, b])\).\vspace{2ex}
+    \item[\(\Leftarrow)\)] Si \(f \in \mathcal{R}([a, b])\), entonces por el criterio de Riemann sabemos que \(\exists (P_n)_{n \in \mathbb{N}}\) sucesión de particiones de \([a, b]\) tal que:
+    \begin{align*}
+      \overline{S}(f, P_n) - \underline{S}(f, P_n) \xrightarrow[n \to \infty]{} 0
+    \end{align*}
+    Aplicando un razonamiento análogo al del apartado anterior:
+    \begin{align*}
+      0 = \int (t - s) & \xlongequal[\text{lineal.}]{\hyperref[thm:convergencia_dominada]{TCD}} \lim_n \left(\underline{S}(f, P_n) - \overline{S}(f, P_n)\right) = 0
+    \end{align*}
+    Como \(s - t \geq 0\) y su integral es cero, por la \hyperref[prop:integral_funcion_nula_casi_todo_punto]{proposición de integral de función nula casi en todo punto} se tiene que:
+    \begin{align*}
+      s - t = 0 \quad \mu\text{-a.e.}
+    \end{align*}
+    Por tanto, \(f\) es continua \(\mu\)-a.e. lo que implica que el conjunto de discontinuidades de \(f\) es de medida nula.
+  \end{itemize}
+  \vspace{4ex}
+
+  \textit{Finalmente, falta ver que en este caso, las integrales coinciden:}\vspace{2ex}
+
+  Como sabemos que \(f \in \mathcal{R}([a, b])\), por el criterio de Riemann se tiene:
+  \begin{align*}
+    \lim_{n} \overline{S}(f, P_n) = \lim_{n} \underline{S}(f, P_n) = \int_a^b f(x) \; dx
+  \end{align*}
+  Por otro lado, por \hyperref[eq:thm_equivalencia_riemann_lebesgue_2]{(III)} se tiene:
+  \begin{align*}
+    \int_{[a, b]} s_n \; d\mu_1 & = \overline{S}(f, P_n)\\[2ex]
+    \int_{[a, b]} t_n \; d\mu_1 & = \underline{S}(f, P_n)
+  \end{align*}
+  Y como \(s_n \to s\) y \(t_n \to t\) puntualmente, aplicando el \hyperref[thm:convergencia_dominada]{teorema de la convergencia dominada} tenemos:
+  \begin{align*}
+    \int_{[a, b]} s \; d\mu_1 & = \lim_{n} \int_{[a, b]} s_n \; d\mu_1 = \lim_{n} \overline{S}(f, P_n) = \int_a^b f(x) \; dx\\[2ex]
+    \int_{[a, b]} t \; d\mu_1 & = \lim_{n} \int_{[a, b]} t_n \; d\mu_1 = \lim_{n} \underline{S}(f, P_n) = \int_a^b f(x) \; dx
+  \end{align*}
+  Pero como \(s = f = t\) \(\mu_1\)-a.e., por la \hyperref[prop:propiedad_conjunto_medida_nula]{propiedad de conjuntos de medida nula} se tiene:
+  \begin{align*}
+    \int_{[a, b]} f \; d\mu_1 = \int_a^b f(x) \; dx
+  \end{align*}
+\end{dem_box}
+\vspace{10ex}
+
+\subsubsection{Funciones localmente integrables Riemann. Definición}\label{def:funciones_localmente_integrables_riemann}
+\noindent Sea \(A \subseteq \mathbb{R}\) y \(f: A \to \mathbb{R}\) una función, decimos que es \textbf{localmente integrable en el sentido de Riemann} y se denota \(f \in \mathcal{R}^l(A)\) si para todo intervalo compacto \([a, b] \subseteq A\) se tiene que:
+\begin{align*}
+  f \in \mathcal{R}([a, b])
+\end{align*}
+Es decir, si \(f\) es integrable Riemann en cualquier subintervalo compacto de \(A\).\vspace{3ex}
+
+\subsubsection{Integrales impropias de funciones localmente integrables Riemann. Definición}
+Hay cuatro casos importantes de funciones cuya integral es impropia que se pueden definir como funciones localmente integrables Riemann:
+\begin{itemize}
+  \item \(f \in \mathcal{R}^l([a, \infty))\)
+  \item \(f \in \mathcal{R}^l(( - \infty, b])\)
+  \item \(f \in \mathcal{R}^l([a, b))\) con \( - \infty < a < b < \infty\)
+  \item \(f \in \mathcal{R}^l((a, b])\) con \( - \infty < a < b < \infty\)
+\end{itemize}
+\vspace{2ex}
+
+\noindent Por ejemplo, para el caso \(f \in \mathcal{R}^l([a, \infty))\) diremos que:
+\begin{itemize}
+  \item \(\displaystyle \int_a^\infty f\) es convergente si \(\exists \displaystyle \lim_{x \to \infty} \int_a^x f = l \in \mathbb{R}\)\\
+  \item \(\displaystyle \int_a^\infty f\) es divergente si \(\exists \displaystyle \lim_{x \to \infty} \int_a^x f = \pm \infty\)\\
+  \item \(\displaystyle \int_a^\infty f\) es oscilante si \(\nexists \displaystyle \lim_{x \to \infty} \int_a^x f \in \overline{\mathbb{R}}\)
+\end{itemize}
+\vspace{3ex}
+
+\begin{ej_box}{Nota}
+  Para el resto de casos, se puede extender la definición de forma análoga. Por ejemplo, para el caso \(f \in \mathcal{R}^l((a, b])\) diremos que:
+  \begin{itemize}
+    \item \(\displaystyle \int_a^b f\) es convergente si \(\exists \displaystyle \lim_{x \to a^+} \int_x^b f = l \in \mathbb{R}\)\\
+    \item \(\displaystyle \int_a^b f\) es divergente si \(\exists \displaystyle \lim_{x \to a^+} \int_x^b f = \pm \infty\)\\
+    \item \(\displaystyle \int_a^b f\) es oscilante si \(\nexists \displaystyle \lim_{x \to a^+} \int_x^b f \in \overline{\mathbb{R}}\)
+  \end{itemize}
+  Y el resto de casos se definen de forma análoga.
+\end{ej_box}
+\vspace{10ex}
+
+\subsubsection{Integrabilidad Lebesgue de funciones localmente integrables Riemann. Proposición}
+\noindent Sea \(f \in \mathcal{R}^l([a, \infty))\) entonces:
+\begin{align*}
+  f \; \mu_1\text{-medible}
+\end{align*}
+\begin{ej_box}{Nota}
+  Análogo para los casos \(f \in \mathcal{R}^l(( - \infty, b])\), \(f \in \mathcal{R}^l([a, b))\) y \(f \in \mathcal{R}^l((a, b])\)
+\end{ej_box}
+\begin{dem_box}{Demostración}
+  Sea \(f \in \mathcal{R}^{l}([a, \infty))\), por definición \(f \in \mathcal{R}([c, d])\) para todo \([c,d] \subseteq [a, \infty)\) compacto, en particular:
+  \begin{align*}
+    f \in \mathcal{R}^l([a, \infty)) \implies f \in \mathcal{R}([a, a + n]) \quad \forall n \in \mathbb{N}
+  \end{align*}
+  Por la \hyperref[thm:equivalencia_riemann_lebesgue]{teorema de equivalencia entre integrales de Riemann y Lebesgue} se tiene que:
+  \begin{align*}
+    f \in \mathcal{R}([a, a + n]) & \implies f \mbox{ medible resp de } \left([a, a + n], \mathcal{M}_1([a, a + n]), \mu_1\right) \implies \\[2ex]
+    & \implies f \cdot \mathcal{X}_{[a, a + n]} \mbox{ medible resp de } \left(\mathbb{R}, \mathcal{M}_1, \mu_1\right) \quad \forall n \in \mathbb{N}
+  \end{align*}
+  Tomando el límite puntual cuando \(n \to \infty\) se tiene:
+  \begin{align*}
+    \left(f \cdot \mathcal{X}_{[a, a + n]}\right)(x) & \xrightarrow[n \to \infty]{p \mathbb{R}} f(x)
+  \end{align*}
+  ya que si \(x \in [a, \infty)\) existirá \(n\) suficientemente grande como para que \(x \in [a, a + n]\) así que \(\mathcal{X}_{[a, a + n]}(x) = 1\).\vspace{2ex}
+
+  Por tanto, como \(f \cdot \mathcal{X}_{[a, a + n]}\) es medible para todo \(n \in \mathbb{N}\) y la sucesión converge puntualmente a \(f\) entonces el límite también es medible, es decir, \(f\) es medible.
+\end{dem_box}
+\vspace{3ex}
+
+\subsubsection{Integrales de Lebesgue de funciones localmente integrables Riemann. Proposición}
+\noindent Sea \(f \in \mathcal{R}^l([a, \infty))\) entonces se cumple:
+\begin{enumerate}
+  \item[a)] \(f \geq 0\) entonces \(\displaystyle \int_a^\infty f = \int_{[a, \infty)} f \; d\mu_1\) \vspace{1ex}
+  \item[b)] \(\displaystyle \int_a^\infty |f| < \infty\) entonces \(\displaystyle \int_a^\infty f = \int_{[a, \infty)} f \; d\mu_1\)
+\end{enumerate}
+\vspace{3ex}
+
+\begin{dem_box}{Demostración}
+  \begin{enumerate} \leftskip -10pt
+    \item[a)] Sea \(f \geq 0\), por \hyperref[def:funciones_localmente_integrables_riemann]{definición de función localmente integrable Riemann} se tiene:
+    \begin{align*}
+      \exists \int_a^\infty f \mbox{ convergente o divergente (no oscilante)}
+    \end{align*}
+    Y por otro lado, \(f\) es \(\mu_1\)-medible por la \hyperref[prop:funciones_localmente_integrables_riemann_medibles]{proposición anterior}, luego:
+    \begin{align*}
+      \exists \int_{[a, \infty)} f \; d\mu_1
+    \end{align*}
+    Ahora, para cada \(n \in \mathbb{N}\) definimos la función:
+    \begin{align*}
+      f_n = f \cdot \mathcal{X}_{[a, a + n]}
+    \end{align*}
+    Entonces, como \(f \in \mathcal{R}([a, a + n])\) al ser \(f \in \mathcal{R}^l([a, \infty))\), por la \hyperref[thm:equivalencia_riemann_lebesgue]{teorema de equivalencia entre integrales de Riemann y Lebesgue} se tiene:
+    \begin{align*}
+      \int_{a}^{a + n} f = \int_{[a, \infty)} f_n \; d\mu_1 \quad \forall n \in \mathbb{N}
+    \end{align*}
+    Por la \hyperref[def:integrales_impropias_funciones_localmente_integrables_riemann]{definición de integral impropia de Riemann} se tiene:
+    \begin{align*}
+      \int_a^\infty f = \lim_{n \to \infty} \int_a^{a + n} f = \lim_{n \to \infty} \int_{[a, \infty)} f_n \; d\mu_1 = (\star)
+    \end{align*}
+    Como \(f \geq 0\), para todo \(n\) se cumple que \(0 \leq f_n \leq f_{n + 1}\) punto a punto y, además, la sucesión \((f_n)_{n \in \mathbb{N}}\) converge puntualmente a \(f\) cuando \(n \to \infty\). Por tanto, aplicando el \hyperref[thm:convergencia_monotona]{teorema de la convergencia monótona} se tiene:
+    \begin{align*}
+      (\star) & = \lim_{n \to \infty} \int_{[a, \infty)} f_n \; d\mu_1 \xlongequal[\text{TCM}]{f_n \leq f_{n + 1}}  \int_{[a, \infty)} \lim_{n \to \infty} \underbracket{f \cdot \mathcal{X}_{[a, a + n]} }_{f_n} \; d\mu_1 = \int_{[a, \infty)} f \; d\mu_1
+    \end{align*}
+    
+    \item[b)] Sea \(f\) tal que \(\displaystyle \int_a^\infty |f| < \infty\). Entonces, por la parte a) aplicado a \(|f|\) se tiene:
+    \begin{align*}
+      \int_{[a, \infty)} |f| \; d\mu_1 = \int_a^\infty |f| < \infty \implies |f| \in \mathcal{L}_1([a, \infty))
+    \end{align*}
+    Por tanto, \(f \in \mathcal{L}_1([a, \infty))\), luego existe \(\int_{[a, \infty)} f \; d\mu_1\). Aplicando un razonamiento análogo al del apartado a) llegamos a:
+    \begin{align*}
+      \int_a^\infty f & = \dots = \lim_{n \to \infty} \int_{[a, \infty)} f \cdot \mathcal{X}_{[a, a + n]} \; d\mu_1
+    \end{align*}
+    Como \(|f \cdot \mathcal{X}_{[a, a + n]}| \leq |f| \in \mathcal{L}_1([a, \infty))\) y \(f \cdot \mathcal{X}_{[a, a + n]} \to f\) puntualmente, aplicando el \hyperref[thm:convergencia_dominada]{teorema de la convergencia dominada} se tiene:
+    \begin{align*}
+      \lim_{n \to \infty} \int_{[a, \infty)} f \cdot \mathcal{X}_{[a, a + n]} \; d\mu_1 \xlongequal[]{\hyperref[thm:convergencia_dominada]{TCD}} \int_{[a, \infty)} \lim_{n \to \infty} f \cdot \mathcal{X}_{[a, a + n]} \; d\mu_1 = \int_{[a, \infty)} f \; d\mu_1
+    \end{align*}
+  \end{enumerate}
+\end{dem_box}
+\vspace{3ex}
+
+\begin{ej_box}{Nota}
+  \textit{Sea una función \(f \in \mathcal{R}^l([a, \infty))\) y su integral impropia converge, ¿se cumple que \(f\) es integrable Lebesgue sobre \([a, \infty)\)?}\vspace{2ex}
+
+  \textbf{No necesariamente.}  Consideramos el siguiente contraejemplo donde definimos una función por tramos oscilante en cada intervalo \([n, n + 1)\) para \(n \in \mathbb{N}\):\vspace{2ex}
+  \begin{align*}
+    f(x) = \displaystyle \sum_{n = 1}^{\infty} \frac{\left( - 1\right)^n}{n} \cdot \mathcal{X}_{[n, n + 1)}(x) 
+  \end{align*}
+  Es decir, gráficamente:
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[-{Latex}] (-0.5, 0) -- (8, 0) node[right] {\(x\)};
+      \draw[-{Latex}] (0, -1.5) -- (0, 1.5) node[above] {\(f(x)\)};
+
+      \draw[thin] (1, -0.1) -- (1, 0.1) node[below=5pt] {\(1\)};
+      \draw[thin] (2, -0.1) -- (2, 0.1) node[below=5pt] {\(2\)};
+      \draw[thin] (3, -0.1) -- (3, 0.1) node[below=5pt] {\(3\)};
+      \draw[thin] (4, -0.1) -- (4, 0.1) node[below=5pt] {\(4\)};
+      \draw[thin] (5, -0.1) -- (5, 0.1) node[below=5pt] {\(5\)};
+      \draw[thin] (6, -0.1) -- (6, 0.1) node[below=5pt] {\(6\)};
+      \draw[thin] (7, -0.1) -- (7, 0.1) node[below=5pt] {\(7\)};
+
+      \draw[blue, thick] (0, 1) -- (1, 1);
+      \draw[blue, thick] (1, -1/2) -- (2, -1/2);
+      \draw[blue, thick] (2, 1/3) -- (3, 1/3);
+      \draw[blue, thick] (3, -1/4) -- (4, -1/4);
+      \draw[blue, thick] (4, 1/5) -- (5, 1/5);
+      \draw[blue, thick] (5, -1/6) -- (6 , -1/6);
+      \draw[blue, thick] (6, 1/7) -- (7, 1/7);
+    \end{tikzpicture}
+  \end{center}
+  Podemos ver que su integral impropia converge:
+  \begin{align*}
+    \int_a^\infty f & = \lim_{x \to \infty} \int_a^x f = \lim_{N \to \infty} \int_a^N f = \lim_{N \to \infty} \sum_{n = 1}^{N} \frac{( - 1)^{n + 1}}{n} = \sum_{n = 1}^{\infty} ( - 1)^{n + 1} \frac{1}{n} = \ln(2)
+  \end{align*}
+  Además, \(f\) es localmente integrable Riemann sobre \([0, \infty)\) ya que:
+  \begin{align*}
+    f \in \mathcal{R}([a, b]) \quad \forall [a, b] \subseteq [0, \infty)
+  \end{align*}
+  Por tanto, \(f \in \mathcal{R}^l([0, \infty))\). \vspace{2ex}
+
+  Ahora, para ver que no es sumable Lebesgue sobre \([0, \infty)\) podemos calcular la integral de su valor absoluto:
+  \begin{align*}
+    \int_a^\infty |f| & = \lim_{N \to \infty} \int_a^N |f| = \lim_{N \to \infty} \sum_{n = 1}^{N} \frac{1}{n} = \infty
+  \end{align*}
+  Para ver que \(f\) no es integrable Lebesgue sobre \([0, \infty)\) necesitamos que las integrales de las funciones \(f^{ + }\) y \(f^{ - }\) sean infinitas. Para ello, calculamos:
+  \begin{align*}
+    f^{ + }(x) & = \displaystyle \sum_{n = 1}^{\infty} \frac{1}{2n - 1} \cdot \mathcal{X}_{[2n - 2, 2n - 1)}(x) = \infty\\[2ex]
+    f^{ - }(x) & = \displaystyle \sum_{n = 1}^{\infty} \frac{1}{2n} \cdot \mathcal{X}_{[2n - 1, 2n)}(x) = \infty
+  \end{align*}
+  Luego, \(f \notin \mathcal{L}_1([0, \infty))\).
+\end{ej_box}
+\vspace{3ex}
+
+\subsubsection{Integrales impropias de Lebesgue. Definición}
+\noindent Sea \(f: [a, \infty) \to \overline{\mathbb{R}}\) función que cumple:
+\begin{itemize}
+  \item \(f \notin \mathcal{L}_1([a, \infty))\)
+  \item \(f \in \mathcal{L}_1([a, x])\) para todo \(x > a\)
+\end{itemize}
+Por lo que \(f\) es medible sobre \([a, \infty)\). Decimos que \(f\) es \textbf{impropiamente integrable en el sentido de Lebesgue} sobre \([a, \infty)\) si:
+\begin{align*}
+  \exists \lim_{x \to \infty} \int_{[a, x]} f \; d\mu_1 = l \in \overline{\mathbb{R}}
+\end{align*}
+en cuyo caso se denota:
+\begin{align*}
+  \int_{[a, \infty)} f \; d\mu_1 = l\\
+\end{align*}
+\begin{ejem_box}{Ejemplo}
+  \textit{Sea la función:}
+  \begin{align*}
+    f(x) = \displaystyle \sum_{n = 1}^{\infty} \frac{ - 1^{n + 1}}{n} \cdot \mathcal{X}_{[n - 1, n)}(x) 
+  \end{align*}
+  \textit{no es integrable Lebesgue sobre \([0, \infty)\) pero lo es en el sentido impropio.}\vspace{2ex}
+
+  Podemos ver que no es integrable Lebesgue sobre \([0, \infty)\) ya que:
+  \begin{align*}
+    \int_{[0, \infty]} f^{ + } \; d\mu_1 & = \sum_{n = 1}^{\infty} \frac{1}{2n - 1} = \infty\\[2ex]
+    \int_{[0, \infty]} f^{ - } \; d\mu_1 & = \sum_{n = 1}^{\infty} \frac{1}{2n} = \infty
+  \end{align*}
+  Por tanto, \(f \notin \mathcal{L}_1([0, \infty))\).\vspace{2ex}
+
+  Ahora, para ver que es impropiamente integrable en el sentido de Lebesgue, calculamos:
+  \begin{align*}
+    \int_{[0, x]} f \; d\mu_1 & = \sum_{n = 1}^{\lfloor x \rfloor} \frac{( - 1)^{n + 1}}{n} + \frac{( - 1)^{\lfloor x \rfloor + 1}}{\lfloor x \rfloor + 2} \cdot (x - \lfloor x \rfloor)
+  \end{align*}
+  Por tanto, tomando el límite cuando \(x \to \infty\):
+  \begin{align*}
+    \lim_{x \to \infty} \int_{[0, x]} f \; d\mu_1 & = \lim_{N \to \infty} \sum_{n = 1}^{N} \frac{( - 1)^{n + 1}}{n} = \ln(2)
+  \end{align*}
+  Luego, \(f\) es impropiamente integrable en el sentido de Lebesgue sobre \([0, \infty)\) y su integral es \(\ln(2)\).
+\end{ejem_box}
+\vspace{3ex}
+\begin{ej_box}{Nota}
+  Alternativamente, se pueden considerar las definiciones para los otros tres casos:
+  \begin{align*}
+    ( - \infty, a], \quad [a, b), \quad (a, b]
+  \end{align*}
+  Por ejemplo, para el caso \(( - \infty, a]\):\vspace{2ex}
+
+  \textit{Sea \(f: ( - \infty, a] \to \overline{\mathbb{R}}\) función que cumple:}
+  \begin{itemize}
+    \setlength\itemsep{0em}
+    \item \(f \notin \mathcal{L}_1(( - \infty, a])\)
+    \item \(f \in \mathcal{L}_1([x, a])\) para todo \(x < a\)
+  \end{itemize}
+  \textit{Decimos que \(f\) es impropiamente integrable en el sentido de Lebesgue sobre \(( - \infty, a]\) si:}
+  \begin{align*}
+    \exists \lim_{x \to -\infty} \int_{[x, a]} f \; d\mu_1 = l \in \overline{\mathbb{R}}
+  \end{align*}
+  \textit{en cuyo caso se denota:}
+  \begin{align*}
+    \int_{( - \infty, a]} f \; d\mu_1 = l
+  \end{align*}
 \end{ej_box}
 \vspace{3ex}
 
 
+\subsubsection{Derivación bajo el signo de la integral. Proposición}\label{prop:derivacion_bajo_signo_integral}
+Sea \((X, \Sigma, \mu)\) espacio de medida, \(E \in \Sigma\) conjunto medible, \(f: E \times I \to \mathbb{R}\) función donde \(I\) intervalo tal que \(f(\cdot, t) \in \mathcal{L}_1(E)\) para todo \(t \in I\) y además\footnote{Yo esto lo podría poner al final del tema, pero estoy ya en un punto que... eh, a ver, yo ya estoy saturado de clases. Además no me han dejado ir a comprar el sábado y bueno... (era festivo por ser 1 de noviembre).}:
+\begin{align*}
+  \exists \frac{\partial f}{\partial t} : E \times I \to \mathbb{R} \qquad \mbox{y} \qquad \exists \varphi \in \mathcal{L}_1(E) \mbox{ tq } \left|\frac{\partial f}{\partial t}(x, t)\right| \leq \varphi(x) \quad \forall (x, t) \in E \times I
+\end{align*}
+Entonces, se cumple\footnote{Aquí, como recomendación, si alguna vez os surge que tenéis que resolver algo así, no os recomiendo venir a mis apuntes y mirar esto, si no que hagáis lo que os voy a enseñar} que \(\forall t \in I\):
+\begin{align*}
+  \exists \frac{d}{dt}\int_E f(x, t) \; d\mu(x) = \int_E \frac{\partial f}{\partial t}(x, t) \; d\mu_1(x)\\
+\end{align*}
+
+\begin{ej_box}{Nota}
+  Por notación, la \(d\) de las derivadas, cuando va a quedar una sola variable, se puede escribir con ``rabito''\footnote{Para mi todo esto de las notaciones de las derivadas es una bola... Yo tengo mi guerra con esto de la geometría diferencial porque aparecen \(d\)'s volando y que si multiplican y dividen y yo no sé qué más. Bueno, yo demostré que \(\pi\) era 3 con esto y no me llevaron al manicomio}
+\end{ej_box}
+\vspace{3ex}
+
+\begin{dem_box}{Demostración}
+  Sea \(t_0 \in I\) fijo, entonces para toda \((t_n)_n \subseteq I \setminus \{t_0\}\) tal que \(t_n \to t_0\) queremos ver que, por la definición de derivada, se cumple:
+  \begin{align*}
+    \underbracket{\lim_n \dfrac{\displaystyle \int_E f(x, t_n) \; d\mu(x) - \int_E f(x, t_0) \; d\mu(x)}{t_n - t_0}}_{\displaystyle \frac{d}{dt} \int_E f(x, t) \; d\mu(x) \big|_{t = t_0}}  = \int_E \underbracket{\lim_n \dfrac{f(x, t_n) - f(x, t_0)}{t_n - t_0}}_{\displaystyle \frac{\partial f}{\partial t}(x, t_0)} \; d\mu(x)
+  \end{align*}
+  Para cada \(x\) fijo (i.e. \(x\) constante) aplicamos el Teorema del Valor Medio de derivación a la función \(t \mapsto f(x, t)\) sobre el intervalo que une \(t_n\) y \(t_0\) (\(I_{t_n, t_0}\)) y existe \(\xi_n \in I_{t_n, t_0}\) tal que:
+  \begin{align*}
+    \dfrac{f(x, t_n) - f(x, t_0)}{t_n - t_0} = \frac{\partial f}{\partial t}(x, \xi_n)
+  \end{align*}
+  Además, por hipótesis se cumple que:
+  \begin{align*}
+    \left| \dfrac{f(x, t_n) - f(x, t_0)}{t_n - t_0} \right| = \left| \frac{\partial f}{\partial t}(x, \xi_n) \right| \leq \varphi(x) \in \mathcal{L}_1(E)
+  \end{align*}
+  Por tanto, podemos aplicar el Teorema de la Convergencia Dominada ya que \(\varphi\) es función sumable que domina a la sucesión de funciones. Así, tenemos:
+  \begin{align*}
+    \lim_n \dfrac{\displaystyle \int_E f(x, t_n) \; d\mu(x) - \int_E f(x, t_0) \; d\mu(x)}{t_n - t_0} & = \lim_n \int_E \dfrac{f(x, t_n) - f(x, t_0)}{t_n - t_0} \; d\mu(x) \xlongequal[]{\hyperref[thm:convergencia_dominada]{\texttt{TCD}}} \\[2ex]
+    & = \int_E \lim_n \dfrac{f(x, t_n) - f(x, t_0)}{t_n - t_0} \; d\mu(x) = \\[2ex]
+    & = \int_E \frac{\partial f}{\partial t}(x, t_0) \; d\mu(x)
+  \end{align*}
+  Como \((t_n)_n\) era arbitraria que converge a \(t_0\), se tiene la derivada buscada.
+\end{dem_box}
+
+\begin{ejem_box}{Ejemplo}
+  \textit{Sea la integral siguiente, que no tiene integral elemental:}
+  \begin{align*}
+    \int_0^{\frac{\pi}{2}} \dfrac{\log (1 + \sin^2 x)}{\sin^2 x} \; dx
+  \end{align*}
+  \textit{Vamos a calcularla aplicando la proposición anterior.}\vspace{2ex}
+
+  Podemos ver que la función no da problemas salvo en \(x = 0\) donde tenemos:
+  \begin{align*}
+    \lim_{x \to 0} \dfrac{\log (1 + \sin^2 x)}{\sin^2 x} \xlongequal[\text{L'Hôpital}]{ } \lim_{x \to 0} \dfrac{2 \sin x \cos x}{(1 + \sin^2 x) 2 \sin x \cos x} = 1
+  \end{align*}
+  Así, la función es acotada cerca de 0, luego la integral es impropia pero convergente. 
+  
+  \vspace{2ex}
+  Como la integral no tiene solución elemental, vamos a aplicar un truco considerando la familia de integrales:
+  \begin{align*}
+    F(t) \coloneq \int_0^{\frac{\pi}{2}} \dfrac{\log (1 + t \sin^2 x)}{\sin^2 x} \; dx 
+  \end{align*}
+  Ya que \(F(1)\) es la integral original que queremos calcular y cuando derivemos respecto de \(t\) el logaritmo se simplificará. \vspace{2ex}
+
+  Si calculamos la derivada de \(F(t)\) tenemos:
+  \begin{align*}
+    F'(t) = \int_0^{\frac{\pi}{2}} \frac{1}{\sin^2 x \cdot (1 + t \sin^2 x)} \cdot \sin^2 x \; dx = \int_0^{\frac{\pi}{2}} \dfrac{1}{1 + t \sin^2 x} \; dx = (\star)
+  \end{align*}
+  Y podemos ver que la función que estamos integrando cumple las hipótesis de la \hyperref[prop:derivacion_bajo_signo_integral]{proposición de derivación bajo el signo de la integral}:
+  \begin{itemize}
+    \item Para cada \(t \in [0, 1]\) se tiene que \(f(\cdot, t) \in \mathcal{L}_1\left(\left[0, \frac{\pi}{2}\right]\right)\) ya que es continua en todo el intervalo salvo en \(x = 0\) donde es acotada como hemos visto antes.
+    \item La derivada parcial existe y es:
+    \begin{align*}
+      \frac{\partial }{\partial t} \left(\frac{\log (1 + t \sin^2 x)}{\sin^2 x}\right) = \frac{1}{1 + t \sin^2 x}
+    \end{align*}
+    \item Está dominada por una función sumable independiente de \(t\):
+    \begin{align*}
+      0 \leq \frac{1}{1 + t\sin^2 x} \leq 1 \in \mathcal{L}_1\left(\left[0, \frac{\pi}{2}\right]\right) \quad \forall t \in [0, 1]
+    \end{align*}
+  \end{itemize}
+  Podemos aplicar la proposición y calcular \((\star)\):
+  \begin{align*}
+    (\star) = \int_0^{\frac{\pi}{2}} \frac{1}{1 + t \sin^2 x}\; dx & \xlongequal[d \tau = (1 + \tan^2 x) dx]{x = \tan \tau} \int_0^\infty \frac{1}{1 + t \dfrac{\tau^2}{1 + \tau^2}} \cdot \dfrac{1}{1 + \tau^2} \; d\tau = \\[3ex]
+    & = \int_0^\infty \frac{1}{1 + \tau^2 + t\tau^2} \; d\tau = \int_0^\infty \frac{1}{1 + (1 + t) \tau^2} \; d\tau = \\[3ex] 
+    & = \frac{1}{\sqrt{1 + t}} \arctan \sqrt{1 + t} \cdot \tau \Big|_{\tau = 0}^{\tau = \infty} = \frac{\pi}{2 \sqrt{1 + t}} 
+  \end{align*}
+  Por lo tanto, ahora que sabemos \(F'(t)\), integramos respecto de \(t\) para obtener \(F(t)\):\footnote{¿Sí o no? ¿Estáis de acuerdo conmigo o dejamos que el coche se estrelle, suspendamos el carnet, tengamos que pagar el seguro y, bueno, puntos no nos van a quitar porque no tenemos?}
+  \begin{align*}
+    F(t) = \int \frac{\pi}{2} \frac{1}{\sqrt{1 + t}} \; dt = \pi \sqrt{1 + t} + K
+  \end{align*}
+  Y ahora, para calcular \(K\) empleamos el valor de \(F(0)\):
+  \begin{align*}
+    \left.
+      \begin{array}{l}
+        F(0) = \displaystyle \int_0^{\frac{\pi}{2}} \dfrac{\log (1 + 0)}{\sin^2 x} \; dx = 0 \\[4ex]
+        F(0) = \pi \sqrt{1 + 0} + K = \pi + K
+      \end{array}
+    \right\} \implies K = - \pi
+  \end{align*}
+  Finalmente:
+  \begin{align*}
+    F(t) = \pi \sqrt{1 + t} - \pi \quad \Rightarrow \quad F(1) = \pi (\sqrt{2} - 1)
+  \end{align*}
+\end{ejem_box}
+\vspace{3ex}
+
+\subsubsection{Derivación bajo el signo de la integral definida. Proposición}\label{prop:derivacion_bajo_signo_integral_definida}
+Sea \(f : \Omega \to \mathbb{R}\) función con \(\Omega \subseteq \mathbb{R}^2\) abierto y \(f\in \mathcal{C}^1(\Omega)\) y se consideran las funciones \(a, b: I \to \mathbb{R}\) diferenciables en un intervalo abierto \(I\) con \(\overset{\circ}{I} \neq \emptyset \) tales que \(a(t) \leq b(t)\) para todo \(t \in I\) y \(\{t\} \times [a(t), b(t)] \subseteq \Omega\) para todo \(t \in I\). Definimos la función:
+\begin{align*}
+  F(t) \coloneq \int_{a(t)}^{b(t)} f(t, x) \; dx
+\end{align*}
+Entonces, tenemos que para todo \(t \in I\):
+\begin{align*}
+  \exists F'(t) = f(t, b(t)) \cdot b'(t) - f(t, a(t)) \cdot a'(t) + \int_{a(t)}^{b(t)} \frac{\partial f}{\partial t}(t, x) \; dx
+\end{align*}
+
+\begin{dem_box}{Demostración}
+  Sea \(t_0 \in I\) arbitrario y consideramos una sucesión \((t_n)_n \subseteq I \setminus \{t_0\}\) tal que \(t_n \to t_0\). Entonces, consideramos:
+  \begin{align*}
+    &\frac{F(t_n) - F(t_0)}{t_n - t_0} = \frac{1}{t_n - t_0} \left[\int_{a(t_n)}^{b(t_n)} f(t_n, x) \; dx - \int_{a(t_0)}^{b(t_0)} f(t_0, x) \; dx\right] = \\[4ex] 
+    & \hspace{3ex} = \frac{1}{t_n - t_0} \left[\int_{a(t_n)}^{b(t_n)} f(t_n, x) \; dx - \int_{a(t_n)}^{b(t_0)} f(t_n, x) \; dx + \int_{a(t_n)}^{b(t_0)} f(t_n, x) \; dx - \right. \\[2ex]
+    & \hspace{20ex} \left. - \int_{a(t_0)}^{b(t_0)} f(t_n, x) \; dx + \int_{a(t_0)}^{b(t_0)} f(t_n, x) \; dx - \int_{a(t_0)}^{b(t_0)} f(t_0, x) \; dx\right] = \\[4ex]
+    &\hspace{3ex} = \frac{1}{t_n - t_0} \left[\int_{b(t_0)}^{b(t_n)} f(t_n, x) \; dx - \int_{a(t_0)}^{a(t_n)} f(t_n, x) \; dx + \int_{a(t_0)}^{b(t_0)} (f(t_n, x) - f(t_0, x)) \; dx\right]\label{align:derivacion_bajo_signo_integral_definida}\tag{I}
+  \end{align*}
+  Para cada \(n\) podemos aplicar el Teorema del Valor Medio de Integración (ver al final de la demostración) sobre la función \(f(t_n, x)\) que es continua ya que \(f \in \mathcal{C}^1(\Omega)\) entonces existen:
+  \begin{align*}
+    \xi_n \in I_{b(t_n), b(t_0)} \quad \mbox{y} \quad \eta_n \in I_{a(t_n), a(t_0)}
+  \end{align*}
+  tales que:
+  \begin{align*}
+    \int_{b(t_0)}^{b(t_n)} f(t_n, x) \; dx & = f(t_n, \xi_n) \cdot (b(t_n) - b(t_0)) \\[2ex]
+    \int_{a(t_0)}^{a(t_n)} f(t_n, x) \; dx & = f(t_n, \eta_n) \cdot (a(t_n) - a(t_0))
+  \end{align*}
+  Por tanto, sustituyendo en \((\ref{align:derivacion_bajo_signo_integral_definida})\) tenemos:
+  \begin{align*}
+    & \frac{F(t_n) - F(t_0)}{t_n - t_0} = \frac{1}{t_n - t_0} \left[f(t_n, \xi_n) \cdot (b(t_n) - b(t_0)) - f(t_n, \eta_n) \cdot (a(t_n) - a(t_0)) + \phantom{\int}\right. \\[1ex]
+    & \hspace{47ex} \left. + \int_{a(t_0)}^{b(t_0)} (f(t_n, x) - f(t_0, x)) \; dx\right] = \\[4ex]
+    & \hspace{15ex} = f(t_n, \xi_n) \cdot \dfrac{b(t_n) - b(t_0)}{t_n - t_0} - f(t_n, \eta_n) \cdot \dfrac{a(t_n) - a(t_0)}{t_n - t_0} + \\[2ex]
+    & \hspace{47ex} + \int_{a(t_0)}^{b(t_0)} \dfrac{f(t_n, x) - f(t_0, x)}{t_n - t_0} \; dx \label{align:derivacion_bajo_signo_integral_definida_final}\tag{II}
+  \end{align*}
+  Podemos notar que cada \(\xi_n \in I_{b(t_n), b(t_0)}\) y como \(t_n \to t_0\) con \(b\) continua (al ser diferenciable), se sigue que:
+  \begin{align*}
+    \xi_n \xrightarrow[n \to \infty]{} b(t_0)
+  \end{align*}
+  Análogamente, se ve que \(\eta_n \to \alpha(t_0)\).\vspace{2ex}
+  
+  Entonces, aplicando continuidad de \(f\) en ambas variables (ya que \(f \in \mathcal{C}^1\)) tenemos que los dos primeros sumandos de \((\ref{align:derivacion_bajo_signo_integral_definida_final})\) cumplen:
+  \begin{align*}
+    f(t_n, \xi_n)\dfrac{b(t_n) - b(t_0)}{t_n - t_0} & \xrightarrow[n \to \infty]{} f(t_0, b(t_0)) \cdot b'(t_0) \\[2ex]
+    f(t_n, \eta_n)\dfrac{a(t_n) - a(t_0)}{t_n - t_0} & \xrightarrow[n \to \infty]{} f(t_0, a(t_0)) \cdot a'(t_0)
+  \end{align*}
+  Para el tercer sumando, definimos la aplicación:
+  \begin{align*}
+    g_n(x) \coloneq \frac{f(t_n, x) - f(t_0, x)}{t_n - t_0}
+  \end{align*}
+  Por el Teorema del Valor Medio de derivación, tenemos que \(\exists \theta_n \in I_{t_n, t_0}\) tal que:
+  \begin{align*}
+    g_n(x) = \frac{\partial f}{\partial t}(\theta_n, x)
+  \end{align*}
+  Como \(\Omega\) es abierto, \(\{t_0\} \times [a(t_0), b(t_0)] \subseteq \Omega\) y como \(f \in \mathcal{C}^1(\Omega)\) entonces es continua, sabemos que \(\exists \varepsilon > 0\) y \(\exists \delta > 0\) tales que:
+  \begin{align*}
+    M \coloneq [t_0 - \delta, t_0 + \delta] \times [b(t_0) - \varepsilon, b(t_0) + \varepsilon] \subseteq \Omega
+  \end{align*}
+  Y análogamente para \(a(t_0)\). Por tanto, para \(n\) suficientemente grande, se tiene que.
+  \begin{align*}
+    t_n \in [t_0 - \delta, t_0 + \delta] \quad \mbox{y} \quad b(t_n) \in [b(t_0) - \varepsilon, b(t_0) + \varepsilon] \quad \mbox{y} \quad a(t_n) \in [a(t_0) - \varepsilon, a(t_0) + \varepsilon]
+  \end{align*}
+  Como \(M \subseteq \Omega\) compacto entonces, aplicando el Teorema de Weierstrass:
+  \begin{align*}
+    \exists m = \max_{(t, x) \in M} \left| \frac{\partial f}{\partial t}(t, x) \right| < \infty
+  \end{align*}
+  Por tanto, para todos los \(n\) grandes y \(x \in [a(t_0), b(t_0)]\) se tiene:
+  \begin{align*}
+    |g_n(x)| = \left| \frac{\partial f}{\partial t}(\theta_n, x) \right| \leq m \cdot \mathcal{X}_M \in \mathcal{L}_1(M)
+  \end{align*}
+  Así, como \(g_n(x)\) esta dominada por una función sumable \(m\), integrable en \([a(t_0), b(t_0)]\), podemos aplicar el \hyperref[thm:convergencia_dominada]{Teorema de la Convergencia Dominada}:
+  \begin{align*}
+    \underbracket{\int_{a(t_0)}^{b(t_0)} \frac{\partial f}{\partial t} (\theta_n, x) \; dx}_{\displaystyle \int_{\alpha(t_0)}^{b(t_0)} g_n(x) \; dx } \xrightarrow[n \to \infty]{} \int_{a(t_0)}^{b(t_0)} \lim_{n \to \infty} \frac{\partial f}{\partial t} (\theta_n, x) \; dx = \int_{a(t_0)}^{b(t_0)} \frac{\partial f}{\partial t} (t_0, x) \; dx
+  \end{align*}
+  Así, juntando todo en \((\ref{align:derivacion_bajo_signo_integral_definida_final})\) y tomando el límite cuando \(n \to \infty\) se tiene:
+  \begin{align*}
+    F'(t_0) & = f(t_0, b(t_0)) \cdot b'(t_0) - f(t_0, a(t_0)) \cdot a'(t_0) + \int_{a(t_0)}^{b(t_0)} \frac{\partial f}{\partial t}(t_0, x) \; dx
+  \end{align*}
+\end{dem_box}
+\vspace{3ex}
+
+\begin{ej_box}{Teorema del Valor Medio de integración}
+  Sea \(f: [a, b] \to \mathbb{R}\) función continua entonces, \(\exists c \in [a, b]\) tal que:
+  \begin{align*}
+    \int_a^b f(x) \; dx = f(c) \cdot (b - a)
+  \end{align*}
+\end{ej_box}
+
+\subsection{Cálculo para \(N > 1\)}
+\subsubsection{Notación}
+\noindent A partir de ahora, con el fin de simplificar la notación, cuando se esté en un espacio \(\mathbb{R}^{p + q}\) se considerarán pares de puntos \((x, y)\) donde \(x\) estará en un espacio de dimensión \(p\) e \(y\) en un espacio de dimensión \(q\), es decir, sea \(\mathbb{R}^{p + q} = \mathbb{R}^p \times \mathbb{R}^q\) donde \(p, q \in \mathbb{N}\), tenemos que:
+\begin{align*}
+  x \in \mathbb{R}^p & \Longleftrightarrow x = (x_1, x_2, \ldots, x_p) \\[1ex]
+  y \in \mathbb{R}^q & \Longleftrightarrow y = (y_1, y_2, \ldots, y_q) \\[1ex]
+  (x, y) \in \mathbb{R}^{p + q} & \Longleftrightarrow (x, y) = (x_1, x_2, \ldots, x_p, y_1, y_2, \ldots, y_q)\\
+\end{align*}
+
+\subsubsection{Sección de un conjunto. Definición}
+Sea \(E \subseteq \mathbb{R}^{p + q}\) conjunto cualquiera y \(x \in \mathbb{R}^p\) fijo llamamos \textbf{sección \(E_x\)} al conjunto de todos los \(y \in \mathbb{R}^q\) tales que \((x, y) \in E\), es decir:
+\begin{align*}
+  E_x \coloneq \left\{y \in \mathbb{R}^q: (x, y) \in E\right\}
+\end{align*}
+Es decir, que estamos tomando una ``rebanada vertical'' del conjunto \(E\) fijando el valor de \(x\) y vemos que valores de \(y\) son posibles para que el par \((x, y)\) pertenezca a \(E\).\vspace{2ex}
+
+\noindent Análogamente se define la \textbf{sección \(E^y\)} para \(y \in \mathbb{R}^q\) fijo como el conjunto de todos los \(x \in \mathbb{R}^p\) tales que \((x, y) \in E\), es decir:
+\begin{align*}
+  E^y \coloneq \left\{x \in \mathbb{R}^p: (x, y) \in E\right\}\\
+\end{align*}
+
+\subsubsection{Sección de una aplicación. Definición}
+Sea \(f: \mathbb{R}^{p + q} \to \overline{\mathbb{R}}\) aplicación cualquiera y \(x \in \mathbb{R}^{p + q}\) fijo, llamamos \textbf{sección de \(f\) por \(x\)} a la aplicación que a cada \(y \in \mathbb{R}^q\) le asigna el valor \(f(x, y)\), es decir:
+\begin{align*}
+  f_x: \mathbb{R}^q & \longrightarrow \overline{\mathbb{R}}\\
+  y & \longmapsto f_x(y) \coloneq f(x, y)
+\end{align*}
+Análogamente, se define la \textbf{sección de \(f\) por \(y\)} para \(y \in \mathbb{R}^q\) fijo como la aplicación que a cada \(x \in \mathbb{R}^p\) le asigna el valor \(f(x, y)\), es decir:
+\begin{align*}
+  f^y: \mathbb{R}^p & \longrightarrow \overline{\mathbb{R}}\\
+  x & \longmapsto f^y(x) \coloneq f(x, y)
+\end{align*}
+
+\begin{ej_box}{Nota}
+  Esto será útil para poder fijar coordenadas y estudiar el comportamiento de lo que que queda como una función de un conjunto en un espacio de menor dimensión.
+\end{ej_box}
+\vspace{3ex}
+
+
+\subsubsection{Teorema de Tonelli para conjuntos. Toerema}\label{thm:tonelli_conjuntos}
+\noindent Para todo \(E \in \mathcal{M}_{p + q}\) se tiene que: \vspace{2ex}
+
+\begin{minipage}{0.49\textwidth}
+  \begin{enumerate} \leftskip -25pt
+    \item[a)] \(\exists A \in \mathcal{M}_p\) con \(\mu_p(A) = 0\) tal que:
+    \begin{align*}
+      \forall x \in \mathbb{R}^p \setminus A \mbox{ se tiene } E_x \in \mathcal{M}_q
+    \end{align*}
+    \item[b)] La aplicación definida como:
+    \begin{align*}
+      \varphi: \mathbb{R}^p \setminus A & \longrightarrow [0, \infty] \\[1ex]
+      x & \longmapsto \varphi(x) \coloneq \mu_q(E_x)
+    \end{align*}
+    es medible respecto de \(\left(\mathbb{R}^p, \mathcal{M}_p, \mu_p\right)\).
+    \item[c)] Se tiene que:
+    \begin{align*}
+      \mu_{p + q} (E) = \int_{\mathbb{R}^p\setminus A} \varphi(x) \; d\mu_p(x)
+    \end{align*}
+  \end{enumerate}
+\end{minipage}
+\begin{minipage}{0.49\textwidth}
+  \begin{enumerate} \leftskip -10pt
+    \item[a')] \(\exists B \in \mathcal{M}_q\) con \(\mu_q(B) = 0\) tal que:
+    \begin{align*}
+      \forall y \in \mathbb{R}^q \setminus B \mbox{ se tiene } E^y \in \mathcal{M}_p
+    \end{align*}
+    \item[b)] La aplicación definida como:
+    \begin{align*}
+      \psi: \mathbb{R}^q \setminus B & \longrightarrow [0, \infty] \\[1ex]
+      y & \longmapsto \psi(y) \coloneq \mu_p(E^y)
+    \end{align*}
+    es medible respecto de \(\left(\mathbb{R}^q, \mathcal{M}_q, \mu_q\right)\).
+    \item[c)] Se tiene que:
+    \begin{align*}
+      \mu_{p + q} (E) = \int_{\mathbb{R}^q\setminus B} \psi(y) \; d\mu_q(y)
+    \end{align*}
+  \end{enumerate}
+\end{minipage}
+\vspace{3ex}
+
+\begin{ej_box}{Nota}
+  Notar que, a partir de los apartados c) y c') se deduce que:
+  \begin{align*}
+    \int_{\mathbb{R}^p\setminus A} \varphi(x) \; d\mu_p(x) = \mu_{p + q} (E) = \int_{\mathbb{R}^q\setminus B} \psi(y) \; d\mu_q(y)
+  \end{align*}
+\end{ej_box}
+\vspace{3ex}
+
+\begin{ej_box}{Observación}
+  Podemos notar que el \hyperref[thm:tonelli_conjuntos]{Teorema de Tonelli} intuitivamente dice que:
+  \begin{itemize}
+    \item[a)] Para casi todo \(x\), la sección \(E_x\) es medible en \(\mathbb{R}^q\).
+    \item[b)] La función \(x \longmapsto \mu_q(E_x)\) es medible
+    \item[c)] La medida de \(E\) es la integral de esas medidas de las secciones.
+  \end{itemize}
+\end{ej_box}
+\vspace{3ex}
+
+\begin{dem_box}{Demostración}
+  La prueba es muy larga y se construye por pasos sobre distintos conjuntos hasta legar al caso general. Vamos a ver uno por uno los casos:
+  \begin{enumerate} \leftskip -10pt
+    \item[1)] \textit{Sea \(E\) un cubo acotado en \(\mathbb{R}^{p + q}\).} Entonces:
+    \begin{align*}
+      E = I \times J \quad \mbox{ con } \left\{
+        \begin{array}{l}
+          I \mbox{ cubo acotado de } \mathbb{R}^p \\[1ex]
+          J \mbox{ cubo acotado de } \mathbb{R}^q
+        \end{array}
+      \right.
+    \end{align*}
+    \vspace{10ex}
+
+    Veamos que se cumple cada apartado:
+    \begin{enumerate} \leftskip -10pt
+      \item \(\forall x \in \mathbb{R}^p\) se tiene:
+      \begin{itemize} \leftskip -15pt
+        \setlength\itemsep{0em}
+        \item Si \(x \notin I\) entonces no hay ningún punto \((x, y) \in E\).
+        \item Si \(x \in I\) entonces la sección recolecta todos los puntos \((x, y)\) con \(y \in J\)
+      \end{itemize}
+      Luego:
+      \begin{align*}
+        E_x = \left\{
+          \begin{array}{ll}
+            \emptyset & \mbox{si } x \in \mathbb{R}^p \setminus I \\
+            J & \mbox{si } x \in I
+          \end{array}
+        \right.
+      \end{align*}
+      Por tanto, \(\forall x \in \mathbb{R}^p\) se tiene que \(E_x \in \mathcal{M}_q\) ya que tanto \(\emptyset \) como \(J\) son conjuntos medibles en \(\mathbb{R}^q\) (en particular tenemos que \(A = \emptyset \in \mathcal{M}_q\)).
+      \item Podemos notar que la aplicación:
+      \begin{align*}
+        \varphi : \mathbb{R}^p & \longrightarrow [0, \infty]\\
+        x & \longmapsto \mu_q(E_x) = \left\{
+          \begin{array}{ll}
+            0 & \mbox{si } x \in \mathbb{R}^p \setminus I \\
+            \mu_q(J) & \mbox{si } x \in I
+          \end{array}
+        \right.
+      \end{align*}
+      Que se puede expresar como:
+      \begin{align*}
+        \varphi(x) = \mu_q(J) \cdot \underbracket{\mathcal{X}_I(x)}_{\mu_p \text{-medible}}
+      \end{align*}
+      Entonces, al ser el producto de una constante por una función medible, se tiene que \(\varphi\) es \(\mu_p\)-medible.
+      \item Por las propiedades básicas de la integral de Lebesgue tenemos:
+      \begin{align*}
+        \int_{\mathbb{R}^p} \varphi(x) \; d\mu_p(x) & = \int_{\mathbb{R}^p} \mu_q(J) \cdot \mathcal{X}_I(x) \; d\mu_p(x) \xlongequal[{\hyperref[prop:linealidad_parcial_integrando]{\text{parcial}}}]{\hyperref[prop:linealidad_parcial_integrando]{\text{linealidad}}}\\[2ex]
+        & = \mu_q(J) \cdot \int_{\mathbb{R}^p} \mathcal{X}_I(x) \; d\mu_p(x) = \\[2ex]
+        & = \mu_q(J) \cdot \mu_p(I) = \mu_{p + q}(I \times J) = \mu_{p + q}(E)\\
+      \end{align*}
+    \end{enumerate}
+    \item[2)] \textit{Sea \(E \subseteq \mathbb{R}^{p + q}\) conjunto abierto acotado.} Entonces, por el teorema de descomposición \(\exists \{I_i\}_{i \in \mathbb{N}}\) sucesión numerable de cubos diádicos disjuntos tales que:
+    \begin{align*}
+      E = \displaystyle \bigcup_{n = 1}^{\infty} I^n
+    \end{align*}
+    \textit{Aplicando el caso 1) a cada \(I_n\) obtenemos que:}
+    \begin{itemize} \leftskip -10pt
+      \item[1.a)] \textit{\(\forall x \in \mathbb{R}^p\) se tiene \( (I^n)_x \in \mathcal{M}_q\)}
+      \item[1.b)] \textit{La aplicación \(\varphi_n : \mathbb{R}^p \to [0, \infty]\) dada por \(x \mapsto \mu_q(I^n_x)\) es \(\mu_p\)-medible}
+      \item[1.c)] \textit{Se tiene que \(\int_{\mathbb{R}^p} \varphi_n(x) \; d\mu_p(x) = \mu_{p + q}(I^n)\)}
+    \end{itemize}
+    Entonces, aplicando lo anterior se tiene:
+    \begin{enumerate} \leftskip -10pt
+      \item \(\forall x \in \mathbb{R}^p\) se tiene:
+      \begin{align*}
+        E_x = \left(\displaystyle \bigcup_{n = 1}^{\infty} I^n\right)_x = \bigcup_{n = 1}^{\infty} I^n_x \in \mathcal{M}_q
+      \end{align*}
+      Ya que como \(I^n_x \in \mathcal{M}_q\) para todo \(n\) entonces, por ser \(\mathcal{M}_q\) una \(\sigma\)-álgebra, se tiene que \(E_x \in \mathcal{M}_q\) (en particular, \(A = \emptyset \in \mathcal{M}_p\)).
+      \item Notamos que la aplicación:
+      \begin{align*}
+        \varphi : \mathbb{R}^p & \longrightarrow [0, \infty] \\[1ex]
+        x & \longmapsto \mu_q(E_x) = \mu_q\left(\bigcup_{n = 1}^{\infty} I^n_x\right) \xlongequal[ \Rightarrow I^n_x \text{ disjuntos}]{I^n \text{ disjuntos } \Rightarrow } \sum_{n = 1}^{\infty} \mu_q(I^n_x) = \sum_{n = 1}^{\infty} \varphi_n(x)
+      \end{align*}
+      Entonces, como cada \(\varphi_n\) es \(\mu_p\)-medible y la suma numerable de funciones medibles es medible, se tiene que:
+      \begin{align*}
+        \varphi = \displaystyle \sum_{n = 1}^{\infty} \varphi_n \quad \mu_p\text{-medible}
+      \end{align*}
+      \item Tenemos que:
+      \begin{align*}
+        \int_{\mathbb{R}^p} \varphi(x) \; d\mu_p(x) = \int_{\mathbb{R}^p} \left(\sum_{n = 1}^{\infty} \varphi_n(x)\right) \; d\mu_p(x) = (\star)
+      \end{align*}
+      Por el \hyperref[thm:convergencia_monotona]{Teorema de la Convergencia Monótona}\footnote{Aquí podría ser quizá el Teorema de la convergencia dominada, pero yo apostaría todo al rojo. Así que vosotros todo al rojo y, hacedme caso, vais a ganar.} como se tiene:
+      \begin{align*}
+        \varphi_n \geq 0 \implies \displaystyle \sum_{k = 1}^{n} \varphi_k \leq \sum_{k = 1}^{n + 1} \varphi_k
+      \end{align*}
+      ya que cada sumando es positivo, entonces:
+      \begin{align*}
+        (\star) \xlongequal[]{\hyperref[thm:convergencia_monotona]{\text{TCM}}} \displaystyle \sum_{n = 1}^{\infty} \int_{\mathbb{R}^p} \varphi_n(x) \; d\mu_p(x) & \xlongequal[]{\text{1.c)}} \sum_{n = 1}^{\infty} \mu_{p + q}(I^n) \xlongequal[]{I_n \text{ disjuntos}} \\[2ex]
+        & = \mu_{p + q} \left(\displaystyle \bigcup_{n = 1}^{\infty} I^n\right) = \mu_{p + q}(E)\\
+      \end{align*}
+    \end{enumerate}
+    \item[3)] \textit{Sea \(E = \bigcap_{n = 1}^\infty O^n\) con \(O^{n + 1} \subseteq O^{n}\) abiertos acotados.} \textit{Aplicando el caso 2) a cada \(O^n\) se tiene}\footnote{El siguiente caso lo haré mañana, porque me he quedado colgado en la otra clase. Así que haré como los fontaneros: ``¿Puede valerse no? Pues entonces vuelvo mañana''}:
+    \begin{itemize} \leftskip -10pt
+      \item[2.a)] \(\forall x \in \mathbb{R}^p\) se tiene \(O^n_x \in \mathcal{M}_q\)
+      \item[2.b)] La aplicación \(\varphi_n : \mathbb{R}^p \to [0, \infty]\) dada por \(x \mapsto \mu_q(O^n_x)\) es \(\mu_p\)-medible
+      \item[2.c)] Se tiene que \(\int_{\mathbb{R}^p} \varphi_n(x) \; d\mu_p(x) = \mu_{p + q}(O^n)\)
+    \end{itemize}
+
+    Entonces, aplicando lo anterior se tiene:
+    \begin{enumerate} \leftskip -10pt
+      \item Como cualquier conjunto puede aproximarse por fuera por abiertos, tenemos que para cada \(x \in \mathbb{R}^p\) se tiene\footnote{Aquí hay que pensar un poco y decidir si apostamos al rojo o al negro, pero unos croupiers como vosotros seguro que lo tiene claro}:
+      \begin{align*}
+        E_x = \left(\displaystyle \bigcap_{n = 1}^{\infty} O^n\right)_x = \bigcap_{n = 1}^{\infty} O^n_x \in \mathcal{M}_q
+      \end{align*}
+      Ya que como \(O^n_x \in \mathcal{M}_q\) y \(\mathcal{M}_q\) es \(\sigma\)-álgebra, es cerrada bajo intersecciones numerables (en particular, \(A = \emptyset \in \mathcal{M}_q\)).
+      \item Notar que la función:
+      \begin{align*}
+        \varphi : \mathbb{R}^p & \longrightarrow [0, \infty]\\
+        x & \longmapsto \mu_q(E_x) = \mu_q \left(\displaystyle \bigcap_{n = 1}^{\infty} O_x^n\right) \xlongequal[O_x^1 \text{ acotado } \forall x]{O_x^n \subseteq O_x^{n + 1}} \lim_n \mu_q(O_x^n) = \lim_n \varphi_n(x)
+      \end{align*}
+      Entonces, como para cada \(x \in \mathbb{R}^p\) se tiene que:
+      \begin{align*}
+        \lim_n \underbracket{\varphi_n(x)}_{\mu_p\text{-medible}} = \varphi(x) \geq 0  \quad \mu_p \text{-medible}
+      \end{align*}
+      Ya que el límite puntual de funciones medibles es medible.
+      \item Tenemos que:
+      \begin{align*}
+        \int_{\mathbb{R}^p} \varphi(x) \; d\mu_p(x) = \int_{\mathbb{R}^p} \lim_n \varphi_n(x) \; d\mu_p(x) = (\star)
+      \end{align*}
+      Podemos notar que:
+      \begin{align*}
+        \varphi_1(x) \geq \varphi_2(x) \geq \ldots \geq \varphi_n(x) \geq \ldots \geq 0
+      \end{align*}
+      Y además, como \(O^1\) es acotado entonces:
+      \begin{align*}
+        \int_{\mathbb{R}^p} \varphi_1(x) \; d\mu_p(x) = \mu_{p + q}(O^1) < \infty \implies \varphi_1 \in \mathcal{L}_1(\mathbb{R}^p)
+      \end{align*}
+      Así, podemos aplicar el \hyperref[thm:convergencia_dominada]{Teorema de la Convergencia Dominada}\footnote{Ahora sí, apostamos todo al negro y ganamos}:
+      \begin{align*}
+        (\star) \xlongequal[]{\hyperref[thm:convergencia_dominada]{TCD}} \lim_n \int_{\mathbb{R}^p} \varphi_n(x) \; d\mu_p(x) & = \lim_n \mu_{p + q} (O^n) =\\[2ex]
+        & =  \mu_{p + q} \left(\displaystyle \bigcap_{n = 1}^{\infty} O^n \right) = \mu_{p + q}(E)\\
+      \end{align*}
+    \end{enumerate}
+    \vspace{20ex}
+
+    \item[4)] \textit{Sea \(E \in \mathcal{M}_{p + q}\) acotado con \(\mu_{p + q}(E) = 0\).} Por la caracterización topológica de los conjuntos medibles Lebesgue, existe \((O^n)_n\) sucesión de abiertos con \(O^{n + 1} \subseteq O^n\) y cada \(O^n\) es acotado tal que \(\mu_{p + q}(O^n) \xrightarrow[n \to \infty]{} 0\). Así:
+    \begin{align*}
+      E \subseteq N \coloneq \displaystyle \bigcap_{n = 1}^{\infty}O^n \in \mathcal{M}_{p + q} \implies \mu_{p + q}(N) = \lim_{n} \mu_{p + q}(O^n) = 0
+    \end{align*}
+    \textit{Aplicando el caso 3) a \(N\) se tiene:}
+    \begin{itemize} \leftskip -10pt
+      \item \(\forall x \in \mathbb{R}^p\) se tiene \(N_x \in \mathcal{M}_q\)
+      \item La aplicación \(\varphi_1 : \mathbb{R}^p \to [0, \infty]\) dada por \(x \mapsto \mu_q(N_x)\) es \(\mu_p\)-medible
+      \item Se tiene que \(\int_{\mathbb{R}^p} \varphi_1(x) \; d\mu_p(x) = \mu_{p + q}(N) = 0\)
+    \end{itemize}
+
+    Entonces, como \(\varphi_1(x) \geq 0\) para todo \(x \in \mathbb{R}^p\) y:
+    \begin{align*}
+      \int_{\mathbb{R}^p} \varphi_1(x) \; d\mu_p(x) = 0
+    \end{align*}
+    por las propiedades de la integral de Lebesgue se tiene que:
+    \begin{align*}
+      \varphi_1(x) = 0 \quad \mu_p\text{-a.e.}
+    \end{align*}
+    Entonces, \(\exists A \in \mathcal{M}_p\) con \(\mu_p(A) = 0\) tal que:
+    \begin{align*}
+      \forall x \in \mathbb{R}^p \setminus A \mbox{ se tiene } \varphi_1(x) = 0
+    \end{align*}
+    Por lo tanto:
+    \begin{enumerate}
+      \item[a)] Como \(E \subseteq N\), para cada \(x \in \mathbb{R}^{p} \setminus A\) se tiene:
+      \begin{align*}
+        E_x \subseteq N_x \in \mathcal{M}_q \implies \mu_q(E_x) \leq \mu_q(N_x) = 0 \implies E_x \in \mathcal{M}_q
+      \end{align*}
+      \item[b)] Basta notar que la aplicación:
+      \begin{align*}
+        \varphi : \mathbb{R}^p \setminus A & \longrightarrow [0, \infty] \\[1ex]
+        x & \longmapsto \mu_q(N_x) = 0
+      \end{align*}
+      Que es una función constante, luego \(\mu_p\)-medible.
+      \item[c)] Se tiene que:
+      \begin{align*}
+        \int_{\mathbb{R}^p \setminus A} \varphi(x) \; d\mu_p(x) = \int_{\mathbb{R}^p \setminus A} 0 \; d\mu_p(x) = 0 = \mu_{p + q}(E)\\
+      \end{align*}
+    \end{enumerate}
+    \vspace{20ex}
+
+    \item[5)] \textit{Sea \(E \in \mathcal{M}_{p + q}\) acotado.} Por la caracterización topológica de los conjuntos medibles de Lebesgue, existe \((O^n)_n\) sucesión de abiertos con \(O^{n + 1} \subseteq O^n\) y con \(O^1\) acotado tal que:
+    \begin{align*}
+      E = G \setminus N \qquad \mbox{ con } G = \displaystyle \bigcap_{n = 1}^{\infty} O^n \quad \mbox{ y } N \in \mathcal{M}_{p + q} \mbox{ con } \mu_{p + q}(N) = 0
+    \end{align*}
+    \textit{Aplicando el caso 3) a \(G\) se tiene:}
+    \begin{itemize} \leftskip -10pt
+      \item \(\forall x \in \mathbb{R}^p\) se tiene \(G_x \in \mathcal{M}_q\)
+      \item La aplicación \(\varphi_1 : \mathbb{R}^p \to [0, \infty]\) dada por \(x \mapsto \mu_q(G_x)\) es \(\mu_p\)-medible
+      \item Se tiene que \(\int_{\mathbb{R}^p} \varphi_1(x) \; d\mu_p(x) = \mu_{p + q}(G)\)
+    \end{itemize}
+    \textit{Aplicando el caso 4) a \(N\) se tiene:}
+    \begin{itemize} \leftskip -10pt
+      \item \(\exists A \in \mathcal{M}_p\) con \(\mu_p(A) = 0\) tal que \(\forall x \in \mathbb{R}^p \setminus A \mbox{ se tiene } N_x \in \mathcal{M}_q\)
+      \item La aplicación \(\varphi_2 : \mathbb{R}^p \setminus A \to [0, \infty]\) dada por \(x \mapsto \mu_q(N_x)\) es \(\mu_p\)-medible
+      \item Se tiene que \(\int_{\mathbb{R}^{p} \setminus A} \varphi_2(x) \; d\mu_p(x) = \mu_{p + q}(N) = 0\)
+    \end{itemize}
+    Por lo tanto:
+    \begin{enumerate}
+      \item[a)] Para cada \(x \in \mathbb{R}^p \setminus A\) se tiene:
+      \begin{align*}
+        E_x = \underbracket{G_x}_{\in \mathcal{M}_q} \setminus \underbracket{N_x}_{\in \mathcal{M}_q} \in \mathcal{M}_q
+      \end{align*}
+      \item[b)] Notar que la aplicación:
+      \begin{align*}
+        \varphi : \mathbb{R}^p \setminus A & \longrightarrow [0, \infty] \\[1ex]
+        x & \longmapsto \mu_q(E_x) = \mu_q(G_x \setminus N_x) =\\[1ex]
+        & \hspace{12ex} = \mu_q(G_x) - \mu_q(N_x) = \varphi_1(x) - \varphi_2(x)
+      \end{align*}
+      Como \(\varphi_1\) y \(\varphi_2\) son funciones \(\mu_p\)-medibles, entonces:
+      \begin{align*}
+        \varphi(x) = \varphi_1(x) - \varphi_2(x) \quad \mu_p\text{-medible}
+      \end{align*}
+      \item[c)] Se tiene que:
+      \begin{align*}
+        \int_{\mathbb{R}^p \setminus A} \varphi(x) \; d\mu_p(x) & \xlongequal[]{\hyperref[prop:linealidad_parcial_integrando]{\text{lineal.}}} \int_{\mathbb{R}^p \setminus A} \varphi_1(x) \; d\mu_p(x) - \int_{\mathbb{R}^p \setminus A} \varphi_2(x) \; d\mu_p(x) = \\[2ex]
+        & = \mu_{p + q}(G) - \mu_{p + q}(N) = \mu_{p + q}(E)\\
+      \end{align*}
+    \end{enumerate}
+    \vspace{20ex}
+
+    \item[6)] \textit{Sea \(E \in \mathcal{M}_{p + q}\) (caso general).} Entonces, podemos descomponer \(E\) mediante conjuntos acotados como:
+    \begin{align*}
+      E^n \coloneq E \cap [ - n, n]^{p + q} \in \mathcal{M}_{p + q} \quad \forall n \in \mathbb{N}
+    \end{align*}
+    Entonces, tenemos que cada \(E^n\) es acotado y:
+    \begin{align*}
+      E = \displaystyle \bigcup_{n = 1}^{\infty} E^n
+    \end{align*}
+
+    \textit{Aplicando el caso 5) a cada \(E^n\) se tiene:}
+    \begin{itemize} \leftskip -10pt
+      \item \(\exists A_n \in \mathcal{M}_p\) con \(\mu_p(A_n) = 0\) tal que \(\forall x \in \mathbb{R}^p \setminus A_n \mbox{ se tiene } (E^n)_x \in \mathcal{M}_q\)
+      \item La aplicación \(\varphi_n : \mathbb{R}^p \setminus A_n \to [0, \infty]\) dada por \(x \mapsto \mu_q((E^n)_x)\) es \(\mu_p\)-medible
+      \item Se tiene que \(\int_{\mathbb{R}^{p} \setminus A_n} \varphi_n(x) \; d\mu_p(x) = \mu_{p + q}(E^n)\)
+    \end{itemize}
+    Entonces:
+    \begin{enumerate}
+      \item[a)] Sea \(A \coloneq \displaystyle \bigcup_{n \in \mathbb{N}} A_n \in \mathcal{M}_q\) y \(\mu_p(A) = 0\) tenemos que para cada \(x \in \mathbb{R}^p \setminus A\):
+      \begin{align*}
+        E_x = \bigcup_{n = 1}^{\infty} E^n_x\, \in \mathcal{M}_q
+      \end{align*}
+      ya que cada \(E^n_x \in \mathcal{M}_q\) (al ser \(x \notin A_n\)) y \(\mathcal{M}_q\) es una \(\sigma\)-álgebra.
+      \item[b)] Notar que la aplicación:
+      \begin{align*}
+        \varphi : \mathbb{R}^p \setminus A & \longrightarrow [0, \infty] \\[1ex]
+        x & \longmapsto \mu_q(E_x) = \mu_q\left(\bigcup_{n = 1}^{\infty} E^n_x\right) \xlongequal[E_x^n \subseteq E_x^{n + 1}]{} \lim_n \underbracket{\mu_q(E_x^n)}_{\varphi_n(x)} = \lim_n \varphi_n(x)
+      \end{align*}
+      Luego \(\forall x \in \mathbb{R}^p \setminus A\) se tiene:
+      \begin{align*}
+        \varphi_n(x) \xrightarrow[n \to \infty]{} \varphi(x) \quad \mbox{ y } \quad \varphi_n(x) \geq 0
+      \end{align*}
+      Como \(\varphi_n\) es \(\mu_p\)-medible, entonces el límite puntual es \(\mu_p\)-medible.
+      \item[c)] Como \(\varphi_n(x) \geq 0\) para todo \(x \in \mathbb{R}^p \setminus A\) y \(\varphi_n \to \varphi\) puntualmente, por el \hyperref[thm:convergencia_monotona]{Teorema de la Convergencia Monótona} se tiene:
+      \begin{align*}
+       \int_{\mathbb{R}^p \setminus A} \varphi(x) \; d\mu_p(x) & \xlongequal[]{\hyperref[thm:convergencia_monotona]{TCM}} \lim_n \int_{\mathbb{R}^p \setminus A} \varphi_n(x) \; d\mu_p(x) = \\[2ex]
+        & = \lim_n \mu_{p + q}(E^n) \xlongequal[]{E^n \subseteq E^{n + 1}} \mu_{p + q}\left(\displaystyle \bigcup_{n = 1}^{\infty} E^n\right) = \mu_{p + q}(E)\\
+      \end{align*}
+    \end{enumerate}
+  \end{enumerate}
+\end{dem_box}
+\vspace{3ex}
+
+\subsubsection{Teorema de Tonelli para funciones}\label{thm:tonelli_funciones}
+\noindent Para toda función \(\mu_{p + q}\)-medible \(f: \mathbb{R}^{p + q} \to [0, \infty]\) se tiene que:
+\begin{enumerate}
+  \item[a)] Existe \(A \in \mathcal{M}_p\) con \(\mu_p(A) = 0\) tal que:
+  \begin{align*}
+    \forall x \in \mathbb{R}^p \setminus A \quad f_x : \mathbb{R}^q \to [0, \infty] \quad \mu_q\text{-medible}
+  \end{align*}
+  \item[b)] La aplicación definida como:
+  \begin{align*}
+    \varphi: \mathbb{R}^p \setminus A & \longrightarrow [0, \infty] \\[1ex]
+    x & \longmapsto \varphi(x) \coloneq \int_{\mathbb{R}^q} f_x(y) \; d\mu_q(y)
+  \end{align*}
+  es medible respecto de \(\left(\mathbb{R}^p, \mathcal{M}_p, \mu_p\right)\).
+  \item[c)] Se tiene que:
+  \begin{align*}
+    \int_{\mathbb{R}^p \setminus A} \varphi(x) \; d\mu_p(x) = \int_{\mathbb{R}^{p + q}} f(x, y) \; d\mu_{p + q}(x, y)
+  \end{align*}
+\end{enumerate}
+\vspace{3ex}
+\begin{ej_box}{Nota}
+  Existen enunciados equivalentes intercambiando las variables \(x\) e \(y\), es decir:
+  \begin{enumerate}
+    \item[a')] \(\exists B \in \mathcal{M}_q\) con \(\mu_q(B) = 0\) tal que \(\forall y \in \mathbb{R}^q \setminus B \quad f^y : \mathbb{R}^p \to [0, \infty] \quad \mu_p\text{-medible}\)
+    \item[b')] La aplicación \(\psi: \mathbb{R}^q \setminus B \to [0, \infty]\) definida como:
+    \begin{align*}
+      \psi(y) \coloneq \int_{\mathbb{R}^p} f^y(x) \; d\mu_p(x)
+    \end{align*}
+    es medible respecto de \(\left(\mathbb{R}^q, \mathcal{M}_q, \mu_q\right)\).
+    \item[c')] Se tiene que:
+    \begin{align*}
+      \int_{\mathbb{R}^q \setminus B} \psi(y) \; d\mu_q(y) = \int_{\mathbb{R}^{p + q}} f(x, y) \; d\mu_{p + q}(x, y)
+    \end{align*}
+  \end{enumerate}
+
+  Por tanto, a partir de los apartados c) y c') se deduce que:
+  \begin{align*}
+    \int_{\mathbb{R}^p\setminus A} \varphi(x) \; d\mu_p(x) = \int_{\mathbb{R}^{p + q}} f(x, y) \; d\mu_{p + q}(x, y) = \int_{\mathbb{R}^q\setminus B} \psi(y) \; d\mu_q(y)
+  \end{align*}
+\end{ej_box}
+\vspace{3ex}
+
+\begin{ej_box}{Observación}
+  Si no somos chapuceros, en realidad, la cadena de integrales anterior debería de ser:
+  \begin{align*}
+    \int_{\mathbb{R}^p} \left( \int_{\mathbb{R}^q} f(x, y) \; d\mu_q(y) \right) d\mu_p(x) & = \int_{\mathbb{R}^{p + q}} f(x, y) \; d\mu_{p + q}(x, y) =\\[2ex]
+    & =\int_{\mathbb{R}^q} \left( \int_{\mathbb{R}^p} f(x, y) \; d\mu_p(x) \right) d\mu_q(y)
+  \end{align*}
+\end{ej_box}
+\vspace{3ex}
+
+\begin{dem_box}{Demostración}
+  \textit{La demostración se realiza analizando distintos casos de funciones medibles:}
+  \begin{enumerate} \leftskip -10pt
+    \item \textit{Sea \(f = \mathcal{X}_E\) con \(E \in \mathcal{M}_{p + q}\)}. Aplicando el \hyperref[thm:tonelli_conjuntos]{Teorema de Tonelli para conjuntos} para el conjunto medible \(E\) se tiene:
+    \begin{itemize} \leftskip -15pt
+      \item \(\exists A \in \mathcal{M}_p\) con \(\mu_p(A) = 0\) tal que \(\forall x \in \mathbb{R}^p \setminus A\) se tiene \(E_x \in \mathcal{M}_q\)
+      \item La aplicación \(\varphi_1 : \mathbb{R}^p \setminus A \to [0, \infty]\) dada por \(x \mapsto \mu_q(E_x)\) es \(\mu_p\)-medible
+      \item Se tiene que \(\int_{\mathbb{R}^p \setminus A} \varphi_1(x) \; d\mu_p(x) = \mu_{p + q}(E)\)
+    \end{itemize}
+
+    Entonces:
+    \begin{enumerate} \leftskip -10pt
+      \item[a)] \(\forall x \in \mathbb{R}^p \setminus A\) se tiene:
+      \begin{align*}
+        f_x = (\mathcal{X}_E)_x = \mathcal{X}_{E_x} \quad \mu_q\text{-medible}
+      \end{align*}
+      ya que, sea \(y \in E_x\) entonces \((x, y) \in E \implies (\mathcal{X}_E)_x(y) = 1\). Análogamente, si \(y \notin E_x\) entonces \((x, y) \notin E \implies (\mathcal{X}_E)_x(y) = 0\).
+      \item[b)] Basta notar que la aplicación:
+      \begin{align*}
+        \varphi : \mathbb{R}^{p} \setminus A & \longrightarrow [0, \infty] \\[1ex]
+        x & \longmapsto \varphi(x) = \int_{\mathbb{R}^q} (\mathcal{X}_E)_x(y) \; d\mu_q(y) = \mu_q(E_x)
+      \end{align*}
+      Y como \(\varphi(x) = \varphi_1(x)\) y \(\varphi_1\) es \(\mu_p\)-medible, entonces \(\varphi\) es \(\mu_p\)-medible.
+      \item[c)] Se tiene que:
+      \begin{align*}
+        \int_{\mathbb{R}^p \setminus A} \varphi(x) \; d\mu_p(x) = \mu_{p + q}(E) = \int_{\mathbb{R}^{p + q}} \underbracket{\mathcal{X}_E(x, y)}_{f(x, y)} \; d\mu_{p + q}(x, y)\\
+      \end{align*}
+    \end{enumerate}
+    \item \textit{Sea \(f\) función simple medible.} Por definición función simple medible, podemos expresar \(f\) como:
+    \begin{align*}
+      f = \displaystyle \sum_{i = 1}^{n} \lambda_i \mathcal{X}_{E^i} \quad \mbox{ con } E^i \in \mathcal{M}_{p + q} \quad \forall i = 1, \ldots, n
+    \end{align*}
+
+    \textit{Aplicando el caso 1) a cada \(E^i\) se tiene:}
+    \begin{itemize} \leftskip -10pt
+      \item[1.a)] \(\forall x \in \mathbb{R}^p\) se tiene \(E^i_x \in \mathcal{M}_q\)
+      \item[1.b)] La aplicación \(\varphi_i : \mathbb{R}^p \to [0, \infty]\) dada por \(x \mapsto \mu_q(E^i_x)\) es \(\mu_p\)-medible
+      \item[1.c)] Se tiene que \(\int_{\mathbb{R}^p} \varphi_i(x) \; d\mu_p(x) = \mu_{p + q}(E^i)\)
+    \end{itemize}
+    Entonces:
+    \begin{enumerate} \leftskip -10pt
+      \item[a)] Sea \(A \coloneq \bigcup_{i = 1}^{n} A_i \in \mathcal{M}_p\) con \(\mu_p(A) = 0\) entonces \(\forall x \in \mathbb{R}^p \setminus A\) se tiene:
+      \begin{align*}
+        f_x = \displaystyle \sum_{i = 1}^{n} \lambda_i \mathcal{X}_{E^i_x} \quad \mu_q\text{-medible}
+      \end{align*}
+      \item[b)] Sea la aplicación:
+      \begin{align*}
+        \varphi : \mathbb{R}^p \setminus A & \longrightarrow [0, \infty] \\[1ex]
+        x & \longmapsto \int_{\mathbb{R}^q} f_x(y) \; d\mu_q(y) = \displaystyle \sum_{i = 1}^{n} \lambda_i \int_{\mathbb{R}^q} \mathcal{X}_{E^i_x}(y) \; d\mu_q(y) =\\[1ex]
+        & \hspace{12ex} = \displaystyle \sum_{i = 1}^{n} \lambda_i \cdot \mu_q(E^i_x) = \displaystyle \sum_{i = 1}^{n} \lambda_i \cdot \varphi_i(x)
+      \end{align*}
+      Entonces, como cada \(\varphi_i\) es \(\mu_p\)-medible, la suma finita es \(\mu_p\)-medible.
+      \item[c)] Se tiene que:
+      \begin{align*}
+        \int_{\mathbb{R}^p \setminus A} \varphi(x) \; d\mu_p(x) & = \int_{\mathbb{R}^p \setminus A} \left( \displaystyle \sum_{i = 1}^{n} \lambda_i \cdot \varphi_i(x) \right) d\mu_p(x) \xlongequal[\text{\hyperref[prop:linealidad_parcial_integrando]{parcial}}]{\hyperref[prop:linealidad_parcial_integrando]{\text{lineal.}}} \\[2ex]
+        & = \displaystyle \sum_{i = 1}^{n} \lambda_i \int_{\mathbb{R}^p \setminus A} \varphi_i(x) \; d\mu_p(x) =\\[2ex]
+        & = \displaystyle \sum_{i = 1}^{n} \lambda_i \cdot \mu_{p + q}(E^i) = \int_{\mathbb{R}^{p + q}} f(x, y) \; d\mu_{p + q}(x, y)\\
+      \end{align*}
+    \end{enumerate}
+    \item \textit{Sea \(f \colon \mathbb{R}^{p + q} \to [0, \infty]\) función \(\mu_{p + q}\)-medible no negativa.} Entonces, existe una sucesión de funciones simples medibles \((s^n)_n\) tal que:
+    \begin{align*}
+      0 \leq s^n(x, y) \leq s^{n + 1}(x, y) \underset{n}{\to } f(x, y) \quad \forall (x, y) \in \mathbb{R}^{p + q}
+    \end{align*}
+    \textit{Aplicando el caso 2) a cada \(s^n\) se tiene:}
+    \begin{itemize} \leftskip -15pt
+      \item[2.a)] \(\forall x \in \mathbb{R}^p\) se tiene \( (s^n)_x : \mathbb{R}^q \to [0, \infty] \quad \mu_q\text{-medible}\)
+      \item[2.b)] Se tiene \(\varphi_n : \mathbb{R}^p \to [0, \infty]\) dada por \(x \mapsto \int_{\mathbb{R}^q} s^n_x(y) \; d\mu_q(y)\) es \(\mu_p\)-medible
+      \item[2.c)] Se tiene que \(\int_{\mathbb{R}^p} \varphi_n(x) \; d\mu_p(x) = \int_{\mathbb{R}^{p + q}} s^n(x, y) \; d\mu_{p + q}(x, y)\)
+    \end{itemize}
+    \vspace{10ex}
+
+    Entonces:
+    \begin{enumerate} \leftskip -10pt
+      \item[a)] Se tiene que, la unión de conjuntos nulos:
+      \begin{align*}
+        A \coloneq \displaystyle \bigcup_{n = 1}^{\infty} A_n \in \mathcal{M}_p \quad \mbox{ con } \mu_p(A) = 0
+      \end{align*}
+      Entonces, para cada \(x \in \mathbb{R}^p \setminus A\) se tiene:
+      \begin{align*}
+        0 \leq s_x^n (y) \xrightarrow[n \to \infty]{ } f_x(y) \quad \mu_q\text{-medible}
+      \end{align*}
+      \item[b)] Notar que para cada \(x \in \mathbb{R}^p \setminus A\):
+      \begin{align*}
+        \underbracket{s_x^n(y)}_{\geq 0} \xrightarrow[n \to \infty]{} f_x(y) \quad \mu_q\text{-medible}
+      \end{align*}
+      Entonces, por el \hyperref[thm:convergencia_monotona]{Teorema de la Convergencia Monótona} se tiene:
+      \begin{align*}
+        \underbracket{\int_{\mathbb{R}^q} s_x^n(y) \; d\mu_q(y)}_{0 \leq \varphi_n(x)} \xrightarrow[n \to \infty]{TCM} \int_{\mathbb{R}^q} f_x(y) \; d\mu_q(y) = \varphi(x)
+      \end{align*}
+      Como \(\varphi_n\) es \(\mu_p\)-medible entonces el límite puntual es \(\mu_p\)-medible.
+      \item[c)] Se tiene que:
+      \begin{align*}
+        0 \leq \varphi_n(x) \xrightarrow[n \to \infty]{} \varphi(x)
+      \end{align*}
+      Entonces, por el \hyperref[thm:convergencia_monotona]{Teorema de la Convergencia Monótona} se tiene:
+      \begin{align*}
+        \int_{\mathbb{R}^p \setminus A} \varphi(x) \; d\mu_p(x)&  = \int_{\mathbb{R}^p \setminus A} \lim_n \varphi_n(x) \; d\mu_p(x) \xlongequal[]{\hyperref[thm:convergencia_monotona]{\text{TCM}}}\\[2ex]
+        & = \lim_n \int_{\mathbb{R}^p \setminus A} \varphi_n(x) \; d\mu_p(x) = \\[2ex]
+        & = \lim_n \int_{\mathbb{R}^{p + q}} s^n(x, y) \; d\mu_{p + q}(x, y) \xlongequal[]{\hyperref[thm:convergencia_monotona]{\text{TCM}}}\\[2ex]
+        & = \int_{\mathbb{R}^{p + q}} \lim_n s^n(x, y) \; d\mu_{p + q}(x, y) = \\[2ex]
+        & = \int_{\mathbb{R}^{p + q}} f(x, y) \; d\mu_{p + q}(x, y)
+      \end{align*}
+    \end{enumerate}
+  \end{enumerate}
+\end{dem_box}
+\vspace{20ex}
+
+\subsubsection{Teorema de Fubini. Teorema}\label{thm:fubini}
+\noindent Sea \(f \in \mathcal{L}_1(\mathbb{R}^{p + q})\) una función \(\mu_{p + q}\)-medible integrable. Entonces:
+\begin{enumerate}
+  \item[a)] Existe \(A \in \mathcal{M}_p\) con \(\mu_p(A) = 0\) tal que:
+  \begin{align*}
+    \forall x \in \mathbb{R}^p \setminus A \quad f_x \in \mathcal{L}_1(\mathbb{R}^q)
+  \end{align*}
+  \item[b)] La aplicación definida como:
+  \begin{align*}
+    \varphi: \mathbb{R}^p \setminus A & \longrightarrow [0, \infty] \\[1ex]
+    x & \longmapsto \varphi(x) \coloneq \int_{\mathbb{R}^q} f_x(y) \; d\mu_q(y)
+  \end{align*}
+  es \(\mu_p\)-sumable.
+  \item[c)] Se tiene que:
+  \begin{align*}
+    \int_{\mathbb{R}^p \setminus A} \varphi(x) \; d\mu_p(x) = \int_{\mathbb{R}^{p + q}} f(x, y) \; d\mu_{p + q}(x, y)
+  \end{align*}
+\end{enumerate}
+\vspace{3ex}
+
+\begin{ej_box}{Nota}
+  Se puede enunciar un resultado análogo intercambiando las variables \(x\) e \(y\), es decir:
+  \begin{enumerate}
+    \item[a')] \(\exists B \in \mathcal{M}_q\) con \(\mu_q(B) = 0\) tal que \(\forall y \in \mathbb{R}^q \setminus B \quad f^y \in \mathcal{L}_1(\mathbb{R}^p)\)
+    \item[b')] La aplicación \(\psi: \mathbb{R}^q \setminus B \to [0, \infty]\) definida como:
+    \begin{align*}
+      \psi(y) \coloneq \int_{\mathbb{R}^p} f^y(x) \; d\mu_p(x)
+    \end{align*}
+    es sumable respecto de \(\left(\mathbb{R}^q, \mathcal{M}_q, \mu_q\right)\).
+    \item[c')] Se tiene que:
+    \begin{align*}
+      \int_{\mathbb{R}^q \setminus B} \psi(y) \; d\mu_q(y) = \int_{\mathbb{R}^{p + q}} f(x, y) \; d\mu_{p + q}(x, y)
+    \end{align*}
+  \end{enumerate}
+  Por tanto, a partir de los apartados c) y c') se deduce que:
+  \begin{align*}
+    \int_\mathbb{R^p}\left(\int_{\mathbb{R}^q} f(x, y) \; d\mu_q(y)\right) d\mu_p(x) & = \int_{\mathbb{R}^{p + q}} f(x, y) \; d\mu_{p + q}(x, y) = \\[2ex]
+    & =\int_{\mathbb{R}^q}\left(\int_{\mathbb{R}^p} f(x, y) \; d\mu_p(x)\right) d\mu_q(y)
+  \end{align*}
+\end{ej_box}
+\vspace{3ex}
+
+\begin{dem_box}{Demostración}
+  Notar que para cada \(x \in \mathbb{R}^p\) se tiene:
+  \begin{align*}
+    f_x = \underbracket{(f^ + )_x}_{(f_x)^ + } - \underbracket{(f^-)_x}_{(f_x)^-} = \overbrace{f_x^+ - f_x^{ - }}^{\text{notación}}
+  \end{align*}
+  Por el \hyperref[thm:tonelli_funciones]{Teorema de Tonelli para funciones} a las funciones no negativas \(f^+\) y \(f^-\):
+  \begin{itemize}
+    \item[\textit{1.a)}] \textit{\(\exists A_1 \in \mathcal{M}_p\) con \(\mu_p(A_1) = 0\) tal que \(\forall x \in \mathbb{R}^p \setminus A_1 \quad f_x^+ \in \mathcal{L}_1(\mathbb{R}^q)\)}
+    \item[\textit{1.b)}] \textit{Sea \(\varphi_1: \mathbb{R}^p \setminus A_1 \to [0, \infty]\) dada por \(x \mapsto \int_{\mathbb{R}^q} f_x^+(y) \; d\mu_q(y)\) es \(\mu_p\)-medible}
+    \item[\textit{1.c)}] \textit{Se tiene que \(\int_{\mathbb{R}^p \setminus A_1} \varphi_1(x) \; d\mu_p(x) = \int_{\mathbb{R}^{p + q}} f^+(x, y) \; d\mu_{p + q}(x, y)\)}
+  \end{itemize}
+  \vspace{1ex}
+  \begin{itemize}
+    \item[\textit{2.a)}] \textit{\(\exists A_2 \in \mathcal{M}_p\) con \(\mu_p(A_2) = 0\) tal que \(\forall x \in \mathbb{R}^p \setminus A_2 \quad f_x^- \in \mathcal{L}_1(\mathbb{R}^q)\)}
+    \item[\textit{2.b)}] \textit{Sea \(\varphi_2: \mathbb{R}^p \setminus A_2 \to [0, \infty]\) dada por \(x \mapsto \int_{\mathbb{R}^q} f_x^-(y) \; d\mu_q(y)\) es \(\mu_p\)-medible}
+    \item[\textit{2.c)}] \textit{Se tiene que \(\int_{\mathbb{R}^p \setminus A_2} \varphi_2(x) \; d\mu_p(x) = \int_{\mathbb{R}^{p + q}} f^-(x, y) \; d\mu_{p + q}(x, y)\)}
+  \end{itemize}
+  \vspace{2ex}
+
+  Como por hipótesis \(f \in \mathcal{L}_1(\mathbb{R}^{p + q})\) entonces \(f^{ + }, f^{ - } \in \mathcal{L}_1(\mathbb{R}^{p + q})\) y por tanto las integrales anteriores (apartados \textit{1.c)} y \textit{2.c)}) son finitas. Ahora, sea:
+  \begin{align*}
+    A_3 & \coloneq \left\{x \in \mathbb{R}^p \setminus A_1 : \varphi_1(x) = \infty \right\} \in \mathcal{M}_p \quad \mbox{ con } \mu_p(A_3) = 0\\[2ex]
+    A_4 & \coloneq \left\{x \in \mathbb{R}^p \setminus A_2 : \varphi_2(x) = \infty \right\} \in \mathcal{M}_p \quad \mbox{ con } \mu_p(A_4) = 0
+  \end{align*}
+  Entonces, tenemos que:
+  \begin{enumerate} \leftskip -10pt
+    \item[a)] Sea \(A \coloneq A_1 \cup A_2 \cup A_3 \cup A_4 \in \mathcal{M}_p\) con \(\mu_p(A) = 0\) entonces, \(\forall x \in \mathbb{R}^p \setminus A\) se tiene:
+    \begin{align*}
+      \infty > \varphi_1(x) & = \int_{\mathbb{R}^q} f_x^+(y) \; d\mu_q(y) \implies f_x^+ \in \mathcal{L}_1(\mathbb{R}^q)\\[2ex]
+      \infty > \varphi_2(x) & = \int_{\mathbb{R}^q} f_x^-(y) \; d\mu_q(y) \implies f_x^- \in \mathcal{L}_1(\mathbb{R}^q)
+    \end{align*}
+    Por tanto, \(f_x = f_x^+ - f_x^- \in \mathcal{L}_1(\mathbb{R}^q)\).
+    \item[b)] Sea la aplicación:
+    \begin{align*}
+      \varphi : \mathbb{R}^p \setminus A & \longrightarrow \mathbb{R} \\[1ex]
+      x & \longmapsto \int_{\mathbb{R}^q} f_x(y) \; d\mu_q(y) = \int_{\mathbb{R}^q} f_x^+(y) \; d\mu_q(y) - \int_{\mathbb{R}^q} f_x^-(y) \; d\mu_q(y) = \\[2ex]
+      & \hspace{21.5ex} = \varphi_1(x) - \varphi_2(x) \overset{a)}{\in} \mathbb{R}
+    \end{align*}
+    Así, para cada \(x \in \mathbb{R}^p \setminus A\) se tiene que \(\varphi(x) \in \mathbb{R}\). Además, como cada \(\varphi_1\) y \(\varphi_2\) son \(\mu_p\)-medibles, la resta es \(\mu_p\)-medible. Finalmente, como:
+    \begin{align*}
+      |\varphi(x)| = |\varphi_1(x) - \varphi_2(x)| \leq \varphi_1(x) + \varphi_2(x)
+    \end{align*}
+    y \(\varphi_1, \varphi_2 \in \mathcal{L}_1(\mathbb{R}^p \setminus A)\) (por los apartados \textit{1.c)} y \textit{2.c)}), se tiene que \(\varphi \in \mathcal{L}_1(\mathbb{R}^p \setminus A)\).
+    \item[c)] Se tiene que:
+    \begin{align*}
+      \int_{\mathbb{R}^p \setminus A} \varphi(x) \; d\mu_p(x) & = \int_{\mathbb{R}^p \setminus A} \left( \varphi_1(x) - \varphi_2(x) \right) d\mu_p(x) \xlongequal[\text{\hyperref[prop:linealidad_parcial_integrando]{parcial}}]{\hyperref[prop:linealidad_parcial_integrando]{\text{lineal.}}} \\[2ex]
+      & = \int_{\mathbb{R}^p \setminus A} \varphi_1(x) \; d\mu_p(x) - \int_{\mathbb{R}^p \setminus A} \varphi_2(x) \; d\mu_p(x) = \\[2ex]
+      & = \int_{\mathbb{R}^{p + q}} f^+(x, y) \; d\mu_{p + q}(x, y) - \int_{\mathbb{R}^{p + q}} f^-(x, y) \; d\mu_{p + q}(x, y) = \\[2ex]
+      & = \int_{\mathbb{R}^{p + q}} \left( f^+(x, y) - f^-(x, y) \right) d\mu_{p + q}(x, y) = \\[2ex]
+      & = \int_{\mathbb{R}^{p + q}} f(x, y) \; d\mu_{p + q}(x, y)
+    \end{align*}
+  \end{enumerate}
+\end{dem_box}
+\vspace{3ex}
+\subsubsection{Teorema del cambio de variable. Teorema}\label{thm:cambio_variable}
+Sea \(\Omega \subseteq \mathbb{R}^N\) abierto, \(T: \Omega \to \mathbb{R}^N\) difeomorfismo con \(T\, \mathcal{C}^1(\Omega)\) y \(f \in \mathcal{L}_1(T(\Omega))\) (alternativamente, \(f: T(\Omega) \to [0, \infty]\) función \(\mu_N\)-medible). Entonces:
+\begin{align*}
+  \int_{T(\Omega)} f(y) \; d\mu_N(y) = \int_{\Omega} f(T(x)) \cdot \left| \det\left( J_T(x) \right) \right| \; d\mu_N(x)
+\end{align*}
+donde \((f \circ T) \cdot \left| \det\left( J_T \right) \right|\in \mathcal{L}_1(\Omega)\) (alternativamente, función \(\mu_N\)-medible no negativa).
 \end{document}

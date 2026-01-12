@@ -79,6 +79,8 @@ class TexToMdxParser:
         content = re.sub(r'\\addcontentsline\{[^}]+\}\{[^}]+\}\{[^}]+\}', '', content)
         # Eliminar \newpage
         content = re.sub(r'\\newpage', '', content)
+        # Eliminar \leftskip seguido de valor en pt (ej: \leftskip -10pt)
+        content = re.sub(r'\\leftskip\s+[+-]?\d+pt', '', content)
         return content
     
     def remove_equation_commands(self, content: str) -> str:
@@ -102,6 +104,8 @@ class TexToMdxParser:
         content = re.sub(r'\\underbracket', r'\\underbrace', content)
         # Reemplazar \overbracket por \overbrace (KaTeX no soporta overbracket)
         content = re.sub(r'\\overbracket', r'\\overbrace', content)
+        # Reemplazar \Lint por \int (comando personalizado no soportado por KaTeX)
+        content = re.sub(r'\\Lint', r'\\int', content)
         # Convertir \substack{a\\b} a a, b (KaTeX no soporta substack)
         def replace_substack(match):
             # Extraer contenido y reemplazar \\ con comas
